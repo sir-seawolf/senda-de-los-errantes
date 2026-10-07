@@ -1,0 +1,16 @@
+{
+  "id": "satelite_lanzadera",
+  "type": "decision",
+  "musicState": "chase",
+  "title": "La lanzadera",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introText": "Llegáis a la lanzadera con el traje todavía sellado — no hay tiempo ni aire de sobra para quitaros los cascos, y el sistema de recarga tarda una hora que no tenéis. El despegue es brusco. Apenas se aleja del satélite, un aviso parpadea en el panel: solo quedaba combustible de maniobra, y ya se ha agotado. La caída hacia el planeta cercano es inevitable — la pregunta es dónde.",
+  "choices": [
+    { "id": "continuar", "label": "AGUANTAR LA CAÍDA" }
+  ],
+  "interactions": [
+    { "id": "continuar_caida", "trigger": { "choice": "continuar" }, "onAlways": { "registerDecision": "Lanzadera: aterrizaje forzoso sin combustible.", "transition": "satelite_aterrizaje" } }
+  ]
+}

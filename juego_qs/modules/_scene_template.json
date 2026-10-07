@@ -1,0 +1,72 @@
+{
+  "id": "_template",
+  "type": "point_click",
+  "title": "PLANTILLA — no es una escena jugable, solo referencia para copiar",
+  "background": "assets/backgrounds/callejon.jpg",
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop"],
+  "introText": "Texto narrativo que se muestra al entrar en la escena.",
+  "defaultText": "Texto que se muestra si el jugador prueba un verbo+zona sin interacción definida.",
+  "verbs": ["MIRAR", "COGER", "USAR", "HABLAR", "MOVERSE"],
+  "zones": [
+    { "id": "objeto_simple", "label": "objeto simple", "rect": [10, 60, 20, 30] },
+    { "id": "objeto_con_tirada", "label": "objeto con tirada", "rect": [40, 40, 20, 40] },
+    { "id": "salida", "label": "salida", "rect": [75, 10, 20, 80] }
+  ],
+  "interactions": [
+    {
+      "id": "mirar_objeto_simple",
+      "trigger": { "verb": "MIRAR", "zone": "objeto_simple" },
+      "onAlways": {
+        "text": "Descripción fija, sin tirada — se ejecuta siempre que no haya `roll`."
+      }
+    },
+    {
+      "id": "coger_objeto_con_tirada_repetido",
+      "trigger": { "verb": "COGER", "zone": "objeto_con_tirada" },
+      "requiresFlags": ["objeto_con_tirada_cogido"],
+      "onAlways": { "text": "Ya lo cogiste. Esta versión va PRIMERO en el array porque `requiresFlags` la hace más específica — el motor usa la primera interacción cuyo trigger Y flags coincidan." }
+    },
+    {
+      "id": "coger_objeto_con_tirada",
+      "trigger": { "verb": "COGER", "zone": "objeto_con_tirada" },
+      "blockedByFlags": ["objeto_con_tirada_cogido"],
+      "executors": "party",
+      "delegationTitle": "¿Quién lo intenta?",
+      "roll": {
+        "skill": "Seguridad",
+        "fallbackSkill": "Tecnológica",
+        "difficulty": -10,
+        "difficultyLabel": "Difícil",
+        "label": "Etiqueta que ve el jugador en el visor de tiradas",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "text": "Texto de éxito.",
+        "setFlags": ["objeto_con_tirada_cogido"],
+        "discoverClues": ["Una pista que se añade al resumen final."],
+        "inventoryAdd": ["Objeto de ejemplo"]
+      },
+      "onFailure": {
+        "text": "Texto de fallo — NUNCA debe ser un game over automático; deja que el jugador siga intentando otra cosa o siga adelante con la escena.",
+        "setFlags": ["objeto_con_tirada_cogido"]
+      }
+    },
+    {
+      "id": "moverse_salida",
+      "trigger": { "verb": "MOVERSE", "zone": "salida" },
+      "requiresFlags": ["objeto_con_tirada_cogido"],
+      "onAlways": {
+        "text": "Solo se puede salir tras coger el objeto (requiresFlags). Cambia de escena tras un pequeño delay para dar tiempo a leer el texto.",
+        "registerDecision": "Plantilla: salió tras coger el objeto.",
+        "transition": "decision",
+        "transitionDelay": 1200
+      }
+    },
+    {
+      "id": "moverse_salida_bloqueada",
+      "trigger": { "verb": "MOVERSE", "zone": "salida" },
+      "onAlways": { "text": "Todavía no. (Esta va SEGUNDA en el array: solo se alcanza si la interacción de arriba, con requiresFlags, no aplica.)" }
+    }
+  ]
+}

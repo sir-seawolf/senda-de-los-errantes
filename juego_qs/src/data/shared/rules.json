@@ -1,0 +1,40 @@
+{
+  "dificultad": {
+    "muyFacil": 20,
+    "facil": 10,
+    "normal": 0,
+    "dificil": -10,
+    "muyDificil": -20
+  },
+  "critico": { "00": 3, "01": 2, "02": 1 },
+  "pifia": [97, 98, 99],
+  "cadencia": {
+    "tiroATiro": { "municion": 1, "bonusExitos": 0, "etiqueta": "Tiro a tiro" },
+    "rafaga": { "municion": 3, "bonusExitos": 1, "etiqueta": "Ráfaga" },
+    "fuegoSostenido": { "municion": 9, "bonusExitos": 2, "etiqueta": "Fuego sostenido" }
+  },
+  "cobertura": {
+    "parcial": 1,
+    "solida": 2,
+    "total": 3
+  },
+  "movimientoEvasivo": {
+    "0": 0,
+    "1": -10,
+    "2+": -20
+  },
+  "localizacion": {
+    "0": "Cabeza",
+    "9": "Ojos",
+    "8": "Pecho",
+    "7": "Oídos",
+    "6": "Lengua/mandíbula",
+    "5": "Espalda",
+    "4": "Brazo derecho",
+    "3": "Brazo izquierdo",
+    "2": "Pierna derecha",
+    "1": "Pierna izquierda"
+  },
+  "puntoEpico": { "bonusHabilidad": 50 },
+  "niveles": { "sano": 0, "herido": -10, "tullido": -20 }
+}

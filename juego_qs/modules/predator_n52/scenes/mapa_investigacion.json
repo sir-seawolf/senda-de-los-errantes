@@ -1,0 +1,26 @@
+{
+  "id": "mapa_investigacion",
+  "type": "decision",
+  "musicState": "exploration",
+  "title": "Rutas abiertas",
+  "background": "assets/backgrounds/mapa_investigacion.svg",
+  "sheetContext": "callejon",
+  "sheetLayout": "overlay",
+  "introText": "El navegador sitúa la única dirección confirmada. Otros nombres y conexiones todavía son solo preguntas; aparecerán como destinos cuando el grupo consiga información suficiente o los medios para alcanzarlos.",
+  "choices": [
+    { "id": "apartamento_arthur", "label": "Ir al apartamento de Arthur" }
+  ],
+  "interactions": [
+    {
+      "id": "viajar_apartamento_arthur",
+      "trigger": { "choice": "apartamento_arthur" },
+      "requiresFlags": ["direccion_arthur_localizada"],
+      "onAlways": {
+        "registerDecision": "Viajó desde el aparcamiento hasta el apartamento de Arthur.",
+        "text": "La ruta abandona los distritos industriales y se interna en el extrarradio. El marcador termina ante un bloque de apartamentos baratos.",
+        "transition": "arthur_apartamento",
+        "transitionDelay": 1200
+      }
+    }
+  ]
+}

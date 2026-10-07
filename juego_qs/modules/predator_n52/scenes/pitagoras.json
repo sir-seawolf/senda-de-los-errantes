@@ -1,0 +1,35 @@
+{
+  "id": "pitagoras",
+  "type": "dialogue",
+  "musicState": "exploration",
+  "title": "Pitágoras",
+  "sheetContext": "callejon",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "startNode": "inicio",
+  "nodes": {
+    "inicio": {
+      "speaker": "Pitágoras",
+      "text": "El antiguo contacto corporativo escucha el resumen y reconoce el patrón. «MORT financió el robo. Los planos guardados en ese chip valen una fortuna en el mercado negro; quince mil PC sería una cifra razonable.»",
+      "choices": [
+        {
+          "label": "Registrar la información y volver a la investigación",
+          "consequence": {
+            "setFlags": [
+              "pitagoras_resuelto",
+              "ruta_almacenes"
+            ],
+            "discoverClues": [
+              "Pitágoras confirma que MORT financió el robo y que los planos valen alrededor de 15.000 PC en el mercado negro."
+            ],
+            "registerDecision": "Pitágoras identificó a MORT como financiador del robo.",
+            "transition": "decision_arthur"
+          }
+        }
+      ]
+    }
+  }
+}

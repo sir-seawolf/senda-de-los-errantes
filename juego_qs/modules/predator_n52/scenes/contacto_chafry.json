@@ -1,0 +1,113 @@
+{
+  "id": "contacto_chafry",
+  "type": "decision",
+  "musicState": "tension",
+  "title": "La respuesta de CHAFRY",
+  "sheetContext": "callejon",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "introText": "Una operadora de CHAFRY responde con demasiada rapidez. La forma de plantear el contacto decidirá qué clase de respuesta prepara la corporación.",
+  "choices": [
+    {
+      "id": "ofrecer",
+      "label": "OFRECER EL CHIP O PEDIR UNA REUNIÓN"
+    },
+    {
+      "id": "investigar",
+      "label": "OCULTAR LA POSICIÓN Y SONDEAR INFORMACIÓN"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "ofrecer_chip_vigilados",
+      "trigger": {
+        "choice": "ofrecer"
+      },
+      "requiresFlags": [
+        "vigilados_por_chafry"
+      ],
+      "onAlways": {
+        "setFlags": [
+          "chafry_resuelto",
+          "chafry_emboscada",
+          "ruta_almacenes",
+          "vigilancia_chafry_consumida"
+        ],
+        "clearFlags": [
+          "vigilados_por_chafry"
+        ],
+        "discoverClues": [
+          "CHAFRY ofrece entre 10.000 y 20.000 PC por el chip y fija una reunión que parece una emboscada. La operadora ya conoce vuestros nombres antes de que os presentéis."
+        ],
+        "registerDecision": "CHAFRY ya había identificado al grupo por las cámaras y convirtió la oferta en una emboscada preparada.",
+        "text": "La operadora pronuncia vuestros nombres sin que nadie se los haya dado. Las cámaras del edificio de Arthur ya hicieron su trabajo. La oferta sigue en pie, pero la reunión está preparada de antemano y no para negociar.",
+        "transition": "captura_transporte"
+      }
+    },
+    {
+      "id": "sondear_vigilados",
+      "trigger": {
+        "choice": "investigar"
+      },
+      "requiresFlags": [
+        "vigilados_por_chafry"
+      ],
+      "onAlways": {
+        "setFlags": [
+          "chafry_resuelto",
+          "asesino_chafry",
+          "ruta_almacenes",
+          "vigilancia_chafry_consumida"
+        ],
+        "clearFlags": [
+          "vigilados_por_chafry"
+        ],
+        "discoverClues": [
+          "CHAFRY ya había identificado al grupo por las cámaras de Arthur y usa el sondeo para enviar un asesino con pruebas falsas contra TecnoStealer."
+        ],
+        "registerDecision": "La vigilancia de CHAFRY identificó al grupo antes del sondeo y facilitó el envío del asesino.",
+        "text": "Ocultáis la posición de la llamada, pero no vuestra identidad: la operadora ya tiene las imágenes del edificio de Arthur. CHAFRY corta la comunicación y pone en marcha una respuesta física con un culpable prefabricado.",
+        "transition": "decision_arthur"
+      }
+    },
+    {
+      "id": "ofrecer_chip",
+      "trigger": {
+        "choice": "ofrecer"
+      },
+      "onAlways": {
+        "setFlags": [
+          "chafry_resuelto",
+          "chafry_emboscada",
+          "ruta_almacenes"
+        ],
+        "discoverClues": [
+          "CHAFRY ofrece entre 10.000 y 20.000 PC por el chip y fija una reunión que parece una emboscada."
+        ],
+        "registerDecision": "CHAFRY ofreció 10.000–20.000 PC y preparó una emboscada.",
+        "transition": "captura_transporte"
+      }
+    },
+    {
+      "id": "sondear",
+      "trigger": {
+        "choice": "investigar"
+      },
+      "onAlways": {
+        "setFlags": [
+          "chafry_resuelto",
+          "asesino_chafry",
+          "ruta_almacenes"
+        ],
+        "discoverClues": [
+          "CHAFRY envía un asesino con pruebas falsas destinadas a incriminar a TecnoStealer."
+        ],
+        "registerDecision": "El sondeo a CHAFRY provocó el envío de un asesino con pruebas falsas contra TecnoStealer.",
+        "transition": "decision_arthur"
+      }
+    }
+  ]
+}

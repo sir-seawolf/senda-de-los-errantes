@@ -1,0 +1,138 @@
+{
+  "compressionlevel": -1,
+  "height": 9,
+  "infinite": false,
+  "nextlayerid": 4,
+  "nextobjectid": 12,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.11.0",
+  "tileheight": 100,
+  "tilewidth": 100,
+  "type": "map",
+  "version": "1.10",
+  "width": 24,
+  "layers": [
+    {
+      "class": "Master",
+      "id": 1,
+      "image": "../assets/panoramic/aparcamiento/aparcamiento_master.png",
+      "name": "Master",
+      "opacity": 1,
+      "type": "imagelayer",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "draworder": "topdown",
+      "id": 2,
+      "name": "Geometry",
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "objects": [
+        {
+          "id": 1,
+          "name": "acera_aparcamiento",
+          "polygon": [
+            { "x": 0, "y": 0 },
+            { "x": 2200, "y": 0 },
+            { "x": 2200, "y": 80 },
+            { "x": 0, "y": 80 }
+          ],
+          "type": "WalkableRegion",
+          "x": 100,
+          "y": 750
+        },
+        {
+          "id": 2,
+          "name": "desde_callejon",
+          "point": true,
+          "properties": [
+            { "name": "spawnId", "type": "string", "value": "desde_callejon" }
+          ],
+          "type": "Spawn",
+          "x": 190,
+          "y": 790
+        },
+        { "id": 3, "name": "approach_utilitario", "point": true, "x": 610, "y": 790 },
+        { "id": 4, "name": "approach_furgoneta", "point": true, "x": 1190, "y": 790 },
+        { "id": 5, "name": "approach_prototipo", "point": true, "x": 1760, "y": 790 },
+        {
+          "id": 6,
+          "name": "regreso_aparcamiento",
+          "point": true,
+          "properties": [
+            { "name": "spawnId", "type": "string", "value": "regreso_aparcamiento" }
+          ],
+          "type": "Spawn",
+          "x": 2150,
+          "y": 790
+        }
+      ]
+    },
+    {
+      "draworder": "topdown",
+      "id": 3,
+      "name": "Gameplay",
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "objects": [
+        {
+          "height": 280,
+          "id": 7,
+          "name": "vehiculo_utilitario",
+          "properties": [
+            { "name": "approachPoint", "type": "object", "value": 3 },
+            { "name": "interactionId", "type": "string", "value": "utilitario" }
+          ],
+          "type": "Interactable",
+          "width": 420,
+          "x": 400,
+          "y": 410
+        },
+        {
+          "height": 310,
+          "id": 8,
+          "name": "vehiculo_furgoneta",
+          "properties": [
+            { "name": "approachPoint", "type": "object", "value": 4 },
+            { "name": "interactionId", "type": "string", "value": "furgoneta" }
+          ],
+          "type": "Interactable",
+          "width": 465,
+          "x": 958,
+          "y": 380
+        },
+        {
+          "height": 280,
+          "id": 9,
+          "name": "vehiculo_prototipo",
+          "properties": [
+            { "name": "approachPoint", "type": "object", "value": 5 },
+            { "name": "interactionId", "type": "string", "value": "prototipo" }
+          ],
+          "type": "Interactable",
+          "width": 430,
+          "x": 1545,
+          "y": 410
+        },
+        {
+          "height": 110,
+          "id": 10,
+          "name": "salida_callejon",
+          "properties": [
+            { "name": "targetScene", "type": "string", "value": "callejon_panoramico_piloto" },
+            { "name": "targetSpawnId", "type": "string", "value": "regreso_tramo_b" }
+          ],
+          "type": "Exit",
+          "width": 120,
+          "x": 40,
+          "y": 720
+        }
+      ]
+    }
+  ]
+}

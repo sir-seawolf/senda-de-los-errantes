@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 240" width="180" height="240" role="img" aria-label="Silueta provisional de personaje">
+  <!--
+    Silueta neutra provisional (calibración geométrica, 2026-08-22). No es
+    arte final ni un personaje concreto: sirve solo para fijar lienzo
+    (180x240), altura visible (~215px) y anclaje en los pies (y=240) antes
+    de que Codex entregue Kova/PNJ/agentes MORT reales sobre esta misma
+    plantilla. Un solo tono plano, sin rasgos: deliberadamente no
+    confundible con un personaje real ni con un enemigo.
+  -->
+  <g fill="#7c8a96" stroke="#333a40" stroke-width="2" stroke-linejoin="round">
+    <circle cx="90" cy="47" r="22"/>
+    <path d="M56,69 C56,69 62,90 64,110 L60,150 L120,150 L116,110 C118,90 124,69 124,69 C110,60 70,60 56,69 Z"/>
+    <path d="M56,69 L34,120 L44,124 L64,90 Z"/>
+    <path d="M124,69 L146,120 L136,124 L116,90 Z"/>
+    <path d="M64,150 L86,150 L82,240 L62,240 Z"/>
+    <path d="M94,150 L116,150 L118,240 L98,240 Z"/>
+  </g>
+</svg>

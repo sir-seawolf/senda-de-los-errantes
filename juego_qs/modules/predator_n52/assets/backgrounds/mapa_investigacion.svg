@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Mapa nocturno de rutas de investigación">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071019"/><stop offset="1" stop-color="#111820"/></linearGradient>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#173344" stroke-width="2" opacity=".42"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#grid)"/>
+  <g fill="none" stroke="#21475b" stroke-width="18" opacity=".6"><path d="M0 710C260 650 390 760 620 650S1040 470 1600 520"/><path d="M180 0C230 250 360 350 530 460S760 690 780 900"/><path d="M1050 0C980 220 1070 330 1220 430S1420 700 1480 900"/></g>
+  <path d="M430 675C610 610 780 550 1015 348" fill="none" stroke="#2f6f8d" stroke-width="5" stroke-dasharray="16 14" opacity=".75"/>
+  <g transform="translate(430 675)"><circle r="34" fill="#101820" stroke="#d6a126" stroke-width="6"/><circle r="10" fill="#d6a126"/><text x="0" y="72" fill="#d7dde1" font-family="monospace" font-size="28" text-anchor="middle">POSICIÓN ACTUAL</text></g>
+  <g transform="translate(1015 348)" filter="url(#glow)"><path d="M0-55C-45-55-72-18-72 20c0 54 72 126 72 126s72-72 72-126C72-18 45-55 0-55Z" fill="#0c1921" stroke="#43c8f0" stroke-width="7"/><circle cy="17" r="23" fill="#43c8f0"/></g>
+  <text x="1015" y="545" fill="#e5f9ff" font-family="monospace" font-size="38" letter-spacing="3" text-anchor="middle">APARTAMENTO DE ARTHUR</text><text x="1015" y="592" fill="#62b8d1" font-family="monospace" font-size="25" text-anchor="middle">EXTRARRADIO · TERCER PISO</text>
+  <g opacity=".3" fill="#78909c" font-family="monospace" font-size="24"><circle cx="1350" cy="720" r="22" fill="none" stroke="#78909c" stroke-width="4"/><text x="1350" y="770" text-anchor="middle">DESTINO SIN DESCUBRIR</text><circle cx="310" cy="235" r="22" fill="none" stroke="#78909c" stroke-width="4"/><text x="310" y="285" text-anchor="middle">CONEXIÓN DESCONOCIDA</text></g>
+</svg>

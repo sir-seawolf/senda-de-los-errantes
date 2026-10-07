@@ -1,0 +1,66 @@
+{
+  "id": "drake_street_trato",
+  "type": "decision",
+  "musicState": "exploration",
+  "title": "El trato está hecho — ¿y ahora?",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "introText": "El chip ya no es vuestro problema — pero vosotros seguís siéndolo para CHAFRY. Alguien, en la sala, sigue observando con la misma frialdad de antes. Hay tiempo, todavía, para pedir algo más antes de que la puerta se cierre del todo.",
+  "choices": [
+    {
+      "id": "pedir_pasaje",
+      "label": "MENCIONAR QUE NECESITÁIS SALIR DEL SECTOR"
+    },
+    {
+      "id": "no_pedir",
+      "label": "COGER EL DINERO Y MARCHAROS"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "elegir_pedir_pasaje",
+      "trigger": {
+        "choice": "pedir_pasaje"
+      },
+      "onAlways": {
+        "registerDecision": "Drake Street: pedís pasaje para salir del sector.",
+        "discoverClues": [
+          "MORT ofrece pasaje clandestino en un envío de contenedores hacia otros sectores de El Mosaico."
+        ],
+        "text": "La voz se toma un momento. \"Huyendo de Chafry, ¿eh?\" No es una pregunta que espere respuesta. \"Hay un envío que sale esta noche. Los muelles, sector de logística. Preguntad por el turno de noche.\"",
+        "transition": "almacenes",
+        "setFlags": [
+          "pasaje_almacenes",
+          "drake_street_agotado"
+        ]
+      }
+    },
+    {
+      "id": "elegir_no_pedir",
+      "trigger": {
+        "choice": "no_pedir"
+      },
+      "onAlways": {
+        "registerDecision": "Drake Street: cogéis el dinero y os marcháis sin pedir nada más.",
+        "transition": "decision_arthur",
+        "setFlags": [
+          "drake_street_agotado",
+          "chip_vendido_mort",
+          "ruta_almacenes"
+        ],
+        "inventoryRemove": [
+          "Chip CHAFRY CORP"
+        ],
+        "adjustResources": {
+          "pc": 5000
+        },
+        "text": "El chip cambia de manos por 5.000 PC. Sin pasaje, regresáis a las líneas de investigación que todavía siguen abiertas."
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "basePath": "assets/shared/audio/music/",
+  "defaultVolume": 0.65,
+  "defaultFadeMs": 2500,
+  "buses": {
+    "music": { "defaultVolume": 0.65 },
+    "ambience": { "defaultVolume": 0.65 },
+    "sfx": { "defaultVolume": 0.8, "maxVoices": 6 },
+    "ui": { "defaultVolume": 0.8, "maxVoices": 4 }
+  },
+  "global": {
+    "gateway": "senda_gateway.mp3",
+    "menu": "senda_game_zone.mp3"
+  },
+  "fadeRules": [
+    { "from": "gateway", "to": "menu", "fadeMs": 3000 },
+    { "from": "*", "to": "tension", "fadeMs": 4000 },
+    { "from": "tension", "to": "chase", "fadeMs": 1500 },
+    { "from": "tension", "to": "action", "fadeMs": 1500 },
+    { "from": "tension", "to": "combat", "fadeMs": 1500 },
+    { "from": "*", "to": "chase", "fadeMs": 1500 },
+    { "from": "*", "to": "action", "fadeMs": 1500 },
+    { "from": "*", "to": "combat", "fadeMs": 1500 },
+    { "from": "combat", "to": "exploration", "fadeMs": 5000 },
+    { "from": "chase", "to": "exploration", "fadeMs": 5000 },
+    { "from": "action", "to": "exploration", "fadeMs": 5000 }
+  ]
+}

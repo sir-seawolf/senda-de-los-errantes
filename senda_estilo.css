@@ -1,0 +1,1293 @@
+/* ============================================================
+   SENDA_ESTILO.css — Hoja de estilo común de La Senda de los Errantes
+   Versión unificada 10/06/2026.
+   Contiene: (1) base y variables, (2) estilos del Quickstart/documento,
+   (3) estilos de las fichas de pregenerados (prefijo .pg-).
+   Enlazar con: <link rel="stylesheet" href="senda_estilo.css">
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
+
+:root {
+    --bg-dark: #0f1115;
+    --panel-bg: #161920;
+    --border-color: #2a303c;
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent-neon: #ff3b3b;
+    --accent-subtle: #38bdf8;
+    --accent2: #1d6fa3;
+    --soft: #f1f5f9;
+    --auto-bg: #dbeafe;
+
+    /* ---- PALETA SEMÁNTICA CANÓNICA (04/07/2026) ----
+       Codifica el TIPO de contenido, no la estética.
+       Ver 00_PROYECTO/CSS_ETIQUETAS.md para uso correcto. */
+    --color-combate: #ff3b3b;   /* rojo: reglas letales, peligro, combate */
+    --color-tech:    #1d6fa3;   /* azul: tecnología, distorsión, objetos */
+    --color-lore:    #9333ea;   /* púrpura: historia, trasfondo, worldbuilding */
+    --color-regla:   #16a34a;   /* verde: regla mecánica general, no letal ni tech */
+    --color-combate-bg: #fff1f1;
+    --color-tech-bg:    #eff6ff;
+    --color-lore-bg:    #faf5ff;
+    --color-regla-bg:   #f0fdf4;
+
+    /* Tonos suaves de cada color semantico: borde de los recuadros (en vez
+       del color puro, demasiado agresivo) y punto final del degradado de
+       sus barras de cabecera. */
+    --color-combate-soft: #ffb3b3;
+    --color-combate-mid:  #ff7d7d;
+    --color-combate-deep: #8f0f0f;   /* rojo intensificado: cabeceras de fichas rápidas */
+    --color-tech-soft:    #a9cbe0;
+    --color-tech-mid:     #4f8fbe;
+    --color-lore-soft:    #dab8f7;
+    --color-lore-mid:     #ad5cf0;
+    --color-regla-soft:   #a3ddb8;
+    --color-regla-mid:    #34c06a;
+    --color-dj-soft:      #f5cb94;
+    --color-dj-mid:       #e8940f;
+    --color-dados-soft:   #a8e3fc;
+    --color-dados-mid:    #63cbfa;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background-color: #ffffff;
+    color: #1e293b;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.document-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 48px;
+    background: #ffffff;
+}
+
+/* ===== Índice deslizante (md2html.py lo genera cuando el documento tiene
+   h2/h3) — panel oculto por defecto, entra/sale con un boton fijo. ===== */
+.toc-toggle {
+    position: fixed; top: 18px; left: 18px; z-index: 60;
+    display: flex; align-items: center; gap: 9px;
+    background: var(--bg-dark); color: #fff; border: none; cursor: pointer;
+    font-family: 'Share Tech Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 9px 16px 9px 13px; border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+}
+.toc-toggle-ico { position: relative; display: block; width: 15px; height: 1.5px; background: #fff; }
+.toc-toggle-ico::before, .toc-toggle-ico::after {
+    content: ""; position: absolute; left: 0; width: 15px; height: 1.5px; background: #fff;
+}
+.toc-toggle-ico::before { top: -5px; }
+.toc-toggle-ico::after { top: 5px; }
+.toc-backdrop {
+    position: fixed; inset: 0; background: rgba(10,11,15,.55);
+    opacity: 0; visibility: hidden; transition: opacity .2s ease; z-index: 55;
+}
+.toc-backdrop.show { opacity: 1; visibility: visible; }
+.doc-toc {
+    position: fixed; top: 0; left: 0; height: 100vh; width: 280px;
+    background: var(--bg-dark); color: var(--text-main);
+    border-right: 1px solid var(--border-color);
+    padding: 70px 0 24px; overflow-y: auto;
+    transform: translateX(-100%); transition: transform .25s ease;
+    z-index: 58;
+}
+.doc-toc.open { transform: translateX(0); }
+.toc-title {
+    font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 1.5px;
+    font-size: 12px; color: var(--text-muted); padding: 0 22px 12px; margin-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+.doc-toc ul { list-style: none; margin: 0; padding: 0; }
+.doc-toc li { margin: 0; font-size: 14px; }
+.doc-toc a {
+    display: block; color: var(--text-main); text-decoration: none;
+    padding: 9px 22px; border-left: 2px solid transparent;
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+}
+.doc-toc a:hover, .doc-toc a:focus-visible { background: rgba(255,255,255,.06); border-left-color: var(--accent-neon); }
+.doc-toc li.toc-h3 a { padding-left: 36px; font-size: 13px; font-weight: 500; color: var(--text-muted); }
+@media print { .toc-toggle, .toc-backdrop, .doc-toc { display: none !important; } }
+
+/* ===== Cabecera web común de módulos =====
+   md2html.py la activa por el nombre de la fuente MODULO_*. El contenido
+   jugable sigue siendo el MD: esta franja solo orienta y permite volver al
+   registro de expediciones. */
+body.documento-modulo,
+body.documento-quickstart,
+body.documento-dlc,
+body.documento-manual {
+    background-color: #e9edf2;
+    background-image: linear-gradient(rgba(42,48,60,.035) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(42,48,60,.035) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+body.documento-modulo { --document-accent: var(--accent-neon); }
+body.documento-quickstart { --document-accent: var(--accent2); }
+body.documento-dlc { --document-accent: var(--color-lore); }
+body.documento-manual { --document-accent: #c99436; overflow-x: hidden; }
+.module-chrome {
+    position: sticky; top: 0; z-index: 50;
+    color: var(--text-main); background: rgba(15,17,21,.97);
+    border-bottom: 2px solid var(--document-accent, var(--accent-neon));
+    box-shadow: 0 8px 24px rgba(15,17,21,.16);
+}
+.module-chrome-inner {
+    max-width: 1040px; min-height: 54px; margin: 0 auto; padding: 10px 24px 10px 126px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.module-back {
+    color: #fff; text-decoration: none; font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+}
+.module-back span { color: var(--document-accent, var(--accent-neon)); margin-right: 7px; }
+.module-back:hover { color: var(--accent-subtle); }
+.module-back:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.module-chrome-label {
+    color: var(--text-muted); font-family: 'Orbitron', sans-serif;
+    font-size: 9px; letter-spacing: 1.4px; text-transform: uppercase;
+}
+.kit-quicklinks { display: flex; align-items: center; gap: 5px; }
+.kit-quicklinks a,
+.manual-quicklinks a {
+    color: var(--text-muted); text-decoration: none; padding: 4px 8px;
+    border-bottom: 1px solid transparent; font-family: 'Share Tech Mono', monospace;
+    font-size: 9.5px; letter-spacing: .8px; text-transform: uppercase;
+}
+.kit-quicklinks a:hover,
+.manual-quicklinks a:hover { color: #fff; border-bottom-color: var(--document-accent); }
+.kit-quicklinks a:focus-visible,
+.manual-quicklinks a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.manual-quicklinks { display: flex; align-items: center; gap: 5px; }
+.documento-manual .module-chrome { margin-left: var(--idx-w, 280px); }
+.documento-manual .module-chrome-inner { max-width: 1180px; padding-left: 24px; }
+.documento-modulo .document-container,
+.documento-quickstart .document-container,
+.documento-dlc .document-container {
+    position: relative; margin: 32px auto 64px; border-top: 4px solid var(--document-accent, var(--accent-neon));
+    box-shadow: 0 18px 55px rgba(31,41,55,.12);
+}
+.documento-modulo .document-container::before {
+    content: "Expedición · Documento del Narrador";
+    display: block; margin-bottom: 18px; color: var(--accent-neon);
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+}
+.documento-quickstart .document-container::before {
+    content: "Kit de inicio · Reglas, personajes y aventura";
+    display: block; margin-bottom: 18px; color: var(--accent2);
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+}
+.documento-dlc .document-container::before {
+    content: "Atlas del Mosaico · Mundo y ambientación";
+    display: block; margin-bottom: 18px; color: var(--color-lore);
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+}
+@media (max-width: 600px) {
+    .module-chrome-inner { min-height: 50px; padding: 9px 12px 9px 104px; }
+    .module-back { font-size: 0; }
+    .module-back::after { content: "Expediciones"; font-size: 10px; }
+    .module-back span { font-size: 10px; }
+    .module-chrome-label { display: none; }
+    .kit-chrome .module-chrome-inner { gap: 7px; padding-right: 7px; }
+    .kit-chrome .module-back::after { content: "Juego"; }
+    .kit-quicklinks { gap: 0; }
+    .kit-quicklinks a,
+    .manual-quicklinks a { padding-inline: 5px; font-size: 8.5px; }
+    .documento-manual .module-chrome { margin-left: 0; }
+    .manual-chrome .module-chrome-inner { padding-left: 12px; gap: 7px; }
+    .manual-chrome .module-back::after { content: "Juego"; }
+    .manual-quicklinks { display: none; }
+    body.documento-manual .manual-index-button { display: block !important; margin-left: auto; }
+    .documento-modulo .document-container,
+    .documento-quickstart .document-container,
+    .documento-dlc .document-container { margin: 0 auto; border-top-width: 3px; }
+    .documento-modulo .document-container::before,
+    .documento-quickstart .document-container::before,
+    .documento-dlc .document-container::before { margin: 6px 0 14px; font-size: 8.5px; }
+}
+@media print {
+    .module-chrome { display: none !important; }
+    body.documento-modulo,
+    body.documento-quickstart,
+    body.documento-dlc,
+    body.documento-manual { background: #fff; }
+    .documento-modulo .document-container,
+    .documento-quickstart .document-container,
+    .documento-dlc .document-container { margin: 0; border-top: 0; box-shadow: none; }
+    .documento-modulo .document-container::before,
+    .documento-quickstart .document-container::before,
+    .documento-dlc .document-container::before { display: none; }
+}
+
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    color: #000000;
+    border-bottom: 4px solid var(--accent-neon);
+    padding-bottom: 12px;
+    font-size: 30px;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+    line-height: 1.15;
+}
+.subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--accent-neon);
+    font-size: 14px;
+    margin-bottom: 34px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+h2 {
+    position: relative;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    /* Mismo estampado diagonal que las fichas rápidas (31/08/2026), en vez
+       del degradado liso anterior — tono oscuro sin cambios, solo textura.
+       El tejido vive en ::before, con blur, para no afectar al texto. */
+    background: linear-gradient(to right, var(--bg-dark) 0%, #262c39 100%);
+    color: #ffffff;
+    padding: 9px 16px;
+    font-size: 17px;
+    text-transform: uppercase;
+    margin-top: 46px;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+h2::before {
+    /* estampado de fibra de carbono: tejido cruzado, no una sola raya.
+       Trama grande y marcada -tono oscuro, aguanta mas contraste que la
+       version sobre rojo de las fichas rapidas-, con un ligero desenfoque
+       para que no lea como lineas duras. */
+    content: "";
+    position: absolute; inset: -6px;
+    z-index: -1;
+    background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.17) 0px, rgba(255,255,255,.17) 2.5px, transparent 2.5px, transparent 13px),
+        repeating-linear-gradient(-45deg, rgba(0,0,0,.45) 0px, rgba(0,0,0,.45) 2.5px, transparent 2.5px, transparent 13px);
+    filter: blur(1.5px);
+    pointer-events: none;
+}
+h3 {
+    font-family: 'Orbitron', sans-serif;
+    color: #0f1115;
+    border-bottom: 2px solid var(--border-color);
+    font-size: 14.5px;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding-bottom: 4px;
+}
+p {
+    font-family: 'Source Serif 4', Georgia, serif;
+    margin-bottom: 14px;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: #262b33;
+}
+hr { border: none; border-top: 1px dashed var(--border-color); margin: 30px 0; }
+ul { margin-left: 22px; margin-bottom: 16px; }
+li {
+    font-family: 'Source Serif 4', Georgia, serif;
+    margin-bottom: 7px;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #262b33;
+}
+strong { color: #000000; font-weight: 600; }
+
+blockquote, .read-aloud {
+    background-color: #f8f7f4;
+    border: 1px solid #e4e1d8;
+    padding: 16px 20px;
+    margin: 22px 0;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-style: italic;
+    font-size: 15.5px;
+    line-height: 1.6;
+    border-radius: 2px;
+}
+.master-note {
+    border: 1px solid #bae6fd;
+    background-color: #f0f9ff;
+    font-style: normal;
+    padding: 14px 18px;
+    margin: 22px 0;
+    font-size: 14.5px;
+    border-radius: 2px;
+}
+.master-note strong { font-family: 'Share Tech Mono', monospace; color: #0f1115; }
+.dj-tag {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    background: var(--accent-subtle);
+    color: #ffffff;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-right: 4px;
+    -webkit-print-color-adjust: exact;
+}
+table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+th {
+    font-family: 'Orbitron', sans-serif;
+    background-color: var(--bg-dark);
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 8px 10px;
+    text-align: left;
+}
+td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; }
+tr:nth-child(even) { background-color: #f8fafc; }
+
+.formula-box {
+    font-family: 'Share Tech Mono', monospace;
+    background: #161920;
+    color: #38bdf8;
+    padding: 10px;
+    text-align: center;
+    margin: 15px 0;
+    font-size: 16px;
+    border-radius: 4px;
+    -webkit-print-color-adjust: exact;
+}
+.reduced-note {
+    background:#fff7ed; border:1px solid #ea580c;
+    padding:10px 15px; margin:15px 0; font-size:14px; border-radius:2px;
+}
+.legend {
+    font-size: 13.5px; background:#f8fafc; border:1px solid #e2e8f0;
+    padding:10px 15px; margin: 15px 0; border-radius:4px;
+}
+
+img { max-width: 100%; height: auto; }
+
+.pg-page{max-width:780px;margin:0 auto 18px;background:#fff;display:flex;flex-direction:column;gap:10px;}
+.pg-card{border:2px solid var(--bg-dark);border-radius:6px;padding:10px 12px;display:flex;gap:12px;flex:1;}
+.pg-portrait{flex:0 0 150px;display:flex;flex-direction:column;}
+.pg-portrait img{width:150px;height:auto;border-radius:5px;border:1px solid #cbd5e1;background:#f1f5f9;}
+.pg-epicos{margin-top:6px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px;background:var(--bg-dark);color:#fff;border-radius:4px;padding:3px;-webkit-print-color-adjust:exact;}
+.pg-epicos b{color:var(--accent-neon);font-size:14px;}
+.pg-body{flex:1;min-width:0;display:flex;flex-direction:column;}
+.pg-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--accent-neon);padding-bottom:3px;margin-bottom:4px;}
+.pg-name{font-family:'Orbitron',sans-serif;font-size:17px;text-transform:uppercase;color:#000;letter-spacing:1px;}
+.pg-concept{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent-neon);text-transform:uppercase;}
+.pg-quote{font-style:italic;font-size:10.5px;color:#475569;margin-bottom:5px;line-height:1.25;}
+.pg-attrs{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-bottom:5px;}
+.pg-attr{background:var(--soft);border-radius:3px;text-align:center;padding:2px 0;}
+.pg-attr .a-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-muted);display:block;text-transform:uppercase;}
+.pg-attr .a-val{font-weight:700;font-size:13px;}
+.pg-sec{font-family:'Share Tech Mono',monospace;font-size:8.5px;text-transform:uppercase;color:var(--text-muted);margin:4px 0 2px;letter-spacing:0.5px;}
+.pg-skills{display:flex;flex-wrap:wrap;gap:3px;}
+.pg-skill{background:var(--accent2);color:#fff;border-radius:3px;padding:1px 6px;font-size:10.5px;font-weight:600;-webkit-print-color-adjust:exact;}
+.pg-skill b{font-family:'Share Tech Mono',monospace;}
+.pg-defense{display:flex;gap:5px;flex-wrap:wrap;font-size:10.5px;margin-top:2px;}
+.pg-defense span{background:var(--soft);border-radius:3px;padding:1px 6px;}
+.pg-defense b{color:var(--bg-dark);}
+.pg-equip{font-size:10.5px;line-height:1.3;margin-top:2px;}
+.pg-rasgo{font-size:10px;line-height:1.3;margin-top:3px;background:#fff7ed;border:1px solid #f59e0b;padding:3px 6px;border-radius:2px;}
+.pg-notas{margin-top:auto;border:1px dashed #cbd5e1;border-radius:4px;padding:4px 7px;}
+.pg-notas .nt-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;color:var(--text-muted);}
+.pg-notas .nt-lines{border-bottom:1px solid #e2e8f0;height:13px;}
+.pg-grupo-box{flex:1;border:2px solid var(--bg-dark);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;margin-top:4px;}
+.pg-grupo-box h3{font-family:'Orbitron',sans-serif;font-size:13px;text-transform:uppercase;color:#000;letter-spacing:1px;margin-bottom:2px;border:none;}
+.pg-grupo-box .gb-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;}
+.pg-grupo-box .pg-grid{flex:1;background-image:linear-gradient(#eef1f5 1px,transparent 1px),linear-gradient(90deg,#eef1f5 1px,transparent 1px);background-size:18px 18px;border:1px solid #e2e8f0;border-radius:4px;min-height:380px;}
+.pg-note{font-size:9px;color:var(--text-muted);font-style:italic;text-align:center;}
+
+/* ============================================================
+   RECUADROS SEMÁNTICOS (04/07/2026, rediseñado 31/08/2026)
+   Cada recuadro codifica el TIPO de contenido por color. En vez de una
+   franja de color en el borde izquierdo (el acento mas generico posible
+   en UI generada), cada caja lleva una barra de cabecera con etiqueta de
+   texto — la misma gramatica que ya usan los <h2> del documento — y un
+   borde fino perimetral en su color semantico.
+   Uso: <div class="recuadro-combate">...</div>
+   Ver 00_PROYECTO/CSS_ETIQUETAS.md para reglas de uso.
+   ============================================================ */
+
+.recuadro-combate,
+.recuadro-tech,
+.recuadro-lore,
+.recuadro-regla,
+.ejemplo,
+.nota-dj,
+.pifia,
+.tabla-dados {
+    position: relative;
+    margin: 26px 0 24px;
+    padding: 38px 18px 16px;
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+.recuadro-combate::before,
+.recuadro-tech::before,
+.recuadro-lore::before,
+.recuadro-regla::before,
+.ejemplo::before,
+.nota-dj::before,
+.pifia::before,
+.tabla-dados::before {
+    position: absolute; top: 0; left: 0; right: 0;
+    padding: 6px 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #fff;
+    border-radius: 1.5px 1.5px 0 0;
+}
+
+/* Combate: reglas letales, daño, peligro físico */
+.recuadro-combate { background-color: var(--color-combate-bg); border-color: var(--color-combate-soft); }
+.recuadro-combate::before { content: "Combate"; background: linear-gradient(to right, var(--color-combate), var(--color-combate-mid)); }
+.recuadro-combate strong { color: var(--color-combate); }
+
+/* Tecnología: equipo, distorsión, objetos, cyberware */
+.recuadro-tech { background-color: var(--color-tech-bg); border-color: var(--color-tech-soft); }
+.recuadro-tech::before { content: "Tecnología"; background: linear-gradient(to right, var(--color-tech), var(--color-tech-mid)); }
+.recuadro-tech strong { color: var(--color-tech); }
+
+/* Lore: historia, worldbuilding, trasfondo narrativo */
+.recuadro-lore { background-color: var(--color-lore-bg); border-color: var(--color-lore-soft); }
+.recuadro-lore::before { content: "Lore"; background: linear-gradient(to right, var(--color-lore), var(--color-lore-mid)); }
+.recuadro-lore strong { color: var(--color-lore); }
+
+/* Regla: mecánica general de sistema, no letal ni tecnológica */
+.recuadro-regla { background-color: var(--color-regla-bg); border-color: var(--color-regla-soft); }
+.recuadro-regla::before { content: "Regla"; background: linear-gradient(to right, var(--color-regla), var(--color-regla-mid)); }
+.recuadro-regla strong { color: var(--color-regla); }
+
+/* Ejemplo de juego: nombre de PJ y situación en mesa */
+.ejemplo { background-color: #f8fafc; border-color: var(--border-color); font-style: italic; }
+.ejemplo::before { content: "Ejemplo"; background: linear-gradient(to right, var(--bg-dark), #3a4152); font-style: normal; }
+.ejemplo strong { color: var(--bg-dark); font-style: normal; }
+
+/* Nota del Director de Juego (información no visible al jugador) */
+.nota-dj { background-color: #fef3c7; border-color: var(--color-dj-soft); }
+.nota-dj::before { content: "Nota del DJ"; background: linear-gradient(to right, #d97706, var(--color-dj-mid)); }
+
+/* Pifia: resultado crítico negativo, consecuencias graves */
+.pifia {
+    background-color: #211a17;
+    color: #fde68a;
+    border-color: var(--color-combate-mid);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13.5px;
+}
+.pifia::before { content: "Pifia"; background: linear-gradient(to right, var(--color-combate), var(--color-combate-mid)); }
+.pifia strong { color: #ffffff; }
+
+/* Tabla de dados: rango, valores, resultados */
+.tabla-dados {
+    background-color: #f1f5f9;
+    border-color: var(--color-dados-soft);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13.5px;
+}
+.tabla-dados::before { content: "Tabla de dados"; background: linear-gradient(to right, var(--accent-subtle), var(--color-dados-mid)); }
+
+/* ============================================================
+   FICHAS RÁPIDAS DE CONSULTA (31/08/2026)
+   Página final de módulo: una tarjeta por PNJ/Defensa, solo números y
+   equipo -sin descripción, eso vive en Reparto-. Dos por línea. Cabecera
+   con el NOMBRE (no un rótulo de tipo genérico como los recuadros de
+   arriba) sobre un rojo que se intensifica hacia la derecha con un
+   estampado sutil, en vez de aclararse como el degradado de --before.
+   Uso:
+     <div class="fichas-grid">
+       <div class="ficha-rapida">
+         <div class="ficha-rapida-cab">
+           <div class="ficha-rapida-nombre">Nombre</div>
+           <div class="ficha-rapida-rol">Rol o función</div>
+         </div>
+         <div class="ficha-rapida-cuerpo">
+           <div class="ficha-rapida-attrs">F<b>30</b> A<b>40</b> ... · PV <b>16/16/16</b> · Bld <b>1</b></div>
+           <div class="ficha-rapida-skills"><span class="ficha-rapida-pill">Mecánica 50%</span>...</div>
+           <div class="ficha-rapida-equipo"><b>Equipo:</b> ...</div>
+         </div>
+       </div>
+     </div>
+   ============================================================ */
+.fichas-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 20px 0 28px;
+}
+.ficha-rapida {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 8px 20px -14px rgba(0,0,0,.25);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+.ficha-rapida-cab {
+    position: relative;
+    padding: 11px 16px 10px;
+    background: linear-gradient(to right, var(--color-combate) 0%, var(--color-combate) 45%, var(--color-combate-deep) 100%);
+    overflow: hidden;
+}
+.ficha-rapida-cab::before {
+    /* mismo tejido que los h2, mas sutil y con trama mas grande -el rojo
+       ya aporta suficiente contraste por si solo, no hace falta tanto- y con
+       el mismo desenfoque ligero. */
+    content: "";
+    position: absolute; inset: -6px;
+    z-index: -1;
+    background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.07) 0px, rgba(255,255,255,.07) 2.5px, transparent 2.5px, transparent 13px),
+        repeating-linear-gradient(-45deg, rgba(0,0,0,.14) 0px, rgba(0,0,0,.14) 2.5px, transparent 2.5px, transparent 13px);
+    filter: blur(1.5px);
+    pointer-events: none;
+}
+.ficha-rapida-cab::after {
+    /* el estampado se apaga hacia la izquierda para no comerse el nombre */
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, var(--color-combate) 0%, var(--color-combate) 30%, transparent 75%);
+    pointer-events: none;
+}
+.ficha-rapida-nombre {
+    position: relative; z-index: 1;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 14.5px;
+    color: #fff;
+    letter-spacing: .3px;
+    text-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+.ficha-rapida-rol {
+    position: relative; z-index: 1;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.78);
+    margin-top: 1px;
+}
+.ficha-rapida-cuerpo { padding: 13px 16px 15px; }
+.ficha-rapida-attrs {
+    /* Texto corrido, no flex: es una sola cadena con <b> inline, no
+       elementos separados -flex+wrap la cortaba en un punto feo,
+       dejando "· Bld 0" huerfano en su propia linea. */
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-body, #1e293b);
+    letter-spacing: .2px;
+    line-height: 1.5;
+    margin-bottom: 9px;
+}
+.ficha-rapida-attrs b { color: var(--color-combate-deep); font-weight: 700; }
+.ficha-rapida-skills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.ficha-rapida-pill {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--color-combate-deep);
+    border-radius: 20px;
+    padding: 3px 9px 2px;
+    white-space: nowrap;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+.ficha-rapida-equipo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: #5b6472;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 8px;
+}
+.ficha-rapida-equipo b { color: #1e293b; font-weight: 600; }
+
+/* ============================================================ */
+
+/* ===== RESPONSIVE MOVIL ===== */
+@media (max-width: 768px) {
+    .document-container { padding: 16px 12px; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 14px; padding: 6px 10px; }
+    h3 { font-size: 13px; }
+    p { font-size: 14px; }
+    table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+    .pg-card { flex-direction: column; align-items: center; }
+    .pg-portrait { flex: none; }
+    .pg-portrait img { width: 200px; }
+    .pg-attrs { grid-template-columns: repeat(4, 1fr); }
+    .pg-head { flex-direction: column; }
+    .margin-note { float: none; width: 100%; margin: 12px 0; }
+    blockquote, .read-aloud, .master-note { padding: 12px 14px; font-size: 14px; }
+    .recuadro-combate, .recuadro-tech, .recuadro-lore, .recuadro-regla,
+    .ejemplo, .nota-dj, .pifia, .tabla-dados { padding: 34px 14px 14px; }
+    .fichas-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+    body { background: #ffffff; color: #000000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .document-container { max-width: 100%; padding: 0; }
+    .page-break { page-break-before: always; break-before: page; }
+    .no-break { page-break-inside: avoid; break-inside: avoid; }
+    h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+    .pg-card { break-inside: avoid; }
+    .pg-page { break-inside: avoid; }
+    blockquote, .read-aloud, .master-note,
+    .recuadro-combate, .recuadro-tech, .recuadro-lore, .recuadro-regla,
+    .ejemplo, .nota-dj, .pifia, .tabla-dados,
+    .ficha-rapida {
+        break-inside: avoid; page-break-inside: avoid;
+    }
+}
+
+/* ===== AYUDAS CARTOGRÁFICAS (mapas de Puesto Fronterizo) — 14/08/2026 =====
+   Cada ayuda (.mapa-ayuda) agrupa dos mapas (.mapa-seccion: imagen + pie +
+   tabla de leyenda). En pantalla es un documento normal; en impresión,
+   cada .mapa-seccion ocupa su propia hoja y no se parte por la mitad. */
+.mapa-audiencia-badge {
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 3px;
+    margin-bottom: 14px;
+    color: #ffffff;
+}
+.mapa-ayuda-jugadores .mapa-audiencia-badge { background: var(--color-regla); }
+.mapa-ayuda-narrador .mapa-audiencia-badge { background: var(--color-combate); }
+.mapa-seccion { margin-bottom: 24px; }
+.mapa-seccion img { max-width: 100%; height: auto; }
+.mapa-seccion table { break-inside: avoid; page-break-inside: avoid; }
+
+@media print {
+    .mapa-audiencia-badge {
+        background: none !important;
+        border: 2px solid currentColor;
+        padding: 4px 12px;
+    }
+    .mapa-ayuda-jugadores .mapa-audiencia-badge { color: var(--color-regla); }
+    .mapa-ayuda-narrador .mapa-audiencia-badge { color: var(--color-combate); }
+    .mapa-seccion {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 0;
+    }
+    .mapa-seccion + .mapa-seccion { page-break-before: always; break-before: page; }
+    .mapa-seccion img { page-break-inside: avoid; break-inside: avoid; }
+}
+
+/* ============================================================
+   LANDING (index.html, juego.html, dlcs.html) — 22/07/2026 (E9)
+   Paginas oscuras tipo "puerta", centralizadas desde sus <style>
+   inline. Usan variables propias porque su paleta (fondo oscuro)
+   difiere de --bg-dark/--text-main pensadas para el documento claro.
+   ============================================================ */
+body.landing {
+    --landing-void: #0a0b0f;
+    --landing-panel: #12141a;
+    --landing-line: #2a303c;
+    --landing-copy: #e2e8f0;
+    --landing-muted: #94a3b8;
+    --landing-red: #ff3b3b;
+    --landing-blue: #38bdf8;
+    --landing-violet: #9333ea;
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--landing-void);
+    color: var(--landing-copy);
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(255,59,59,.035) 1px,transparent 1px),
+                       linear-gradient(90deg,rgba(255,59,59,.035) 1px,transparent 1px);
+    background-size: 34px 34px;
+}
+.landing .topnav {
+    background: #12141a; border-bottom: 2px solid #ff3b3b; padding: 8px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Orbitron', sans-serif; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1px; position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+}
+/* El nav fijo corta en seco cualquier elemento que pase por debajo al hacer
+   scroll (ej. el CTA "Crear un Personaje" en movil, medido a scrollY:774).
+   Un degradado bajo la barra hace que el contenido se difumine en vez de
+   cortarse; no interactivo, no bloquea clics. */
+.landing .topnav::after {
+    content: ""; position: absolute; top: 100%; left: 0; width: 100%; height: 28px;
+    background: linear-gradient(to bottom, rgba(18,20,26,.85), transparent);
+    pointer-events: none;
+}
+.landing .topnav a { color: #94a3b8; text-decoration: none; padding: 4px 10px; }
+.landing .topnav a:hover { color: #fff; }
+.landing .topnav a[aria-current="page"] { color: #fff; }
+.landing .topnav a[aria-current="page"]::after {
+    content: ""; display: block; height: 2px; margin-top: 3px;
+    background: var(--landing-red); box-shadow: 0 0 8px rgba(255,59,59,.5);
+}
+.landing .topnav > div { display: flex; align-items: center; min-width: 0; }
+.landing .topnav .brand { color: #ff3b3b; font-weight: 700; font-size: 12px; }
+@media print { .landing .topnav { display: none; } }
+.landing .hero {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; text-align: center; padding: 80px 20px 40px;
+    background: radial-gradient(ellipse at center,#1a1c25 0%,#0a0b0f 70%);
+}
+.landing .hero-portal { position: relative; max-width: 320px; margin: 0 0 30px; }
+.landing .hero-portal img { display: block; width: 100%; border-radius: 12px; box-shadow: 0 0 60px rgba(255,59,59,.15); }
+.landing .hero-portal::before,
+.landing .hero-portal::after {
+    content: ""; position: absolute; width: 42px; height: 42px; pointer-events: none;
+}
+.landing .hero-portal::before { top: -9px; left: -9px; border-top: 1px solid var(--landing-red); border-left: 1px solid var(--landing-red); }
+.landing .hero-portal::after { right: -9px; bottom: 24px; border-right: 1px solid var(--landing-blue); border-bottom: 1px solid var(--landing-blue); }
+.landing .hero-portal figcaption {
+    display: flex; justify-content: space-between; gap: 16px; margin-top: 9px;
+    font-family: 'Share Tech Mono', monospace; font-size: 9px; line-height: 1.35;
+    letter-spacing: 1px; text-transform: uppercase; color: #64748b;
+}
+.landing .hero-portal figcaption b { color: var(--landing-blue); font-weight: 400; text-align: right; }
+.landing .hero-kicker {
+    margin: 0 0 12px; font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    line-height: 1.4; letter-spacing: 1.7px; text-transform: uppercase; color: var(--landing-blue);
+}
+.landing h1 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 4px; border: none; padding: 0; color: inherit; }
+.landing h1 em { font-style: normal; white-space: nowrap; }
+.landing .sub { font-family: 'Share Tech Mono', monospace; color: #94a3b8; font-size: 14px; margin-bottom: 40px; }
+.landing .desc { max-width: 640px; text-align: center; color: #94a3b8; font-size: 15px; line-height: 1.6; margin-bottom: 32px; }
+.landing .puertas-label { font-family: 'Share Tech Mono', monospace; color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+
+/* Tres coordenadas para entender el juego antes de elegir una puerta. La
+   línea continua representa una misma Senda: sistema, mundos y campaña no
+   son tarjetas independientes, sino partes de la misma experiencia. */
+.landing .senda-brief { width: min(100%, 708px); margin: 0 auto 27px; text-align: left; }
+.landing .senda-brief-label {
+    margin: 0 0 8px; color: var(--landing-blue); font-family: 'Share Tech Mono', monospace;
+    font-size: 9px; letter-spacing: 1.7px; text-transform: uppercase;
+}
+.landing .senda-brief-track {
+    position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    padding-top: 8px; background: var(--landing-line); border-top: 1px solid var(--landing-line);
+}
+.landing .senda-brief-track::before {
+    content: ""; position: absolute; top: -1px; left: 0; width: 34%; height: 1px;
+    background: linear-gradient(90deg, var(--landing-red), var(--landing-blue));
+}
+.landing .senda-brief-track p {
+    margin: 0; padding: 11px 13px; min-width: 0; background: rgba(10,11,15,.94);
+}
+.landing .senda-brief-track b {
+    display: block; margin-bottom: 3px; color: #fff; font-family: 'Orbitron', sans-serif;
+    font-size: 10px; letter-spacing: .8px; text-transform: uppercase;
+}
+.landing .senda-brief-track span { display: block; color: var(--landing-muted); font-size: 12px; line-height: 1.35; }
+
+/* Pantallas panoramicas: el hero del INDEX (unico con imagen + .hero-info)
+   dejaba de usar dos tercios del ancho porque todo se apilaba en una columna
+   centrada de ~900px sobre un fondo de 100vh. A partir de 1400px el rosetón
+   pasa a ocupar el primer tercio y la información (titulo, cta, puertas)
+   los otros dos, alineada a la izquierda.
+   max-width se mantiene compacto (1320px, no 1700px): con la columna de
+   info más ancha que su contenido (cta + 3 puertas ~= 708px) quedaba un
+   hueco asimetrico grande solo a la derecha — mas estrecho, el bloque
+   centrado deja margen simetrico en vez de un vacio sin equilibrar.
+   Acotado a .tema-index: juego.html y dlcs.html reusan la misma clase
+   .hero pero con una estructura totalmente distinta (h1/sub/nav de enlaces/
+   volver, sin imagen ni .hero-info) — con el selector generico .landing
+   .hero esta regla les forzaba la misma fila horizontal y les aplastaba
+   el contenido. */
+@media (min-width: 1400px) {
+    .tema-index .hero {
+        flex-direction: row; align-items: center; justify-content: center;
+        gap: 60px; text-align: left; max-width: 1320px; margin: 0 auto;
+        padding: 40px 60px;
+    }
+    .tema-index .hero-portal {
+        max-width: none; width: 34%; flex: 0 0 34%; margin-bottom: 0;
+    }
+    .tema-index .hero-info { flex: 1 1 auto; min-width: 0; }
+    .tema-index .hero-info .sub, .tema-index .hero-info .desc, .tema-index .hero-info .puertas-label { text-align: left; margin-left: 0; }
+    .tema-index .hero-info .cta, .tema-index .hero-info .puertas { justify-content: flex-start; }
+}
+
+/* CTA principal (index.html) */
+.landing .cta { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 44px; }
+.landing .cta a {
+    font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 13px; letter-spacing: 1.5px;
+    padding: 14px 28px; border-radius: 6px; text-decoration: none; transition: all .2s;
+}
+.landing .cta .primary { background: #ff3b3b; color: #000; }
+.landing .cta .primary:hover { background: #ff6161; }
+.landing .cta .secondary { border: 2px solid #94a3b8; color: #fff; }
+.landing .cta .secondary:hover { border-color: #fff; }
+.landing .cta a:focus-visible,
+.landing .topnav a:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
+/* Acceso principal al archivo de aventuras. Es una linea de ruta, no una
+   cuarta tarjeta: funciona como firma visual del sitio y hace visible la
+   jerarquia DLC > mundo > modulo que ya existe en dlcs.html. */
+.landing .expedition-route {
+    position: relative; display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 16px; width: min(100%, 708px); margin: -18px auto 34px;
+    padding: 15px 17px; color: var(--landing-copy); text-decoration: none;
+    background: rgba(18,20,26,.78); border: 1px solid var(--landing-line);
+    border-left: 3px solid var(--landing-violet); overflow: hidden;
+}
+.landing .expedition-route::after {
+    content: ""; position: absolute; left: 43px; right: 50px; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, var(--landing-violet), transparent);
+}
+.landing .route-index {
+    font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--landing-violet);
+}
+.landing .route-copy { display: flex; flex-direction: column; min-width: 0; text-align: left; }
+.landing .route-label {
+    font-family: 'Share Tech Mono', monospace; color: var(--landing-muted);
+    font-size: 9px; letter-spacing: 1.6px; text-transform: uppercase;
+}
+.landing .route-copy strong {
+    color: #fff; font-family: 'Orbitron', sans-serif; font-size: 12px;
+    letter-spacing: .7px; text-transform: uppercase;
+}
+.landing .route-copy small { color: var(--landing-muted); font-size: 12px; line-height: 1.35; }
+.landing .route-arrow {
+    color: var(--landing-violet); font-family: 'Share Tech Mono', monospace;
+    font-size: 22px; transform: translateX(0); transition: transform .18s ease;
+}
+.landing .expedition-route:hover { border-color: var(--landing-violet); background: rgba(147,51,234,.09); }
+.landing .expedition-route:hover .route-arrow { transform: translateX(4px); }
+.landing .expedition-route:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* Puertas (index.html) */
+.landing .puertas { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+.landing .puerta {
+    display: flex; flex-direction: column; align-items: center; gap: 10px; width: 220px;
+    padding: 28px 20px; border: 2px solid #ff3b3b; border-radius: 8px; text-decoration: none;
+    color: #fff; transition: all .2s; background: rgba(255,59,59,.04);
+}
+.landing .puerta:hover { background: #ff3b3b; color: #000; transform: translateY(-4px); }
+.landing .puerta:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.landing .puerta.alt { border-color: #1d6fa3; background: rgba(29,111,163,.05); }
+.landing .puerta.alt:hover { background: #1d6fa3; }
+.landing .puerta.gal { border-color: #9333ea; background: rgba(147,51,234,.05); }
+.landing .puerta.gal:hover { background: #9333ea; }
+.landing .ico { font-size: 34px; line-height: 1; }
+.landing .tit { font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 15px; letter-spacing: 2px; }
+.landing .txt { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+.landing .puerta:hover .txt { color: inherit; }
+.landing .footer { text-align: center; padding: 30px; font-size: 12px; color: #94a3b8; font-family: 'Share Tech Mono', monospace; }
+.landing .footer a { color: #94a3b8; text-decoration: none; }
+
+/* Anomalía — huevo de Pascua hacia la zona de juego (JUEGO_QS, juego.html).
+   Sustituye a la antigua tarjeta JUGAR visible: el acceso debe parecer algo
+   que el visitante DESCUBRE, no un botón más del menú. El marcador es un
+   recorte fantasmal de la misma lámina glitch_game_gateway.png que se usa
+   en la transición — atenuado, con un latido de brillo/desenfoque que da
+   aspecto de interferencia intermitente en vez de un botón fijo. Al pasar
+   el ratón/foco se estabiliza y aclara. Toda animación respeta
+   prefers-reduced-motion. */
+.anomalia {
+    position: fixed; right: 10px; bottom: 8px; z-index: 200;
+    width: 190px; height: 127px; padding: 0; border: none; background: none;
+    cursor: pointer;
+}
+.anomalia-img {
+    width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
+    filter: brightness(1.15) contrast(1.2) drop-shadow(0 0 16px rgba(34,211,238,.6));
+    animation: anomaliaGlitch 6s ease-in-out infinite;
+    transition: opacity .3s, filter .3s;
+}
+.anomalia:hover .anomalia-img, .anomalia:focus-visible .anomalia-img {
+    opacity: 1 !important; filter: brightness(1.3) contrast(1.25) drop-shadow(0 0 22px rgba(34,211,238,.85)); animation-play-state: paused;
+}
+.anomalia:focus-visible { outline: 1px solid rgba(34,211,238,.5); outline-offset: 2px; }
+.anomalia.encontrada .anomalia-img { animation-name: anomaliaGlitchEncontrada; }
+@keyframes anomaliaGlitch {
+    0%, 78%, 100% { opacity: .78; filter: brightness(1.05) contrast(1.15) drop-shadow(0 0 10px rgba(34,211,238,.4)); transform: translateX(0); }
+    80% { opacity: 1; filter: brightness(1.5) contrast(1.4) hue-rotate(8deg) drop-shadow(0 0 22px rgba(34,211,238,.9)); transform: translateX(-4px); }
+    83% { opacity: .85; transform: translateX(4px); }
+    86% { opacity: 1; filter: brightness(1.35) drop-shadow(0 0 18px rgba(34,211,238,.75)); transform: translateX(-2px); }
+    90%, 96% { opacity: .78; transform: translateX(0); }
+}
+@keyframes anomaliaGlitchEncontrada {
+    0%, 70%, 100% { opacity: .85; filter: brightness(1.1) contrast(1.2) drop-shadow(0 0 12px rgba(34,211,238,.5)); transform: translateX(0); }
+    73% { opacity: 1; filter: brightness(1.5) contrast(1.35) hue-rotate(6deg) drop-shadow(0 0 24px rgba(34,211,238,.95)); transform: translateX(-4px); }
+    77% { opacity: .9; transform: translateX(4px); }
+    82% { opacity: 1; filter: brightness(1.35) drop-shadow(0 0 20px rgba(34,211,238,.8)); transform: translateX(-2px); }
+    88%, 96% { opacity: .85; transform: translateX(0); }
+}
+
+.anomalia-panel {
+    position: fixed; inset: 0; z-index: 210; display: flex; align-items: center; justify-content: center;
+    background: rgba(5,6,10,.82); backdrop-filter: blur(2px);
+}
+.anomalia-panel[hidden] { display: none; }
+.ap-box {
+    position: relative; width: min(320px, 86vw); padding: 26px 22px; text-align: center;
+    background: #0c0e14; border: 1px solid #22d3ee; box-shadow: 0 0 30px rgba(34,211,238,.25);
+    font-family: 'Share Tech Mono', monospace;
+}
+.ap-linea1 { color: #22d3ee; letter-spacing: 2px; font-size: 13px; margin: 0 0 6px; animation: anomaliaParpadeo 1.6s steps(1,end) infinite; }
+.ap-linea2 { color: #64748b; letter-spacing: 1px; font-size: 11px; margin: 0 0 20px; }
+@keyframes anomaliaParpadeo { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 94% { opacity: .3; } 96% { opacity: 1; } }
+.ap-rastrear {
+    font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 13px; letter-spacing: 2px;
+    padding: 10px 26px; border: 2px solid #22d3ee; background: rgba(34,211,238,.06); color: #fff;
+    cursor: pointer; transition: all .2s;
+}
+.ap-rastrear:hover, .ap-rastrear:focus-visible { background: #22d3ee; color: #000; }
+.ap-cerrar {
+    position: absolute; top: 8px; right: 10px; background: none; border: none; color: #475569;
+    font-size: 16px; line-height: 1; cursor: pointer; padding: 4px;
+}
+.ap-cerrar:hover, .ap-cerrar:focus-visible { color: #fff; }
+
+/* Transición al confirmar RASTREAR: glitch breve con la lámina compartida
+   glitch_game_gateway.png antes de entrar en /juego_qs/. */
+.gateway-glitch {
+    position: fixed; inset: 0; z-index: 220; background: #05060a; overflow: hidden;
+}
+.gateway-glitch[hidden] { display: none; }
+.gateway-glitch img { width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+.gateway-glitch.activo img { animation: gatewayGlitchImg .65s steps(6,end) forwards; }
+@keyframes gatewayGlitchImg {
+    0% { opacity: 0; filter: brightness(2) contrast(1.4); transform: translateX(0); }
+    15% { opacity: 1; transform: translateX(-6px); }
+    30% { transform: translateX(5px); filter: brightness(1.6) contrast(1.6) hue-rotate(15deg); }
+    45% { transform: translateX(-3px); }
+    60% { opacity: 1; transform: translateX(2px); filter: brightness(1.1); }
+    100% { opacity: 1; transform: translateX(0); filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .anomalia-img { animation: none !important; opacity: .85 !important; filter: brightness(1.1) contrast(1.2) drop-shadow(0 0 14px rgba(34,211,238,.55)) !important; }
+    .ap-linea1 { animation: none !important; }
+    .gateway-glitch.activo img { animation: none !important; opacity: 1 !important; }
+}
+
+/* Nav de botones (juego.html) */
+.landing .nav { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; max-width: 700px; }
+.landing .nav a {
+    font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 13px; letter-spacing: 2px;
+    padding: 14px 26px; border: 2px solid #ff3b3b; color: #fff; text-decoration: none;
+    border-radius: 4px; transition: all .2s;
+}
+.landing .nav a:hover { background: #ff3b3b; color: #000; }
+.landing .nav a.alt { border-color: #1d6fa3; }
+.landing .nav a.alt:hover { background: #1d6fa3; }
+.landing .nav a.dlc { border-color: #9333ea; }
+.landing .nav a.dlc:hover { background: #9333ea; }
+
+/* Cards (dlcs.html) */
+.landing .cards { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; max-width: 900px; }
+.landing .card {
+    display: flex; flex-direction: column; gap: 10px; width: 250px; padding: 26px 20px;
+    border: 2px solid #9333ea; border-radius: 8px; text-decoration: none; color: #fff;
+    transition: all .2s; background: rgba(147,51,234,.05);
+}
+.landing .card:hover { background: #9333ea; color: #000; transform: translateY(-4px); }
+.landing .card .tit { font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 14px; letter-spacing: 2px; }
+.landing .card .txt { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+.landing .card:hover .txt { color: inherit; }
+.landing .card.off { border-color: #475569; background: rgba(71,85,105,.06); cursor: default; pointer-events: none; }
+.landing .card.off .tit { color: #94a3b8; }
+.landing .card.off .tag { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #ff3b3b; letter-spacing: 1px; }
+
+/* Volver (juego.html, dlcs.html) */
+.landing .volver { margin-top: 50px; font-family: 'Share Tech Mono', monospace; font-size: 13px; }
+.landing .volver a { color: #94a3b8; text-decoration: none; }
+.landing .volver a:hover { color: #fff; }
+
+/* Titulos por pagina (colores de acento distintos segun seccion) */
+.landing.tema-juego h1 em { color: #ff3b3b; font-style: normal; }
+.landing.tema-dlcs h1 em { color: #9333ea; font-style: normal; }
+.landing.tema-index h1 { font-size: clamp(28px,5vw,48px); }
+.landing.tema-index h1 em { color: #ff3b3b; font-style: normal; }
+.landing.tema-juego h1, .landing.tema-dlcs h1 { font-size: clamp(24px,4vw,40px); }
+.landing.tema-dlcs .sub { margin-bottom: 44px; }
+
+@media (max-width: 600px) {
+    .landing .topnav { padding-inline: 10px; }
+    .landing .topnav .brand { flex: 0 0 auto; }
+    .landing .topnav > div {
+        max-width: calc(100vw - 105px); overflow-x: auto; overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+    }
+    .landing .topnav > div::-webkit-scrollbar { display: none; }
+    .landing .topnav a { padding-inline: 6px; }
+    .landing .hero { padding-inline: 14px; }
+    .landing .hero-portal { width: min(76vw, 280px); }
+    .landing .expedition-route { grid-template-columns: auto 1fr auto; gap: 11px; padding: 13px 12px; }
+    .landing .route-copy small { display: none; }
+    .landing .senda-brief-track { grid-template-columns: 1fr; }
+    .landing .senda-brief-track p { display: grid; grid-template-columns: 112px 1fr; gap: 8px; align-items: baseline; padding: 9px 11px; }
+    .landing .senda-brief-track b { margin: 0; }
+    .landing .puertas { flex-direction: column; align-items: center; }
+    .landing .puerta { width: 260px; }
+    .landing .nav a { font-size: 11px; padding: 10px 16px; letter-spacing: 1px; }
+    .landing .cards { flex-direction: column; align-items: center; }
+    .landing .card { width: 270px; }
+}
+
+/* DLCs: secciones (Suplementos/Modulos) y tarjetas de borrador */
+.landing .dlc-seccion {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted, #94a3b8);
+    margin: 28px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-color, #2a303c);
+}
+
+.landing .card-borrador {
+    opacity: 0.75;
+    border-style: dashed;
+}
+
+.landing .card-borrador:hover {
+    opacity: 1;
+}
+
+.landing .badge-borrador {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--text-muted, #94a3b8);
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+}
+
+/* ============================================================
+   JERARQUÍA DLC → MÓDULO → AYUDAS (dlcs.html) — 14/08/2026
+   Cada ambientación es un .dlc-family: una tarjeta padre .card-dlc
+   (DLC/mundo/tesela/suplemento), con .module-branch colgando a la
+   derecha para cada módulo ambientado (.card-module), y un
+   .aid-branch de tercer nivel para sus ayudas (.aid-link) cuando
+   las tiene. La línea de conexión es siempre un borde CSS, nunca
+   una imagen ni JS: se reescala sola en móvil.
+   ============================================================ */
+.landing .dlc-family {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.landing .card-dlc {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 640px;
+    padding: 22px 26px;
+    border: 3px solid #9333ea;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(147,51,234,.10);
+    transition: all .2s;
+}
+.landing .card-dlc:hover { background: #9333ea; color: #000; transform: translateY(-3px); }
+.landing .card-dlc:hover .txt,
+.landing .card-dlc:hover .relation-label { color: inherit; }
+.landing .card-dlc .tit {
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+.landing .card-dlc .txt { font-size: 14px; color: #94a3b8; line-height: 1.5; }
+
+.landing .relation-label {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #c084fc;
+}
+.landing .card-module .relation-label { color: #7dd3fc; font-size: 9px; letter-spacing: 1.5px; }
+
+.landing .module-branch {
+    position: relative;
+    margin: 4px 0 4px 46px;
+    padding-left: 26px;
+    border-left: 2px solid #9333ea;
+}
+.landing .module-branch::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    top: 22px;
+    width: 24px;
+    height: 2px;
+    background: #9333ea;
+}
+
+/* Plegado de módulos: los .module-branch viven dentro de un <details>
+   nativo (sin JS) para que empiecen replegados y el lector pulse para
+   ver los módulos de cada DLC. 27/08/2026. */
+.landing details.module-toggle {
+    width: 100%;
+    margin: 0;
+}
+.landing .module-toggle-summary {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0 46px;
+    padding: 6px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #c084fc;
+    border: 1px solid #9333ea;
+    border-radius: 20px;
+    background: rgba(147,51,234,.08);
+    transition: all .2s;
+    width: fit-content;
+}
+.landing .module-toggle-summary::-webkit-details-marker { display: none; }
+.landing .module-toggle-summary::before {
+    content: "▸";
+    display: inline-block;
+    transition: transform .2s;
+    font-size: 10px;
+}
+.landing details[open] > .module-toggle-summary::before { transform: rotate(90deg); }
+.landing .module-toggle-summary:hover { background: #9333ea; color: #000; }
+.landing .module-toggle-summary:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
+.landing .card-module {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    max-width: 440px;
+    padding: 15px 18px;
+    margin: 14px 0;
+    border: 2px solid #1d6fa3;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(29,111,163,.07);
+    transition: all .2s;
+}
+.landing .card-module:hover { background: #1d6fa3; color: #000; transform: translateY(-2px); }
+.landing .card-module:hover .txt,
+.landing .card-module:hover .relation-label { color: inherit; }
+.landing .card-module .tit {
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+}
+.landing .card-module .txt { font-size: 12px; color: #94a3b8; line-height: 1.45; }
+
+.landing .aid-branch {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0 0 14px 26px;
+    padding: 10px 0 10px 20px;
+    border-left: 2px dashed #475569;
+}
+.landing .aid-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .3px;
+    color: #94a3b8;
+    text-decoration: none;
+    padding: 3px 2px;
+    border-bottom: 1px solid transparent;
+    width: fit-content;
+}
+.landing .aid-link:hover { color: #fff; border-bottom-color: #fff; }
+.landing .aid-link::before {
+    content: "";
+    flex-shrink: 0;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+}
+.landing .aid-link .aid-audiencia {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+.landing .aid-link-jugadores::before { background: var(--color-regla, #16a34a); }
+.landing .aid-link-jugadores .aid-audiencia { color: var(--color-regla, #16a34a); }
+.landing .aid-link-narrador::before { background: var(--color-combate, #ff3b3b); }
+.landing .aid-link-narrador .aid-audiencia { color: var(--color-combate, #ff3b3b); }
+
+/* Descargas PDF: mismo audiencia-color que su ayuda HTML, un peldano
+   mas discreto - nunca se presentan como modulo o tarjeta principal. */
+.landing .aid-link-pdf {
+    margin-left: 14px;
+    font-size: 11px;
+    opacity: .82;
+}
+.landing .aid-link-pdf::before { width: 5px; height: 5px; }
+.landing .aid-link-pdf .aid-audiencia { font-size: 9px; }
+.landing .aid-link-pdf:hover { opacity: 1; }
+
+.landing .card-dlc:focus-visible,
+.landing .card-module:focus-visible,
+.landing .aid-link:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
+/* Suplementos de referencia / Aventuras independientes: mismas .card
+   ya existentes, sin jerarquía — se muestran en su .cards habitual. */
+
+@media (max-width: 600px) {
+    .landing .dlc-family { max-width: 100%; }
+    .landing .card-dlc,
+    .landing .card-module { max-width: 100%; }
+    .landing .module-branch { margin-left: 14px; padding-left: 16px; }
+    .landing .module-branch::before { width: 14px; }
+    .landing .module-toggle-summary { margin-left: 14px; }
+    .landing .aid-branch { margin-left: 10px; padding-left: 14px; }
+}

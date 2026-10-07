@@ -1,0 +1,12 @@
+[
+  {
+    "id": "predator_n52",
+    "title": "Predator N-5.2",
+    "subtitle": "Las guerras secretas",
+    "description": "Un chip robado, una corporación que lo quiere de vuelta y una huida que atraviesa El Mosaico.",
+    "enabled": true,
+    "status": "playable",
+    "publishable": true,
+    "visible": true
+  }
+]

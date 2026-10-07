@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Senda de los Errantes</title>
+<meta name="description" content="Cyberpunk multiversal desde 1991. Un universo de teselas conectadas por portales inestables. Quickstart, fichas de personaje y un vistazo a sus mundos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="senda_estilo.css">
+</head>
+<body class="landing tema-index">
+<nav class="topnav" aria-label="Principal">
+<a class="brand" href="index.html">La Senda</a>
+<div>
+<a href="index.html" aria-current="page">Inicio</a>
+<a href="juego.html">Juego</a>
+<a href="mundos.html">Mundos</a>
+<a href="https://elpeciodeseawolf.blogspot.com" rel="noopener">Blog</a>
+</div></nav>
+<main class="hero">
+  <figure class="hero-portal">
+    <img src="img/Portada_rol_Errantes.jpg" alt="Rosetón cósmico: un portal circular de piedra rúnica con paneles de constelaciones, nebulosas y galaxias en tonos azules y ámbar">
+    <figcaption><span>Archivo de la Senda</span><b>Tesela de origen · Tierra</b></figcaption>
+  </figure>
+  <div class="hero-info">
+    <p class="hero-kicker">Juego de rol · ciencia ficción y fantasía interdimensional</p>
+    <h1>La Senda de <em>Los Errantes</em></h1>
+    <p class="sub">Cyberpunk multiversal · Desde 1991</p>
+    <p class="desc">Un universo de teselas conectadas por portales inestables. Corporaciones que sobreviven a civilizaciones enteras. Errantes que cruzan entre mundos con lo puesto. Un juego que nació en 1991 en una finca junto al río Júcar — y una historia que sigue creciendo.</p>
+    <section class="senda-brief" aria-labelledby="senda-brief-title">
+      <p class="senda-brief-label" id="senda-brief-title">La Senda en 30 segundos</p>
+      <div class="senda-brief-track">
+        <p><b>Un sistema</b><span>d100 rápido, peligroso y abierto a soluciones ingeniosas.</span></p>
+        <p><b>Muchos mundos</b><span>Cada realidad es una tesela del mismo Mosaico.</span></p>
+        <p><b>Una campaña</b><span>Tu personaje, su equipo y sus consecuencias viajan contigo.</span></p>
+      </div>
+    </section>
+    <div class="cta">
+      <a href="quickstart.html" class="primary">Empezar con el Quickstart</a>
+      <a href="ficha_v4.html" class="secondary">Crear un Personaje</a>
+    </div>
+    <a href="mundos.html" class="expedition-route">
+      <span class="route-index">01</span>
+      <span class="route-copy">
+        <span class="route-label">Mundos de la Senda</span>
+        <strong>Explora los mundos del Mosaico</strong>
+        <small>MadCity, Mundo Chatarra, Oasis y más: un vistazo a cada tesela.</small>
+      </span>
+      <span class="route-arrow" aria-hidden="true"></span>
+    </a>
+    <p class="puertas-label">O entra directamente por:</p>
+    <div class="puertas">
+      <a href="juego.html" class="puerta">
+        <span class="ico"><i class="fa-solid fa-dice-d20"></i></span><span class="tit">Juego de Rol</span>
+        <span class="txt">Quickstart, fichas y aventura jugable</span>
+      </a>
+      <a href="mundos.html" class="puerta gal">
+        <span class="ico"><i class="fa-solid fa-earth-europe"></i></span><span class="tit">Mundos</span>
+        <span class="txt">MadCity, Mundo Chatarra, Oasis y más</span>
+      </a>
+      <a href="https://elpeciodeseawolf.blogspot.com" class="puerta alt" rel="noopener">
+        <span class="ico"><i class="fa-solid fa-feather-pointed"></i></span><span class="tit">Blog</span>
+        <span class="txt">El Pecio de Seawolf - la crónica novelada</span>
+      </a>
+    </div>
+  </div>
+</main>
+<footer class="footer">
+  <a href="https://elpeciodeseawolf.blogspot.com">El Pecio de Seawolf</a> · ·
+  Actualizado: <span id="builddate">—</span>
+</footer>
+<script>
+fetch('build_date.txt').then(r=>r.text()).then(t=>{
+  var raw=t.trim();
+  var m=raw.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}:\d{2})/);
+  if(m){
+    var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    raw=parseInt(m[1],10)+' de '+meses[parseInt(m[2],10)-1]+' de '+m[3]+', '+m[4];
+  }
+  document.getElementById('builddate').textContent=raw;
+}).catch(()=>{});
+</script>
+</body>
+</html>

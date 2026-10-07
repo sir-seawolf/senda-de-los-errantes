@@ -1,0 +1,156 @@
+{
+  "compressionlevel": -1,
+  "height": 9,
+  "infinite": false,
+  "nextlayerid": 4,
+  "nextobjectid": 13,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.11.0",
+  "tileheight": 100,
+  "tilewidth": 100,
+  "type": "map",
+  "version": "1.10",
+  "width": 24,
+  "layers": [
+    {
+      "class": "Master",
+      "id": 1,
+      "image": "../assets/panoramic/callejon/callejon_master.jpg",
+      "name": "Master",
+      "opacity": 1,
+      "type": "imagelayer",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "draworder": "topdown",
+      "id": 2,
+      "name": "Geometry",
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "objects": [
+        {
+          "id": 1,
+          "name": "pavimento",
+          "polygon": [
+            { "x": 0, "y": 0 },
+            { "x": 2240, "y": 0 },
+            { "x": 2240, "y": 70 },
+            { "x": 0, "y": 70 }
+          ],
+          "type": "WalkableRegion",
+          "x": 150,
+          "y": 755
+        },
+        {
+          "id": 2,
+          "name": "entrada",
+          "point": true,
+          "properties": [
+            { "name": "spawnId", "type": "string", "value": "entrada" }
+          ],
+          "type": "Spawn",
+          "x": 300,
+          "y": 790
+        },
+        { "id": 3, "name": "approach_puerta", "point": true, "x": 650, "y": 790 },
+        { "id": 4, "name": "approach_escondite", "point": true, "x": 430, "y": 790 },
+        { "id": 5, "name": "approach_farola", "point": true, "x": 1880, "y": 790 },
+        { "id": 6, "name": "approach_verja", "point": true, "x": 2150, "y": 790 },
+        {
+          "id": 11,
+          "name": "regreso_tramo_b",
+          "point": true,
+          "properties": [
+            { "name": "spawnId", "type": "string", "value": "regreso_tramo_b" }
+          ],
+          "type": "Spawn",
+          "x": 2140,
+          "y": 790
+        }
+      ]
+    },
+    {
+      "draworder": "topdown",
+      "id": 3,
+      "name": "Gameplay",
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "objects": [
+        {
+          "height": 267,
+          "id": 7,
+          "name": "puerta",
+          "properties": [
+            { "name": "approachPoint", "type": "object", "value": 3 },
+            { "name": "doorProfileId", "type": "string", "value": "service_door" },
+            { "name": "initialState", "type": "string", "value": "closed" },
+            { "name": "interactionId", "type": "string", "value": "puerta" },
+            { "name": "stateId", "type": "string", "value": "callejon_piloto_puerta" }
+          ],
+          "type": "Door",
+          "width": 132,
+          "x": 623,
+          "y": 420
+        },
+        {
+          "height": 230,
+          "id": 8,
+          "name": "contenedor",
+          "properties": [
+            { "name": "approachPoint", "type": "object", "value": 4 },
+            { "name": "interactionId", "type": "string", "value": "escondite" },
+            { "name": "occlusionProfileId", "type": "string", "value": "foreground_solid" }
+          ],
+          "type": "Occluder",
+          "width": 270,
+          "x": 145,
+          "y": 580
+        },
+        {
+          "height": 500,
+          "id": 9,
+          "name": "farola",
+          "properties": [
+            { "name": "approachPoint", "type": "object", "value": 5 },
+            { "name": "interactionId", "type": "string", "value": "farola" }
+          ],
+          "type": "Interactable",
+          "width": 108,
+          "x": 1892,
+          "y": 290
+        },
+        {
+          "height": 246,
+          "id": 10,
+          "name": "valla",
+          "properties": [
+            { "name": "approachPoint", "type": "object", "value": 6 },
+            { "name": "interactionId", "type": "string", "value": "verja" }
+          ],
+          "type": "Interactable",
+          "width": 188,
+          "x": 2202,
+          "y": 451
+        },
+        {
+          "height": 105,
+          "id": 12,
+          "name": "salida_tramo_b",
+          "properties": [
+            { "name": "targetScene", "type": "string", "value": "aparcamiento_panoramico_piloto" },
+            { "name": "targetSpawnId", "type": "string", "value": "desde_callejon" }
+          ],
+          "type": "Exit",
+          "width": 80,
+          "x": 2320,
+          "y": 720
+        }
+      ]
+    }
+  ]
+}

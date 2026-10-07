@@ -1,0 +1,151 @@
+{
+  "id": "arthur_apartamento",
+  "type": "point_click",
+  "musicState": "exploration",
+  "title": "Escena 2 — La casa de Arthur Dicking",
+  "background": "assets/backgrounds/arthur_apartamento.jpg",
+  "backgroundNota": "Iteración 6: arte real integrado (ver docs/ASSET_NEEDS.md, ahora resuelto). Fuente: assets/backgrounds/arthur_apartamento_bg.png (lámina original, con una franja de rótulos de catalogación al pie que no es parte de la escena) → recortada a assets/backgrounds/arthur_apartamento.jpg (1536x900, sin la franja) — la lámina original se conserva sin modificar, nunca se sobrescribe. Los carteles de la pared ('LA VERDAD NO ES GRATUITA', 'CONFIANZA ES UN RUIDO...') son ambientación del propio arte, no pistas — no se han convertido en zonas interactivas.",
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "verbs": ["MIRAR", "COGER", "USAR", "MOVERSE"],
+  "introText": "Edificio viejo de apartamentos, diez pisos, un único ascensor que no os hace falta: la tarjeta lleva al tercer piso, sin dificultad. La cerradura electrónica acepta la llave sin protestar. Dentro, un apartamento pequeño y desordenado. Sin signos de violencia — quien viviera aquí, se fue por su propio pie, con prisa.",
+  "defaultText": "No parece que puedas hacer eso ahí.",
+  "gmNotes": "SOURCE_OVERRIDE: ninguno — texto literal del QS (MODULO_0-5_PREDATOR_N-5.2.md, ESCENA 2). Vigilancia (visibility:\"gm\", nunca mostrada al jugador como texto): el pasillo tiene cámaras. CHAFRY identificará a los PJs en 16 horas y los mercenarios llegarán a su domicilio 20h después de que entren aquí. El motor no tiene un reloj horario: se registra 'vigilados_por_chafry' al salir y contacto_chafry lo consume si el grupo llama a la corporación, adelantando la identificación sin inventar una espera de 16/20 horas ni bloquear las rutas existentes.",
+  "zones": [
+    { "id": "armario", "label": "armario", "rect": [29.95, 16.67, 10.42, 56.67] },
+    { "id": "documentos", "label": "documentos sobre la mesa", "rect": [39.06, 15.56, 19.53, 26.67] },
+    { "id": "bloc_notas", "label": "bloc de notas junto al teléfono", "rect": [39.71, 43.33, 17.58, 12.22] },
+    { "id": "cajones", "label": "cajones del mueble", "rect": [85.29, 50.0, 14.71, 50.0] },
+    { "id": "salida", "label": "puerta", "rect": [11.72, 13.33, 13.67, 55.56] }
+  ],
+  "interactions": [
+    {
+      "id": "coger_pistola_repetido",
+      "trigger": { "verb": "COGER", "zone": "armario" },
+      "requiresFlags": ["pistola_cogida"],
+      "onAlways": { "text": "Ya has vaciado el armario de lo útil." }
+    },
+    {
+      "id": "coger_pistola",
+      "trigger": { "verb": "COGER", "zone": "armario" },
+      "onAlways": {
+        "setFlags": ["pistola_cogida"],
+        "discoverObjects": ["Pistola pequeña"],
+        "inventoryAdd": ["Pistola pequeña (defensa personal)"],
+        "text": "Entre la ropa colgada, una pistola pequeña — defensa personal, nada más. Te la guardas."
+      }
+    },
+    {
+      "id": "mirar_armario",
+      "trigger": { "verb": "MIRAR", "zone": "armario" },
+      "onAlways": { "text": "Ropa de trabajo, un par de trajes baratos, y algo metálico entre las perchas." }
+    },
+    {
+      "id": "mirar_documentos_repetido",
+      "trigger": { "verb": "MIRAR", "zone": "documentos" },
+      "requiresFlags": ["documentos_revisados"],
+      "onAlways": { "text": "Diplomas en Física y Física Cuántica, y el contrato con CHAFRY CORP. Ya lo has visto." }
+    },
+    {
+      "id": "mirar_documentos",
+      "trigger": { "verb": "MIRAR", "zone": "documentos" },
+      "blockedByFlags": ["documentos_revisados"],
+      "onAlways": {
+        "setFlags": ["documentos_revisados"],
+        "discoverClues": ["Arthur Dicking Thompson: diplomado en Física y Física Cuántica. Contrato con CHAFRY CORP."],
+        "text": "Diplomas enmarcados: Física, Física Cuántica. Junto a ellos, un contrato — Arthur Dicking Thompson trabajaba para CHAFRY CORP."
+      }
+    },
+    {
+      "id": "usar_bloc_repetido",
+      "trigger": { "verb": "USAR", "zone": "bloc_notas" },
+      "requiresFlags": ["bloc_revelado"],
+      "onAlways": { "text": "Ya has pasado el lápiz por la hoja. El mensaje sigue ahí, entre las marcas." }
+    },
+    {
+      "id": "coger_bloc_bloqueado",
+      "trigger": { "verb": "COGER", "zone": "bloc_notas" },
+      "blockedByFlags": ["bloc_revelado"],
+      "onAlways": { "text": "Faltan las hojas de arriba — alguien las arrancó. Prueba a USAR el lápiz que hay junto al bloc: a veces la marca queda en la hoja siguiente." }
+    },
+    {
+      "id": "usar_bloc",
+      "trigger": { "verb": "USAR", "zone": "bloc_notas" },
+      "blockedByFlags": ["bloc_revelado"],
+      "executors": "party",
+      "delegationTitle": "¿Quién revela las marcas del bloc?",
+      "oncePerActor": true,
+      "noExecutorText": "Todos los miembros disponibles del grupo ya han intentado revelar las marcas del bloc.",
+      "rollNota": "Sin allowsHelp a propósito: pasar el lápiz sobre la hoja es un gesto de una sola persona — tener más gente mirando no ayuda a revelar mejor la marca. Distinto de 'revisar los cajones', donde varias manos sí cubren más superficie.",
+      "roll": {
+        "skill": "Investigación",
+        "difficulty": -10,
+        "difficultyLabel": "Difícil",
+        "label": "Pasar el lápiz sobre la hoja"
+      },
+      "onSuccess": {
+        "setFlags": ["bloc_revelado"],
+        "discoverClues": [
+          "Nota revelada: \"Drake Street Nº34, puerta trasera. El próximo sábado a las 23:00. Llevar la mercancía. Código: Indigo es Azul. 5.000 PC.\"",
+          "Otra nota, sin relación aparente: \"PREDATOR N-5.2: 4 días\".",
+          "Un número y un nombre: \"555 6666 321 — Cinthia Mollis\".",
+          "Una dirección: \"Cardamomo Street 84, bajo. 13:00.\""
+        ],
+        "text": "Pasas el lápiz de lado sobre la hoja en blanco. Las marcas de lo que se escribió en la hoja de arriba emergen en gris: una cita, un código, un plazo — y un par de anotaciones sueltas que no encajan todavía."
+      },
+      "onFailure": {
+        "discoverClues": ["Nota revelada a medias: \"Drake Street Nº34. Próximo ---- a las 23:00. -------- Indigo es Azul\"."],
+        "text": "El lápiz revela algo, pero la presión no fue uniforme: entre las marcas legibles hay huecos. Ese personaje no puede repetir el procedimiento, aunque otro miembro del grupo todavía puede intentarlo. \"Drake Street Nº34. Próximo ---- a las 23:00. -------- Indigo es Azul\"."
+      },
+      "onExhausted": {
+        "setFlags": ["bloc_revelado"],
+        "text": "Todos habéis probado ya sobre la misma hoja. Las marcas parciales son lo único que habéis conseguido recuperar."
+      }
+    },
+    {
+      "id": "mirar_cajones_repetido",
+      "trigger": { "verb": "MIRAR", "zone": "cajones" },
+      "requiresFlags": ["extracto_revisado"],
+      "onAlways": { "text": "Ya has revisado los cajones a fondo." }
+    },
+    {
+      "id": "mirar_cajones",
+      "trigger": { "verb": "MIRAR", "zone": "cajones" },
+      "blockedByFlags": ["extracto_revisado"],
+      "executors": "party",
+      "delegationTitle": "¿Quién revisa los cajones?",
+      "oncePerActor": true,
+      "noExecutorText": "Todos los miembros disponibles del grupo ya han revisado los cajones.",
+      "roll": {
+        "skill": "Alerta",
+        "fallbackSkill": "Percepción",
+        "difficulty": -20,
+        "difficultyLabel": "Extremadamente difícil",
+        "label": "Revisar los cajones a fondo",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "setFlags": ["extracto_revisado"],
+        "discoverClues": ["Extracto del National Bank: 2.500 PC/mes de nómina, más 3.000 PC extra en cada uno de los últimos dos meses — un pago que no encaja con un sueldo de CHAFRY."],
+        "text": "Bajo una pila de ropa mal doblada, un extracto bancario del National Bank. La nómina cuadra con CHAFRY — los 3.000 PC extra de los dos últimos meses, no."
+      },
+      "onFailure": {
+        "text": "Revuelves entre ropa y papeles sueltos sin encontrar nada que llame la atención. Ese personaje ya ha agotado su búsqueda, aunque otro miembro del grupo todavía puede revisar los cajones."
+      },
+      "onExhausted": {
+        "setFlags": ["extracto_revisado"],
+        "text": "Todos los miembros disponibles del grupo han revisado ya los cajones sin encontrar nada más."
+      }
+    },
+    {
+      "id": "moverse_salida",
+      "trigger": { "verb": "MOVERSE", "zone": "salida" },
+      "onAlways": {
+        "setFlags": ["vigilados_por_chafry"],
+        "registerDecision": "Registrado el apartamento de Arthur Dicking.",
+        "text": "Sales del apartamento tal y como llegaste. Nadie parece haberos visto — pero el pasillo tenía una cámara sobre la puerta del ascensor, y no hay forma de saber quién la revisa ni cuándo.",
+        "transition": "decision_arthur"
+      }
+    }
+  ]
+}

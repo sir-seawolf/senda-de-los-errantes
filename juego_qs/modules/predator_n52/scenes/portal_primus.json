@@ -1,0 +1,79 @@
+{
+  "id": "portal_primus",
+  "type": "decision",
+  "musicState": "exploration",
+  "title": "Escena 6 — Desenlace y enlace",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "introTextNota": "QUICKSTART_Kit_de_Inicio_v2.md líneas 600-608 (Escena 6). Las 4 opciones de sabor ('escuchar', 'exigir condiciones', 'desconfiar', 'aceptar') convergen todas al cruce -- el QS dice explícitamente que el Maestro 'solo se vuelve hostil si intentan someterlo por la fuerza', y ninguna de las 4 opciones escritas es eso. No se inventa una quinta opción violenta que el QS no ofrece aquí.",
+  "introText": "Llega una transmisión: un Maestro de Portales de PRIMUS, que ha perdido a su escolta en el bombardeo, ofrece abrir un nexo de evacuación a un sector autorizado a cambio de protección. Advierte que, si os quedáis ilegalmente en un mundo no despertado, os denunciará.",
+  "choices": [
+    {
+      "id": "escuchar",
+      "label": "ESCUCHAR LO QUE OFRECE"
+    },
+    {
+      "id": "exigir",
+      "label": "EXIGIR CONDICIONES ANTES DE ACEPTAR"
+    },
+    {
+      "id": "desconfiar",
+      "label": "DESCONFIAR Y BUSCAR OTRA SALIDA"
+    },
+    {
+      "id": "aceptar",
+      "label": "ACEPTAR SIN MÁS PREGUNTAS"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "elegir_escuchar",
+      "trigger": {
+        "choice": "escuchar"
+      },
+      "onAlways": {
+        "registerDecision": "Portal de Primus: escucháis la oferta completa antes de decidir.",
+        "transition": "finales",
+        "setFinalTipo": "cierre_predator_mundo_maquina"
+      }
+    },
+    {
+      "id": "elegir_exigir",
+      "trigger": {
+        "choice": "exigir"
+      },
+      "onAlways": {
+        "registerDecision": "Portal de Primus: exigís condiciones antes de aceptar el cruce.",
+        "transition": "finales",
+        "setFinalTipo": "cierre_predator_mundo_maquina"
+      }
+    },
+    {
+      "id": "elegir_desconfiar",
+      "trigger": {
+        "choice": "desconfiar"
+      },
+      "onAlways": {
+        "registerDecision": "Portal de Primus: desconfiáis del Maestro, pero no encontráis otra salida real.",
+        "transition": "finales",
+        "setFinalTipo": "cierre_predator_mundo_maquina"
+      }
+    },
+    {
+      "id": "elegir_aceptar",
+      "trigger": {
+        "choice": "aceptar"
+      },
+      "onAlways": {
+        "registerDecision": "Portal de Primus: aceptáis el cruce sin más preguntas.",
+        "transition": "finales",
+        "setFinalTipo": "cierre_predator_mundo_maquina"
+      }
+    }
+  ]
+}

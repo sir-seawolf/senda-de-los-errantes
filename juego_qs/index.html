@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Senda de los Errantes — Zona de juego</title>
+<link rel="stylesheet" href="src/ui/theme.css?v=20260913-2">
+<link rel="stylesheet" href="src/ui/style.css?v=20260913-2">
+</head>
+<body>
+  <!--
+  THESIS: Una consola de mando táctica que deja al escenario gobernar; rehúye el prototipo de paneles sueltos.
+  OWN-WORLD: Carbón, metal pavonado, hueso y cian instrumental; marcos finos, esquinas técnicas y controles de equipo físico.
+  STORY: El jugador identifica módulo y localización, lee la escena y actúa sin perder contexto.
+  FIRST VIEWPORT: Cabecera de misión compacta sobre un escenario dominante; ficha lateral replegable y acciones junto al mundo.
+  FORM: Sistema de mando táctico industrial, referencia fijada por el usuario; seed 3df636b2.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+  -->
+  <div id="game-shell">
+    <header id="game-header">
+      <div class="game-brand">LA SENDA DE LOS ERRANTES</div>
+      <div class="game-contexto" aria-live="polite">
+        <span id="game-modulo">ARCHIVO DE MÓDULOS</span>
+        <strong id="game-escena">SELECCIÓN</strong>
+      </div>
+    </header>
+    <div id="app">
+      <div id="scenario"></div>
+      <div id="sheet-panel"></div>
+      <button type="button" id="config-toggle" aria-label="Configuración" title="Configuración">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Zm8 3.8-2.1-1.2.1-1.1-1.8-3.1-1 .4L13.1 5V3.8H9.5V5L7.4 6.2l-1-.4-1.8 3.1.9.7V12l-.9.7 1.8 3.1 1-.4 2.1 1.2v1.2h3.6v-1.2l2.1-1.2 1 .4 1.8-3.1-.9-.7.8-1.2L20 12Z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="config-panel"></div>
+  <script type="module" src="src/main.js?v=20260913-2"></script>
+</body>
+</html>

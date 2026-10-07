@@ -1,0 +1,12 @@
+{
+  "id": "satelite_aterrizaje",
+  "type": "combat",
+  "typeNota": "Combate legacy directo -- el Quickstart da un bloque de estadísticas (Combate 40, daño 8, cadencia 2) pero ninguna geometría de campo de batalla para la plantación. Mismo criterio que drake_street_combate.json.",
+  "musicState": "combat",
+  "title": "Aterrizaje forzoso — plantación ilegal",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introText": "La lanzadera cae en una plantación ilegal de marihuana. Antes de que os deis cuenta de dónde estáis, tres vigilantes muy colocados salen entre las plantas, escopeta en mano: \"¡Malditos alienígenas!\"",
+  "encounter": "encuentro_plantacion"
+}

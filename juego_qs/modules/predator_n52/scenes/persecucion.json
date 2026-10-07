@@ -1,0 +1,9 @@
+{
+  "id": "persecucion",
+  "type": "raycast",
+  "musicState": "chase",
+  "title": "Persecución — calles",
+  "sheetContext": "persecucion",
+  "map": "callejon_entorno",
+  "hudText": "WASD o flechas para moverte. Mantente cerca de un punto marcado y pulsa E para interactuar. Llega al refugio o al vehículo antes de que te alcancen."
+}

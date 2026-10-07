@@ -1,0 +1,12 @@
+{
+  "id": "drake_street_combate",
+  "type": "combat",
+  "typeNota": "Combate legacy directo (no tactical-phaser): el Quickstart da un bloque de estadísticas de los Ejecutores MORT pero ninguna geometría de campo de batalla ni cobertura para la sala trasera de Drake Street -- usar el Tactical Engine exigiría inventar un tablero que la fuente no describe. Mismo criterio que combate_inicial.json antes de Production Integration Phase 4.",
+  "musicState": "combat",
+  "title": "Combate — Sala trasera, Drake Street",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introText": "\"Cualquier paso en falso\" acaba de pasar. Las armas salen a relucir en la sala trasera.",
+  "encounter": "encuentro_drake_street"
+}

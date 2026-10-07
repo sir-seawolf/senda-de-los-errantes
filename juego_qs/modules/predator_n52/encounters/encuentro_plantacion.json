@@ -1,0 +1,14 @@
+{
+  "id": "encuentro_plantacion",
+  "descripcion": "Aterrizaje forzoso en una plantación ilegal de marihuana (QUICKSTART_Kit_de_Inicio_v2.md línea 595, Escena 5). Número fijo de vigilantes (3) -- el QS no da tabla de escalado para este encuentro, a diferencia del callejón.",
+  "ajusteEjecutores": {
+    "fuente": "QUICKSTART_Kit_de_Inicio_v2.md línea 595: \"tres vigilantes muy colocados disparan con escopetas\" -- número fijo.",
+    "tabla": [
+      { "personajes": 5, "enemyId": "vigilantePlantacion", "cantidad": 3 }
+    ]
+  },
+  "onVictory": { "registerDecision": "Plantación: los vigilantes caen o huyen.", "transition": "satelite_terraplen" },
+  "onFlee": { "registerDecision": "Plantación: huida entre las plantas hacia el terraplén.", "transition": "satelite_terraplen" },
+  "onDeathWithEpicPoint": { "setFinalTipo": "casi_muerto", "registerDecision": "Plantación: \"Parecía que había muerto\" — Punto Épico gastado.", "transition": "finales" },
+  "onDeath": { "setFinalTipo": "muerte", "registerDecision": "Plantación: derrota.", "transition": "finales" }
+}

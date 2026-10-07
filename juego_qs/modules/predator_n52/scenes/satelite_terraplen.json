@@ -1,0 +1,35 @@
+{
+  "id": "satelite_terraplen",
+  "type": "single_roll",
+  "musicState": "chase",
+  "title": "El terraplén",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introTextNota": "QUICKSTART_Kit_de_Inicio_v2.md línea 596: \"Bajar limpio: Proezas (Muy difícil, −20). Deslizarse aceptando el golpe: tirada Normal con −10 para mitigar; 3/50 de daño si se falla.\" La notación \"3/50 de daño\" es ambigua en la fuente (no coincide con ningún formato de daño usado en el resto del Quickstart) -- no se inventa una cifra de daño concreta ni se aplica ningún daño mecánico fuera de combate (el motor no tiene ese sistema todavía). Ambas opciones se resuelven de forma narrativa; la diferencia real es el tono del texto, no una penalización inventada.",
+  "introText": "La huida sigue por una pendiente empinada hasta un río, donde espera una barcaza. Hay dos formas de bajar.",
+  "actions": [
+    { "id": "bajar_limpio", "label": "Bajar limpio, con cuidado (Proezas)" },
+    { "id": "deslizarse", "label": "Deslizarse aceptando el golpe" }
+  ],
+  "interactions": [
+    {
+      "id": "bajar_limpio_intento",
+      "trigger": { "action": "bajar_limpio" },
+      "executors": "party",
+      "delegationTitle": "¿Quién baja primero?",
+      "roll": { "skill": "Atlética", "difficulty": -20, "difficultyLabel": "Muy difícil", "label": "Bajar limpio el terraplén (Proezas)" },
+      "onSuccess": { "registerDecision": "Terraplén: bajada limpia hasta la barcaza.", "text": "Un pie tras otro, sin un solo resbalón. Llegáis a la barcaza secos y enteros.", "transition": "portal_primus" },
+      "onFailure": { "registerDecision": "Terraplén: la bajada limpia sale mal, termináis deslizándoos igualmente.", "text": "El control dura poco. Termináis deslizándoos el resto del camino, con más raspones que dignidad.", "transition": "portal_primus" }
+    },
+    {
+      "id": "deslizarse_intento",
+      "trigger": { "action": "deslizarse" },
+      "executors": "party",
+      "delegationTitle": "¿Quién se desliza primero?",
+      "roll": { "skill": "Atlética", "difficulty": -10, "difficultyLabel": "Difícil", "label": "Mitigar el golpe al deslizarse", "difficultyNota": "QS línea 596: 'tirada Normal con −10 para mitigar', sin nombrar habilidad. Se usa Atlética -- la misma habilidad física que la opción hermana de esta escena (bajar limpio) -- en vez de inventar o adivinar una distinta." },
+      "onSuccess": { "registerDecision": "Terraplén: os deslizáis y controláis el golpe.", "text": "Os dejáis caer sin frenar del todo, aceptando el golpe pero controlándolo lo justo. Llegáis abajo doloridos, no heridos.", "transition": "portal_primus" },
+      "onFailure": { "registerDecision": "Terraplén: os deslizáis sin control y el golpe es duro.", "text": "El golpe al llegar abajo es duro de verdad. Tardáis un momento en recomponeros antes de subir a la barcaza.", "transition": "portal_primus" }
+    }
+  ]
+}

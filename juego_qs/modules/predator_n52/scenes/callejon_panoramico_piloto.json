@@ -1,0 +1,225 @@
+{
+  "id": "callejon_panoramico_piloto",
+  "type": "panoramic",
+  "title": "Piloto de Localización C — El Callejón",
+  "musicState": "exploration",
+  "sheetLayout": "overlay",
+  "sheetContext": "callejon",
+  "tiledMap": "tiled/callejon_piloto.tmj",
+  "assetBase": "assets/panoramic/callejon/",
+  "introText": "",
+  "devNote": "Piloto de integración del sistema panorámico (docs/CONTRATO_VISUAL_PREDATOR.md, docs/CALIBRACION_GEOMETRICA_CALLEJON_PREDATOR.md). No sustituye a la escena narrativa real del callejón (\"callejon\"); es una verificación local del renderer, la cámara y la geometría antes de decidir una migración.",
+  "defaultText": "No parece que puedas hacer eso ahí.",
+  "camera": {
+    "deadzoneWidthPct": 30,
+    "limits": { "minX": 0 }
+  },
+  "player": {
+    "sprite": "agente_campo.png",
+    "walkFrames": ["agente_campo.png"],
+    "spriteNota": "Agente de campo definitivo con fondo transparente. El renderer admite player.variants por id de personaje para que otros módulos sustituyan el aspecto desde JSON.",
+    "spriteWidth": 180,
+    "spriteHeight": 240,
+    "walkSpeed": 820,
+    "walkFrameMs": 130
+  },
+  "foregroundLayers": [
+    {
+      "id": "tuberias_primer_plano",
+      "file": "primer_plano_silueta.svg",
+      "x": 80,
+      "y": 0,
+      "width": 160,
+      "height": 900,
+      "parallaxFactor": 0.22
+    }
+  ],
+  "objects": [
+    {
+      "id": "puerta",
+      "targetBoxNota": "La caja y el anclaje proceden de tiled/callejon_piloto.tmj. Paquete V2 frontal: puerta_cerrada_frontal_v2.png / puerta_forzada_frontal_v2.png, entregadas a 132x267 exactos.",
+      "states": { "cerrada": "puerta_cerrada_frontal_v2.png", "forzada": "puerta_forzada_frontal_v2.png" },
+      "defaultState": "cerrada",
+      "activeState": "forzada",
+      "stateFlag": "callejon_piloto_puerta_forzada",
+      "contactShadow": true
+    },
+    {
+      "id": "farola",
+      "anchorOffsetX": -24,
+      "flipX": true,
+      "occludes": true,
+      "states": { "apagada": "farola_apagada.png", "encendida": "farola_encendida.png" },
+      "defaultState": "encendida",
+      "activeState": "apagada",
+      "stateFlag": "callejon_piloto_farola_apagada",
+      "targetBoxNota": "Se conserva la farola v1 y se escala uniformemente un 40% respecto al pase anterior: 108x500. El anclaje se traslada a la acera adelantada y anchorOffsetX=-24 mantiene el poste sobre su punto de apoyo tras flipX. occludes:true permite que el personaje pase por detrás.",
+      "farolaNotaFinal": "La pieza existente sirve: el cambio necesario era escala, anclaje y profundidad, no generar otra imagen."
+    },
+    {
+      "id": "valla",
+      "targetBoxNota": "La caja y el anclaje proceden de tiled/callejon_piloto.tmj. Paquete V2 frontal: valla_intacta_frontal_v2.png / valla_abierta_frontal_v2.png, ambas a 188x246.",
+      "states": { "intacta": "valla_intacta_frontal_v2.png", "abierta": "valla_abierta_frontal_v2.png" },
+      "defaultState": "intacta",
+      "activeState": "abierta",
+      "stateFlag": "callejon_piloto_valla_abierta",
+      "contactShadow": true
+    },
+    {
+      "id": "contenedor",
+      "states": { "visible": "contenedor_escondite.png" },
+      "defaultState": "visible",
+      "occludes": true,
+      "contactShadow": true,
+      "targetBoxNota": "La caja y el anclaje proceden de Tiled. Su apoyo queda 20 px por delante de la línea de pies: al ocultarse no asoman los pies por debajo."
+    }
+  ],
+  "lighting": [
+    {
+      "id": "halo_farola",
+      "attachTo": "farola",
+      "file": "halo_farola.png",
+      "width": 364, "height": 364,
+      "centerOffset": { "x": -42, "y": -441 },
+      "centerOffsetNota": "Escalado uniformemente x1.4 junto a la farola y siempre relativo a su anclaje.",
+      "requiresObjectState": { "farola": "encendida" },
+      "toggleableEffect": true
+    },
+    {
+      "id": "luz_suelo_farola",
+      "attachTo": "farola",
+      "file": "luz_suelo_farola.png",
+      "width": 280, "height": 84,
+      "centerOffset": { "x": -42, "y": -4 },
+      "requiresObjectState": { "farola": "encendida" },
+      "toggleableEffect": true
+    }
+  ],
+  "hotspots": [
+    { "id": "puerta", "objectRef": "puerta", "marginX": 40, "marginY": 20, "label": "FORZAR PUERTA", "trigger": "puerta" },
+    { "id": "escondite", "objectRef": "contenedor", "marginX": 40, "marginY": 20, "label": "ESCONDERSE TRAS EL CONTENEDOR", "trigger": "escondite" },
+    {
+      "id": "verja",
+      "objectRef": "valla",
+      "marginX": 40,
+      "marginY": 20,
+      "label": "CRUZAR LA VERJA",
+      "trigger": "verja",
+      "actions": [
+        { "label": "Saltar de una vez — Difícil −10 · 1 pulso", "trigger": "verja_saltar" },
+        { "label": "Trepar con cuidado — Normal 0 · 2 pulsos", "trigger": "verja_trepar" },
+        { "label": "Forzar el cierre — Difícil −10 · 2 pulsos", "trigger": "verja_forzar" },
+        { "label": "No cruzar todavía", "closeOnly": true, "closeText": "Decides no cruzar todavía." }
+      ]
+    },
+    { "id": "farola", "objectRef": "farola", "marginX": 40, "marginY": 20, "label": "ACCIONAR LA FAROLA", "trigger": "farola" }
+  ],
+  "exits": [
+    {
+      "id": "salida_tramo_b",
+      "label": "SEGUIR POR EL CALLEJÓN",
+      "requiresFlags": ["callejon_piloto_valla_superada"],
+      "blockedText": "La verja todavía corta el paso. Puedes saltarla, treparla o forzar su cierre.",
+      "lejosText": "El callejón continúa al otro lado de la verja. Tendrías que acercarte.",
+      "estadoNota": "AUDITORÍA DE TRADUCTOR: exige el mismo flag (callejon_piloto_valla_superada) que las 3 interacciones de la verja (saltar_verja/trepar_verja/forzar_verja) ya consumen para disparar su propia 'transition' directa con transitionDelay=900 hacia aparcamiento_panoramico_piloto. En la práctica el jugador nunca llega a pulsar este Exit: la transición directa ya lo ha sacado de la escena antes. Ruta duplicada, no resuelta en este lote (cambiar cuál de los dos mecanismos manda es una decisión de diseño de navegación, no un bug urgente)."
+    }
+  ],
+  "interactions": [
+    {
+      "id": "forzar_puerta_repetido",
+      "trigger": { "hotspot": "puerta" },
+      "requiresFlags": ["callejon_piloto_puerta_forzada"],
+      "onAlways": { "text": "La cerradura ya está forzada." }
+    },
+    {
+      "id": "forzar_puerta",
+      "trigger": { "hotspot": "puerta" },
+      "blockedByFlags": ["callejon_piloto_puerta_forzada"],
+      "executors": "party",
+      "delegationTitle": "¿Quién fuerza la puerta?",
+      "roll": { "skill": "Seguridad", "fallbackSkill": "Tecnológica", "difficulty": -10, "difficultyLabel": "Difícil", "label": "Forzar la puerta", "allowsHelp": true },
+      "onSuccess": { "setFlags": ["callejon_piloto_puerta_forzada"], "text": "La cerradura cede. Ganas terreno." },
+      "onFailure": { "text": "La cerradura no cede. Pierdes un instante precioso." }
+    },
+    {
+      "id": "esconderse_repetido",
+      "trigger": { "hotspot": "escondite" },
+      "requiresFlags": ["callejon_piloto_escondite_usado"],
+      "onAlways": { "text": "Ya te has escondido aquí antes." }
+    },
+    {
+      "id": "esconderse",
+      "trigger": { "hotspot": "escondite" },
+      "blockedByFlags": ["callejon_piloto_escondite_usado"],
+      "executors": "party",
+      "delegationTitle": "¿Quién se esconde?",
+      "roll": { "skill": "Sigilo", "difficulty": 0, "difficultyLabel": "Normal", "label": "Esconderse un instante" },
+      "onSuccess": { "setFlags": ["callejon_piloto_escondite_usado"], "text": "Te pegas al metal frío del contenedor." },
+      "onFailure": { "setFlags": ["callejon_piloto_escondite_usado"], "text": "No hay tiempo de esconderse bien." }
+    },
+    {
+      "id": "saltar_verja_repetido",
+      "trigger": { "hotspot": "verja_saltar" },
+      "requiresFlags": ["callejon_piloto_valla_superada"],
+      "onAlways": { "text": "Ya estás al otro lado; la verja sigue cerrada." }
+    },
+    {
+      "id": "saltar_verja",
+      "trigger": { "hotspot": "verja_saltar" },
+      "blockedByFlags": ["callejon_piloto_valla_superada"],
+      "executors": "party",
+      "delegationTitle": "¿Quién salta la verja?",
+      "timeCostPulses": 1,
+      "roll": { "skill": "Atlética", "difficulty": -10, "difficultyLabel": "Difícil", "label": "Saltar la verja", "allowsHelp": true },
+      "onSuccess": { "setFlags": ["callejon_piloto_valla_superada"], "panoramicMoveToX": 2310, "registerDecision": "Saltó la verja en 1 pulso; permaneció cerrada.", "text": "Saltas limpio en un pulso. La verja permanece cerrada tras de ti.", "transition": "aparcamiento_panoramico_piloto", "transitionSpawnId": "desde_callejon", "transitionDelay": 900 },
+      "onFailure": { "setFlags": ["callejon_piloto_ruido_verja"], "registerDecision": "Falló al saltar la verja; perdió 1 pulso y produjo ruido.", "text": "Te enganchas, pierdes 1 pulso y el metal protesta. Sigues en el mismo lado." }
+    },
+    {
+      "id": "trepar_verja_repetido",
+      "trigger": { "hotspot": "verja_trepar" },
+      "requiresFlags": ["callejon_piloto_valla_superada"],
+      "onAlways": { "text": "Ya estás al otro lado; la verja sigue cerrada." }
+    },
+    {
+      "id": "trepar_verja",
+      "trigger": { "hotspot": "verja_trepar" },
+      "blockedByFlags": ["callejon_piloto_valla_superada"],
+      "executors": "party",
+      "delegationTitle": "¿Quién trepa la verja?",
+      "timeCostPulses": 2,
+      "roll": { "skill": "Atlética", "difficulty": 0, "difficultyLabel": "Normal", "label": "Trepar con cuidado", "allowsHelp": true },
+      "onSuccess": { "setFlags": ["callejon_piloto_valla_superada"], "panoramicMoveToX": 2310, "registerDecision": "Trepó la verja en 2 pulsos; permaneció cerrada.", "text": "Trepar te cuesta 2 pulsos, pero caes al otro lado sin abrir la verja.", "transition": "aparcamiento_panoramico_piloto", "transitionSpawnId": "desde_callejon", "transitionDelay": 900 },
+      "onFailure": { "setFlags": ["callejon_piloto_ruido_verja"], "registerDecision": "Falló al trepar la verja; perdió 2 pulsos y produjo ruido.", "text": "Tras 2 pulsos no logras pasar y el traqueteo del metal produce ruido." }
+    },
+    {
+      "id": "forzar_verja_repetido",
+      "trigger": { "hotspot": "verja_forzar" },
+      "requiresFlags": ["callejon_piloto_valla_abierta"],
+      "onAlways": { "text": "El cierre ya está forzado y la verja permanece abierta." }
+    },
+    {
+      "id": "forzar_verja",
+      "trigger": { "hotspot": "verja_forzar" },
+      "blockedByFlags": ["callejon_piloto_valla_abierta"],
+      "executors": ["bishop"],
+      "delegationTitle": "Bishop fuerza el cierre con su kit de herramientas",
+      "timeCostPulses": 2,
+      "roll": { "skill": "Seguridad", "fallbackSkill": "Tecnológica", "difficulty": -10, "difficultyLabel": "Difícil", "label": "Forzar el cierre" },
+      "onSuccess": { "setFlags": ["callejon_piloto_valla_abierta", "callejon_piloto_valla_superada"], "panoramicMoveToX": 2310, "registerDecision": "Bishop abrió la verja en 2 pulsos.", "text": "Bishop vence el cierre en 2 pulsos. Solo ahora la verja se abre y el grupo cruza.", "transition": "aparcamiento_panoramico_piloto", "transitionSpawnId": "desde_callejon", "transitionDelay": 900 },
+      "onFailure": { "setFlags": ["callejon_piloto_ruido_verja"], "registerDecision": "Bishop falló al forzar la verja; perdió 2 pulsos y produjo ruido.", "text": "El cierre resiste tras 2 pulsos y el intento deja un chasquido metálico." }
+    },
+    {
+      "id": "apagar_farola",
+      "trigger": { "hotspot": "farola" },
+      "blockedByFlags": ["callejon_piloto_farola_apagada"],
+      "onAlways": { "setFlags": ["callejon_piloto_farola_apagada"], "text": "Golpeas la base y la farola se apaga con un chisporroteo." }
+    },
+    {
+      "id": "encender_farola",
+      "trigger": { "hotspot": "farola" },
+      "requiresFlags": ["callejon_piloto_farola_apagada"],
+      "onAlways": { "clearFlags": ["callejon_piloto_farola_apagada"], "text": "La farola vuelve a encenderse." }
+    }
+  ],
+  "performanceFallbackScene": "callejon"
+}

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Senda de los Errantes — Ficha (Kit de Inicio)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
+  :root{--bg-dark:#0f1115;--border:#2a303c;--accent:#ff3b3b;--accent2:#1d6fa3;--muted:#94a3b8;--auto-bg:#dbeafe;--input-bg:#fffef5;--soft:#f1f5f9;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Rajdhani',sans-serif;background:#e9edf2;color:#1e293b;padding:12px;font-size:12px;}
+  .sheet{max-width:720px;margin:0 auto;background:#fff;padding:16px;border:1px solid #cbd5e1;}
+  .header{display:flex;align-items:baseline;gap:12px;border-bottom:3px solid var(--accent);padding-bottom:4px;margin-bottom:8px;}
+  h1{font-family:'Orbitron',sans-serif;text-transform:uppercase;font-size:16px;color:#000;letter-spacing:1px;}
+  .subtitle{font-family:'Share Tech Mono',monospace;color:var(--accent);font-size:9px;text-transform:uppercase;}
+  h2{font-family:'Orbitron',sans-serif;background:var(--bg-dark);color:#fff;padding:2px 8px;font-size:10px;text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px;}
+  .ident{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:4px;}
+  .ident label{display:flex;flex-direction:column;font-size:8px;text-transform:uppercase;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+  input{font-family:'Rajdhani',sans-serif;font-size:12px;padding:2px 4px;border:1px solid var(--border);border-radius:3px;background:var(--input-bg);width:100%;}
+  input[type=number]{width:38px;text-align:center;padding:2px 1px;}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  input[type=number]{-moz-appearance:textfield;appearance:textfield;}
+  .auto-cell{background:var(--auto-bg);font-weight:700;text-align:center;border-radius:3px;padding:2px;border:1px solid #93b4d8;min-width:32px;}
+  .toprow{display:flex;gap:10px;align-items:flex-start;}
+  .attrs-box{flex:0 0 200px;}
+  .vida-box{flex:1;min-width:0;}
+  .attrs{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;}
+  .attr{display:flex;align-items:center;justify-content:space-between;background:var(--soft);padding:2px 6px;border-radius:3px;}
+  .attr span{font-weight:700;text-transform:uppercase;font-size:10px;}
+  table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:2px;table-layout:fixed;}
+  th{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;background:var(--bg-dark);color:#fff;padding:2px 3px;text-align:center;}
+  th.skill-h{text-align:left;padding-left:6px;}
+  td{padding:0 2px;border-bottom:1px solid #eef1f5;line-height:1.3;}
+  td.skill{text-align:left;padding-left:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .cat-base{font-family:'Share Tech Mono',monospace;font-size:10px;color:#fff;background:var(--accent2);text-align:center;border-radius:2px;font-weight:700;}
+  .cat-formula{font-family:'Share Tech Mono',monospace;font-size:8px;color:#9fd;font-weight:400;}
+  .total{font-weight:700;text-align:center;background:var(--auto-bg);border:1px solid #93b4d8;border-radius:2px;}
+  .skilltbl col.c-num{width:30px;}
+  .skilltbl input[type=number]{width:26px;}
+  .lifegrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:3px;text-align:center;font-size:10px;background:var(--soft);padding:5px;border-radius:4px;}
+  .lifegrid .hd{font-family:'Share Tech Mono',monospace;font-size:7.5px;color:var(--muted);text-transform:uppercase;}
+  .lifegrid .v{background:var(--auto-bg);font-weight:700;border-radius:2px;padding:1px;border:1px solid #93b4d8;}
+  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin-top:5px;font-size:10px;}
+  .metrics div{display:flex;justify-content:space-between;background:var(--soft);padding:1px 5px;border-radius:3px;}
+  .note{font-size:8px;color:var(--muted);font-style:italic;margin-top:3px;line-height:1.25;}
+  .skill-cols{display:flex;gap:10px;align-items:flex-start;}
+  .skill-cols>div{flex:1;min-width:0;}
+  .eq-box{border:1px dashed #cbd5e1;border-radius:4px;padding:4px 8px;min-height:54px;}
+  .eq-box .nt-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;color:var(--muted);}
+  .btns{margin:10px 0;display:flex;gap:8px;}
+  button{font-family:'Orbitron',sans-serif;font-size:11px;text-transform:uppercase;padding:6px 14px;border:none;border-radius:4px;cursor:pointer;background:var(--bg-dark);color:#fff;}
+  @media print{
+    @page{size:A4 portrait;margin:8mm;}
+    body{background:#fff;padding:0;font-size:9.5px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .sheet{border:none;max-width:100%;padding:0;}
+    .btns{display:none;}
+    tr{break-inside:avoid;}
+    input{border-color:#ccc;}
+  }
+</style>
+<link rel="stylesheet" href="ficha_marco.css">
+</head>
+<body>
+<nav class="senda-sheet-nav" aria-label="Secciones del juego"><strong>La Senda <span>· Ficha</span></strong><div><a href="juego.html">Juego</a><a href="quickstart.html">Quickstart</a></div></nav>
+<div class="sheet">
+  <div class="header"><h1>La Senda de los Errantes</h1><span class="subtitle">Ficha de personaje · Kit de Inicio</span></div>
+
+  <div class="ident">
+    <label>Jugador<input type="text"></label>
+    <label>Personaje<input type="text" id="personaje"></label>
+    <label>Concepto / Profesión<input type="text"></label>
+    <label>Puntos Épicos<input type="text"></label>
+  </div>
+
+  <div class="toprow">
+    <div class="attrs-box">
+      <h2>Atributos</h2>
+      <div class="attrs">
+        <div class="attr"><span>Car</span><input type="number" id="Ca" oninput="calc()"></div>
+        <div class="attr"><span>Agi</span><input type="number" id="A" oninput="calc()"></div>
+        <div class="attr"><span>Per</span><input type="number" id="P" oninput="calc()"></div>
+        <div class="attr"><span>Con</span><input type="number" id="C" oninput="calc()"></div>
+        <div class="attr"><span>Int</span><input type="number" id="I" oninput="calc()"></div>
+        <div class="attr"><span>Fue</span><input type="number" id="F" oninput="calc()"></div>
+        <div class="attr"><span>Vol</span><input type="number" id="V" oninput="calc()"></div>
+        <div class="attr"><span>Hab</span><input type="number" id="H" oninput="calc()"></div>
+      </div>
+      <div class="metrics">
+        <div><span>Humanidad</span><input type="number" style="width:42px;"></div>
+        <div><span>S. Mental</span><input type="number" style="width:42px;"></div>
+        <div><span>Alma</span><input type="number" id="alma" style="width:42px;" oninput="calc()"></div>
+        <div><span>Dinero (I×100)</span><span class="auto-cell" id="dinero">0</span></div>
+      </div>
+    </div>
+    <div class="vida-box">
+      <h2>PV base — Sano / Herido / Tullido</h2>
+      <div class="lifegrid">
+        <div class="hd"></div><div class="hd">Sano(0)</div><div class="hd">Herido(−10)</div><div class="hd">Tullido(−20)</div>
+        <div class="hd" style="text-align:left;">PV/nivel</div>
+        <div class="v" id="vL">0</div><div class="v" id="vM">0</div><div class="v" id="vG">0</div>
+      </div>
+      <div class="note">PV/nivel = (A+C+F)/6, igual en los 3 niveles. Total = <span id="vT">0</span>. Desbordamiento: impacto único ≥ PV base (cabeza/extremidad) o ≥ PV base×2 (torso) → muerte (cabeza/torso) o desmembramiento (extremidad). Carga libre ≤(F+C)/4 = <span id="cL">0</span>.</div>
+      <h2>Combate</h2>
+      <table class="skilltbl"><colgroup><col><col class="c-num"><col class="c-num"><col class="c-num"><col class="c-num"></colgroup>
+        <tr><th class="skill-h">Habilidad</th><th>Bas</th><th>Apr</th><th>Mod</th><th>Tot</th></tr>
+        <tbody id="combatTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2>Habilidades</h2>
+  <div class="skill-cols">
+    <div id="catA"></div>
+    <div id="catB"></div>
+  </div>
+  <div class="skill-cols">
+    <div id="catC"></div>
+    <div id="catD"></div>
+  </div>
+
+  <div class="skill-cols">
+    <div><h2>Armas</h2>
+      <table><colgroup><col><col style="width:26px;"><col style="width:30px;"><col style="width:26px;"></colgroup>
+        <tr><th class="skill-h">Nombre</th><th>%</th><th>Dñ</th><th>Pen</th></tr>
+        <tbody id="armasTable"></tbody>
+      </table>
+    </div>
+    <div><h2>Equipo y notas</h2>
+      <div class="eq-box"><span class="nt-lbl">Equipo, méritos/defectos, notas</span></div>
+    </div>
+  </div>
+
+  <div class="btns">
+    <button onclick="window.print()">Imprimir / PDF</button>
+    <button onclick="limpiar()" style="background:#888;">Limpiar</button>
+  </div>
+</div>
+
+<script>
+const raw=id=>{const v=document.getElementById(id).value.trim();return v===''?NaN:parseInt(v);};
+const num=id=>{const v=raw(id);return isNaN(v)?0:v;};
+const filled=(...ids)=>ids.every(id=>!isNaN(raw(id)));
+const round=x=>Math.ceil(x); // regla de la casa: si queda decimal, SIEMPRE arriba
+const CATS=[
+  {name:"Académicas",formula:"(I+V)/2",deps:['I','V'],base:()=>round((num('I')+num('V'))/2),
+   skills:["Ciencias","Biotecnología","Buscar información","Programación","Diagnóstico","Investigación","Supervivencia","Vigilar/Rastrear","—"]},
+  {name:"Tecnológica",formula:"(H+P)/2",deps:['H','P'],base:()=>round((num('H')+num('P'))/2),
+   skills:["Ciber-tecnología","Electrónica","Mecánica","Seguridad","Manos ágiles","Primeros Auxilios","Armería","Conducir","Pilotar","Sigilo","—"]},
+  {name:"Atlética",formula:"(A+F)/2",deps:['A','F'],base:()=>round((num('A')+num('F'))/2),
+   skills:["Acrobacias","Conducir","Pilotar","Resistir","Proezas","Sigilo","—"]},
+  {name:"Social",formula:"(Ca+P)/2",deps:['Ca','P'],base:()=>round((num('Ca')+num('P'))/2),
+   skills:["Autocontrol","Bajos Fondos","Empatía","Liderazgo","Persuasión","Seducción","—"]},
+];
+const COMBAT=[
+  {name:"Iniciativa",deps:['A','P'],base:()=>round((num('A')+num('P'))/2)},
+  {name:"Alerta",deps:['P','I'],base:()=>round((num('P')+num('I'))/2)},
+  {name:"Esquivar",deps:['A','H'],base:()=>round((num('A')+num('H'))/2)},
+  {name:"Distancia Corta",deps:['A','H'],base:()=>round((num('A')+num('H'))/2)},
+  {name:"Distancia Media",deps:['A','H'],base:()=>round((num('A')+num('H'))/2)},
+  {name:"Distancia Larga",deps:['A','H'],base:()=>round((num('A')+num('H'))/2)},
+  {name:"Sin Armas",deps:['F','C','A'],base:()=>round((num('F')+num('C')+num('A'))/3)},
+  {name:"Arma CC Corta",deps:['F','A','H'],base:()=>round((num('F')+num('A')+num('H'))/3)},
+  {name:"Arma CC Media",deps:['F','A','H'],base:()=>round((num('F')+num('A')+num('H'))/3)},
+  {name:"Arma CC Larga",deps:['F','A','H'],base:()=>round((num('F')+num('A')+num('H'))/3)},
+];
+function catHTML(cat,ci){
+  let h=`<h2 style="display:flex;justify-content:space-between;align-items:center;"><span>${cat.name}</span><span class="cat-formula">${cat.formula}</span></h2>`;
+  h+=`<table class="skilltbl"><colgroup><col><col class="c-num"><col class="c-num"><col class="c-num"><col class="c-num"></colgroup><tr><th class="skill-h">Hab.</th><th>Bas</th><th>Apr</th><th>Mod</th><th>Tot</th></tr>`;
+  cat.skills.forEach((sk,si)=>{
+    const blank=sk==="—";
+    const nm=blank?`<input type="text" placeholder="(añadir)" style="font-size:10px;">`:sk;
+    h+=`<tr><td class="skill" title="${blank?'':sk}">${nm}</td><td class="cat-base catbase-${ci}">0</td><td><input type="number" class="apr" data-c="${ci}" data-s="${si}" oninput="calc()"></td><td><input type="number" class="mod" data-c="${ci}" data-s="${si}" oninput="calc()"></td><td class="total" id="t-${ci}-${si}">0</td></tr>`;
+  });
+  return h+`</table>`;
+}
+function build(){
+  document.getElementById('catA').innerHTML=catHTML(CATS[0],0);
+  document.getElementById('catB').innerHTML=catHTML(CATS[1],1);
+  document.getElementById('catC').innerHTML=catHTML(CATS[2],2);
+  document.getElementById('catD').innerHTML=catHTML(CATS[3],3);
+  const tb=document.getElementById('combatTable');tb.innerHTML='';
+  COMBAT.forEach((c,i)=>{tb.innerHTML+=`<tr><td class="skill">${c.name}</td><td class="cat-base cb-${i}">0</td><td><input type="number" class="capr" data-i="${i}" oninput="calc()"></td><td><input type="number" class="cmod" data-i="${i}" oninput="calc()"></td><td class="total" id="ct-${i}">0</td></tr>`;});
+  const at=document.getElementById('armasTable');at.innerHTML='';
+  for(let i=0;i<4;i++)at.innerHTML+=`<tr><td><input type="text" style="font-size:10px;"></td><td><input type="number"></td><td><input type="number"></td><td><input type="number"></td></tr>`;
+}
+function calc(){
+  const vidaOk=filled('A','C','F');
+  const pv=vidaOk?round((num('A')+num('C')+num('F'))/6):'';
+  vL.textContent=pv;vM.textContent=pv;vG.textContent=pv;
+  vT.textContent=vidaOk?(pv*3):'';
+  document.getElementById('dinero').textContent=filled('I')?(num('I')*100)+' PC':'';
+  cL.textContent=filled('F','C')?round((num('F')+num('C'))/4):'';
+  CATS.forEach((cat,ci)=>{
+    const ok=filled(...cat.deps);
+    const base=ok?cat.base():'';
+    document.querySelectorAll('.catbase-'+ci).forEach(el=>el.textContent=base);
+    cat.skills.forEach((sk,si)=>{
+      const apr=document.querySelector(`.apr[data-c="${ci}"][data-s="${si}"]`);if(!apr)return;
+      const mod=document.querySelector(`.mod[data-c="${ci}"][data-s="${si}"]`);
+      const a=parseInt(apr.value)||0, m=parseInt(mod.value)||0;
+      const hasInput=ok||apr.value.trim()!==''||mod.value.trim()!=='';
+      document.getElementById(`t-${ci}-${si}`).textContent=hasInput?(ok?cat.base():0)+a+m:'';
+    });
+  });
+  COMBAT.forEach((c,i)=>{
+    const ok=filled(...c.deps);
+    const base=ok?c.base():'';
+    document.querySelectorAll('.cb-'+i).forEach(el=>el.textContent=base);
+    const a=parseInt(document.querySelector(`.capr[data-i="${i}"]`).value)||0;
+    const m=parseInt(document.querySelector(`.cmod[data-i="${i}"]`).value)||0;
+    const hasInput=ok||a!==0||m!==0;
+    document.getElementById('ct-'+i).textContent=hasInput?(ok?c.base():0)+a+m:'';
+  });
+}
+function limpiar(){document.querySelectorAll('input[type=number]').forEach(e=>{if(!['Ca','A','P','C','I','F','V','H','alma'].includes(e.id))e.value='';});calc();}
+build();calc();
+</script>
+</body>
+</html>

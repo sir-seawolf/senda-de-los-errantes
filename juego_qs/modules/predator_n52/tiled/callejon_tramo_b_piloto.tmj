@@ -1,0 +1,96 @@
+{
+  "compressionlevel": -1,
+  "height": 9,
+  "infinite": false,
+  "nextlayerid": 4,
+  "nextobjectid": 5,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.11.0",
+  "tileheight": 100,
+  "tilewidth": 100,
+  "type": "map",
+  "version": "1.10",
+  "width": 24,
+  "layers": [
+    {
+      "class": "Master",
+      "id": 1,
+      "image": "../assets/panoramic/callejon/callejon_master.jpg",
+      "name": "Master",
+      "opacity": 1,
+      "type": "imagelayer",
+      "visible": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "draworder": "topdown",
+      "id": 2,
+      "name": "Geometry",
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "objects": [
+        {
+          "id": 1,
+          "name": "pavimento",
+          "polygon": [
+            { "x": 0, "y": 0 },
+            { "x": 2240, "y": 0 },
+            { "x": 2240, "y": 70 },
+            { "x": 0, "y": 70 }
+          ],
+          "type": "WalkableRegion",
+          "x": 150,
+          "y": 755
+        },
+        {
+          "id": 2,
+          "name": "desde_tramo_a",
+          "point": true,
+          "properties": [
+            { "name": "spawnId", "type": "string", "value": "desde_tramo_a" }
+          ],
+          "type": "Spawn",
+          "x": 300,
+          "y": 790
+        },
+        {
+          "id": 3,
+          "name": "regreso_desde_futuro",
+          "point": true,
+          "properties": [
+            { "name": "spawnId", "type": "string", "value": "regreso_desde_futuro" }
+          ],
+          "type": "Spawn",
+          "x": 2100,
+          "y": 790
+        }
+      ]
+    },
+    {
+      "draworder": "topdown",
+      "id": 3,
+      "name": "Gameplay",
+      "opacity": 1,
+      "type": "objectgroup",
+      "visible": true,
+      "objects": [
+        {
+          "height": 105,
+          "id": 4,
+          "name": "salida_tramo_a",
+          "properties": [
+            { "name": "targetScene", "type": "string", "value": "callejon_panoramico_piloto" },
+            { "name": "targetSpawnId", "type": "string", "value": "regreso_tramo_b" }
+          ],
+          "type": "Exit",
+          "width": 100,
+          "x": 150,
+          "y": 720
+        }
+      ]
+    }
+  ]
+}

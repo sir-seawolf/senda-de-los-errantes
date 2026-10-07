@@ -1,0 +1,30 @@
+.senda-sheet-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(1480px, 100%);
+  margin: 0 auto 8px;
+  padding: 8px 12px;
+  color: #e2e8f0;
+  background: #0f1115;
+  border-bottom: 2px solid #ff3b3b;
+  font-family: "Share Tech Mono", monospace;
+  font-size: 11px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+.senda-sheet-nav strong { color: #fff; font-family: "Orbitron", sans-serif; font-size: 11px; letter-spacing: 1.2px; }
+.senda-sheet-nav span { color: #38bdf8; }
+.senda-sheet-nav div { display: flex; align-items: center; gap: 4px; }
+.senda-sheet-nav a { color: #94a3b8; padding: 5px 8px; text-decoration: none; }
+.senda-sheet-nav a:hover { color: #fff; }
+.senda-sheet-nav a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (max-width: 620px) {
+  .senda-sheet-nav { width: calc(100vw - 20px); margin: 0 0 5px; padding: 7px 9px; }
+  .senda-sheet-nav strong { font-size: 9px; }
+  .senda-sheet-nav div { gap: 0; }
+  .senda-sheet-nav a { padding-inline: 5px; font-size: 9px; }
+  .senda-sheet-nav a:last-child { display: none; }
+}
+@media print { .senda-sheet-nav { display: none !important; } }

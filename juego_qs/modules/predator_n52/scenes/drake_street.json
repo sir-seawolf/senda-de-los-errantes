@@ -1,0 +1,40 @@
+{
+  "id": "drake_street",
+  "type": "single_roll",
+  "musicState": "tension",
+  "title": "La cita en Drake Street",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introText": "El punto de encuentro es un callejón trasero, sucio, lleno de ratas y desperdicios, lejos de las rondas de policía. La puerta del número 34 es una plancha de acero blindado con una mirilla a la altura de los ojos. Al golpear, la mirilla se abre de golpe: unos ojos fríos os estudian desde dentro. \"¿Código?\" — \"Índigo es Azul\". La mirilla se cierra un instante. Cuando vuelve a abrirse: \"¿Dónde está Arthur Dicking?\"",
+  "actions": [
+    { "id": "justificar", "label": "Justificar la ausencia de Arthur (Persuasión)" }
+  ],
+  "interactions": [
+    {
+      "id": "negociar_drake_street",
+      "trigger": { "action": "justificar" },
+      "executors": "party",
+      "delegationTitle": "¿Quién habla por la puerta?",
+      "roll": {
+        "skill": "Persuasión",
+        "difficulty": -10,
+        "difficultyLabel": "Difícil",
+        "label": "Justificar la ausencia de Arthur ante MORT",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "registerDecision": "Drake Street: la negociación con MORT sale bien.",
+        "setFlags": ["drake_street_trato_aceptado"],
+        "discoverClues": ["MORT acepta el trato: 5.000 PC por el chip CHAFRY CORP."],
+        "text": "La mirilla se cierra. Un cerrojo pesado gira, y la puerta se abre lo justo para dejaros pasar. Dentro, alguien cuenta 5.000 PC sin mediar más palabras que las estrictamente necesarias — el chip cambia de manos. \"Un placer hacer negocios\", dice una voz, sin ninguna calidez.",
+        "transition": "drake_street_trato"
+      },
+      "onFailure": {
+        "registerDecision": "Drake Street: la negociación con MORT fracasa.",
+        "text": "Algo en la respuesta no cuadra. La mirilla se cierra de golpe. Un segundo después, la plancha de acero se abre entera — y detrás no hay ningún trato, solo armas.",
+        "transition": "drake_street_combate"
+      }
+    }
+  ]
+}

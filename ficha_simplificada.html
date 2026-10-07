@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<!-- ARCHIVO MAESTRO. Ficha estática (sin autocálculo) para rellenar a mano o imprimir. -->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Senda de los Errantes — Ficha Simplificada</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
+  :root{
+    --bg-dark:#0f1115; --border:#2a303c;
+    --accent:#ff3b3b; --accent2:#1d6fa3; --accent3:#9333ea; --muted:#94a3b8;
+    --input-bg:#fffef5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Rajdhani',sans-serif;background:#e9edf2;color:#1e293b;padding:10px;font-size:13px;}
+  .sheet{max-width:1480px;margin:0 auto;background:#fff;padding:12px 16px;border:1px solid #cbd5e1;}
+  .header{display:flex;align-items:baseline;gap:14px;}
+  h1{font-family:'Orbitron',sans-serif;text-transform:uppercase;font-size:17px;color:#000;border-bottom:3px solid var(--accent);padding-bottom:2px;letter-spacing:1px;}
+  .subtitle{font-family:'Share Tech Mono',monospace;color:var(--accent);font-size:11px;text-transform:uppercase;}
+  h2{font-family:'Orbitron',sans-serif;background:var(--bg-dark);color:#fff;padding:2px 7px;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin:5px 0 3px;}
+  h3{font-family:'Share Tech Mono',monospace;font-size:9px;text-transform:uppercase;color:#0f172a;margin:3px 0 2px;}
+  .row{display:flex;gap:10px;align-items:stretch;}
+  .col{flex:1;min-width:0;}
+  .ident{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:5px 0 4px;}
+  .ident label{display:flex;flex-direction:column;font-size:9.5px;text-transform:uppercase;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+  input,select,textarea{font-family:'Rajdhani',sans-serif;font-size:13px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;background:var(--input-bg);width:100%;}
+  table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:2px;table-layout:fixed;}
+  th{font-family:'Share Tech Mono',monospace;font-size:9px;text-transform:uppercase;background:var(--bg-dark);color:#fff;padding:1px 3px;text-align:center;}
+  th.skill-h{text-align:left;padding-left:6px;}
+  td{padding:0 2px;border-bottom:1px solid #eef1f5;line-height:1.15;}
+  td.skill{text-align:left;padding-left:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .attrs{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .attrgrp h3{text-align:center;background:#f1f5f9;padding:1px;border-radius:2px;}
+  .attr{display:flex;align-items:center;justify-content:space-between;background:#f1f5f9;padding:1px 6px;border-radius:3px;margin-top:2px;}
+  .attr span{font-weight:700;text-transform:uppercase;font-size:10px;}
+  .attr input{width:38px;text-align:center;}
+  .lifebox{background:#f8fafc;border:1px solid var(--border);border-radius:4px;padding:4px;margin-bottom:4px;}
+  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:3px;font-size:11px;}
+  .metrics div{display:flex;justify-content:space-between;align-items:center;background:#f1f5f9;padding:0 5px;border-radius:3px;gap:3px;}
+  .metrics input{width:40px;text-align:center;}
+  .note{font-size:9px;color:var(--muted);font-style:italic;margin-top:2px;line-height:1.2;}
+  .skilltbl col.c-num{width:36px;}
+  .skilltbl input{width:100%;text-align:center;}
+  .armor-visual{position:relative;background:#fff;border:1px dashed #93b4d8;border-radius:4px;padding:4px;flex:1;min-height:210px;overflow:hidden;}
+  .armor-bg{position:absolute;top:4px;left:4px;right:4px;bottom:4px;width:calc(100% - 8px);height:calc(100% - 8px);object-fit:contain;object-position:left center;opacity:.8;}
+  .loctbl-wrap{position:relative;z-index:1;margin-left:auto;width:150px;background:rgba(248,250,252,.88);border:1px solid var(--border);border-radius:4px;padding:3px;}
+  .loctbl-wrap table{font-size:10px;}
+  .loctbl-wrap col.c-num{width:27px;}
+  .loctbl-wrap input{width:23px;height:18px;padding:0;font-size:9.5px;}
+  .disc-band{margin-top:4px;}
+  .btns{margin:8px 0;display:flex;gap:8px;}
+  button{font-family:'Orbitron',sans-serif;font-size:12px;text-transform:uppercase;padding:6px 14px;border:none;border-radius:4px;cursor:pointer;background:var(--bg-dark);color:#fff;}
+  button.alt{background:var(--accent2);}
+  .footnote{font-size:9.5px;color:var(--muted);font-style:italic;border-top:1px solid #e2e8f0;margin-top:8px;padding-top:4px;}
+  .page2{margin-top:10px;padding-top:6px;border-top:2px solid #cbd5e1;}
+  .page2-title{font-family:'Orbitron',sans-serif;text-transform:uppercase;font-size:14px;color:#000;border-bottom:2px solid var(--accent);padding-bottom:1px;letter-spacing:1px;margin-bottom:4px;}
+  .p2col{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .p2block{background:#f8fafc;border:1px solid var(--border);border-radius:4px;padding:3px;}
+  .p2table{width:100%;border-collapse:collapse;font-size:10.5px;table-layout:fixed;}
+  .p2table th{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;background:var(--bg-dark);color:#fff;padding:0 2px;text-align:left;}
+  .p2table td{padding:1px 2px;border-bottom:1px solid #e5e7eb;}
+  .p2table input,.p2table textarea{width:100%;font-size:11px;}
+  .p2table textarea{min-height:38px;resize:vertical;}
+  .perfil-row{display:flex;align-items:center;gap:4px;margin-top:3px;}
+  .perfil-row span{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;color:var(--muted);min-width:78px;}
+  .boxrow{display:flex;flex-wrap:wrap;gap:2px;margin-top:1px;}
+  .boxrow input[type=checkbox]{width:11px;height:11px;margin:0;flex:none;accent-color:var(--accent2);}
+  .rackmed{background:#f8fafc;border:1px solid var(--border);border-radius:4px;padding:4px;font-size:10px;}
+  .rackmed .hdrline{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+  .rackmed .hdrline span{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;color:var(--muted);}
+  .rackmed .hdrline input[type=text]{width:90px;}
+  .rackmed .hdrline input[type=number]{width:34px;}
+  .rackmed .lvl{display:flex;align-items:center;gap:4px;margin-top:3px;}
+  .rackmed .lvl span{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;color:var(--muted);min-width:38px;}
+  .mun-row{display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap;}
+  .mun-row span{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;color:var(--muted);}
+  .mun-row input[type=text]{width:70px;}
+  @media screen and (max-width: 900px){
+    .row{flex-direction:column;}
+    .col{width:100%;}
+    .ident{grid-template-columns:repeat(2,1fr);}
+    .attrs{grid-template-columns:1fr;}
+    table{display:block;overflow-x:auto;}
+  }
+  @media print{
+    @page{size:A4 landscape;margin:8mm;}
+    body{background:#fff;padding:0;font-size:9px;}
+    .sheet{border:none;max-width:100%;padding:0;}
+    .btns{display:none;}
+    h2{page-break-after:avoid;}
+    table,.p2block,.rackmed{page-break-inside:avoid;}
+    .page2{page-break-before:always;}
+    input,select,textarea{border-color:#ccc;background:#fff !important;color:#000 !important;}
+  }
+</style>
+<link rel="stylesheet" href="ficha_marco.css">
+</head>
+<body>
+<nav class="senda-sheet-nav" aria-label="Secciones del juego"><strong>La Senda <span>· Ficha</span></strong><div><a href="juego.html">Juego</a><a href="quickstart.html">Quickstart</a></div></nav>
+<div class="sheet">
+
+  <div class="header">
+    <h1>La Senda de los Errantes</h1>
+    <span class="subtitle">Ficha de personaje · simplificada (para imprimir/rellenar a mano)</span>
+  </div>
+
+  <div class="ident">
+    <label>Jugador<input type="text"></label>
+    <label>Personaje<input type="text"></label>
+    <label>Nivel Tecnológico<input type="text"></label>
+    <label>Naturaleza / Tipo<input type="text"></label>
+    <label>Corporación<input type="text"></label>
+    <label>Puntos Épicos<input type="text"></label>
+  </div>
+
+  <div class="row">
+    <!-- COLUMNA 1: Atributos, Vida, Méritos -->
+    <div class="col">
+      <h2>Atributos</h2>
+      <div class="attrs">
+        <div class="attrgrp">
+          <h3>Mentales</h3>
+          <div class="attr"><span>Carisma</span><input type="text"></div>
+          <div class="attr"><span>Percepción</span><input type="text"></div>
+          <div class="attr"><span>Inteligencia</span><input type="text"></div>
+          <div class="attr"><span>Voluntad</span><input type="text"></div>
+        </div>
+        <div class="attrgrp">
+          <h3>Físicos</h3>
+          <div class="attr"><span>Agilidad</span><input type="text"></div>
+          <div class="attr"><span>Constitución</span><input type="text"></div>
+          <div class="attr"><span>Fuerza</span><input type="text"></div>
+          <div class="attr"><span>Habilidad</span><input type="text"></div>
+        </div>
+      </div>
+
+      <h2>PV base — Sano/Herido/Tullido = (A+C+F)/6</h2>
+      <div class="lifebox">
+        <div class="metrics">
+          <div><span>Herido (-10%)</span><input type="text"></div>
+          <div><span>Tullido (-20%)</span><input type="text"></div>
+          <div><span>Aturdimiento</span><input type="text"></div>
+          <div><span>Taras</span><input type="text"></div>
+          <div><span>Humanidad</span><input type="text"></div>
+          <div><span>Distorsión</span><input type="text"></div>
+          <div><span>Salud Mental</span><input type="text"></div>
+          <div><span>Alma</span><input type="text"></div>
+        </div>
+      </div>
+
+      <h2>Armadura</h2>
+      <div class="metrics">
+        <div><span>Cabeza</span><input type="text"></div>
+        <div><span>Torso</span><input type="text"></div>
+        <div><span>Brazos</span><input type="text"></div>
+        <div><span>Piernas</span><input type="text"></div>
+        <div><span>Energía / Rúnica</span><input type="text"></div>
+      </div>
+
+      <h2>Méritos y Defectos / Rasgos</h2>
+      <table><colgroup><col><col style="width:55px;"><col></colgroup>
+        <tr><th class="skill-h">Nombre</th><th>Tipo</th><th>Efecto</th></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+
+      <h2>Medikits (Rack Médico)</h2>
+      <div class="rackmed">
+        <div class="hdrline"><span>Tipo</span><input type="text"><span>Cant.</span><input type="number"></div>
+        <div class="lvl"><span>MKB</span><div class="boxrow">
+          <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
+        </div></div>
+        <div class="lvl"><span>MKG</span><div class="boxrow">
+          <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
+        </div></div>
+      </div>
+    </div>
+
+    <!-- COLUMNA 2: Combate, Armas, Localizaciones -->
+    <div class="col">
+      <h2>Iniciativa / Alerta / Esquivar</h2>
+      <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+        <tr><th class="skill-h">Habilidad</th><th>Valor</th></tr>
+        <tr><td class="skill">Iniciativa</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Alerta</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Esquivar</td><td><input type="text"></td></tr>
+      </table>
+
+      <h2>Combate</h2>
+      <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+        <tr><th class="skill-h">Habilidad</th><th>Valor</th></tr>
+        <tr><td class="skill">Distancia</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Sin Armas</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Arma CC</td><td><input type="text"></td></tr>
+      </table>
+
+      <h2>Armas</h2>
+      <table><colgroup><col><col style="width:36px;"><col style="width:36px;"><col style="width:36px;"></colgroup>
+        <tr><th class="skill-h">Nombre</th><th>%</th><th>Dñ</th><th>Pen</th></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      </table>
+
+      <h2>Munición (por arma)</h2>
+      <div class="mun-row"><span>Tipo</span><input type="text"><div class="boxrow">
+        <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
+      </div></div>
+      <div class="mun-row"><span>Tipo</span><input type="text"><div class="boxrow">
+        <input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox"><input type="checkbox">
+      </div></div>
+
+      <h2>Localizaciones / Armadura</h2>
+      <div class="armor-visual">
+        <img class="armor-bg" src="img/Modelolocalizaciones2.png" alt="Modelo de localizaciones corporales">
+        <div class="loctbl-wrap">
+          <table><colgroup><col><col class="c-num"><col class="c-num"></colgroup>
+            <tr><th class="skill-h">Zona</th><th>PV</th><th>Act</th></tr>
+            <tr><td class="skill" title="Cabeza">Cabeza</td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td class="skill" title="Torso">Torso</td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td class="skill" title="Brazo Izq">Br.Izq</td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td class="skill" title="Brazo Der">Br.Der</td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td class="skill" title="Pierna Izq">Pi.Izq</td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td class="skill" title="Pierna Der">Pi.Der</td><td><input type="text"></td><td><input type="text"></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA 3: Académicas + Atlética -->
+    <div class="col">
+      <h2>Académicas</h2>
+      <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+        <tr><th class="skill-h">Habilidad</th><th>Valor</th></tr>
+        <tr><td class="skill">Ciencias</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Biotecnología</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Navegación</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Burocracia</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Buscar información</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Programación</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Diagnóstico</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Esconderse/Evadirse</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Investigación</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Juego</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Diseño Hardware</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Sentido del Negocio</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Supervivencia</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Vigilar/Rastrear</td><td><input type="text"></td></tr>
+      </table>
+
+      <h2>Atlética</h2>
+      <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+        <tr><th class="skill-h">Habilidad</th><th>Valor</th></tr>
+        <tr><td class="skill">Acrobacias</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Conducir</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Resistir</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Proezas</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Pilotar</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Trajes Servoasistidos</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Sigilo</td><td><input type="text"></td></tr>
+      </table>
+    </div>
+
+    <!-- COLUMNA 4: Tecnológica + Social -->
+    <div class="col">
+      <h2>Tecnológica</h2>
+      <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+        <tr><th class="skill-h">Habilidad</th><th>Valor</th></tr>
+        <tr><td class="skill">Armería</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Artesanía</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Ciber-tecnología</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Demoliciones</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Disfraz</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Electrónica</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Falsificación</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Química</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Manualidades</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Mecánica</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Manos ágiles</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Seguridad</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Primeros Auxilios</td><td><input type="text"></td></tr>
+      </table>
+
+      <h2>Social</h2>
+      <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+        <tr><th class="skill-h">Habilidad</th><th>Valor</th></tr>
+        <tr><td class="skill">Absorción</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Autocontrol</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Bajos Fondos</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Empatía</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Interrogatorio</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Liderazgo</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Manejo de Animales</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Persuasión</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Seducción</td><td><input type="text"></td></tr>
+        <tr><td class="skill">Estilo</td><td><input type="text"></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- BANDA INFERIOR: Distorsión + Implante/Runa/Bots-Droids/Vehículo -->
+  <div class="disc-band">
+    <div class="row">
+      <div class="col">
+        <h2>Hechicería</h2>
+        <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+          <tr><td class="skill">Proyección de Energía</td><td><input type="text"></td></tr>
+          <tr><td class="skill">Protección de Energía</td><td><input type="text"></td></tr>
+          <tr><td class="skill">Invocación de Energía</td><td><input type="text"></td></tr>
+        </table>
+      </div>
+      <div class="col">
+        <h2>Maestros de la Distorsión</h2>
+        <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+          <tr><td class="skill">Detección de Distorsión</td><td><input type="text"></td></tr>
+          <tr><td class="skill">Manipulación de Distorsión</td><td><input type="text"></td></tr>
+          <tr><td class="skill">Camino de los Portales</td><td><input type="text"></td></tr>
+        </table>
+      </div>
+      <div class="col">
+        <h2>Marcas arcanas</h2>
+        <table class="skilltbl"><colgroup><col><col class="c-num"></colgroup>
+          <tr><td class="skill">Tatuador Rúnico</td><td><input type="text"></td></tr>
+          <tr><td class="skill">Herrero Rúnico</td><td><input type="text"></td></tr>
+        </table>
+      </div>
+      <div class="col">
+        <h2>Implante / Runa</h2>
+        <table><colgroup><col><col style="width:50px;"><col style="width:34px;"><col></colgroup>
+          <tr><th class="skill-h">Nombre</th><th>Loc</th><th>Niv</th><th>Notas</th></tr>
+          <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+          <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+          <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">Ficha simplificada: sin cálculos automáticos, para rellenar a mano o imprimir en blanco. Para la versión con autocálculo, usa FICHA_Personaje_Autocalculada.html.</div>
+
+  <div class="btns">
+    <button class="alt" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+
+  <!-- PÁGINA 2 -->
+  <div class="page2">
+    <div class="page2-title">La Senda de los Errantes · Vehículo, Perfil y Trasfondo</div>
+    <div class="row">
+
+      <!-- COLUMNA 1: Vehículo + Dinero + Bots/Droids -->
+      <div class="col p2col">
+        <div class="p2block">
+          <h3>Vehículo</h3>
+          <table class="p2table"><colgroup><col><col style="width:20%;"><col style="width:16%;"><col></colgroup>
+            <tr><th>Nombre</th><th>Tamaño</th><th>Vol</th><th>Notas</th></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+          </table>
+        </div>
+        <div class="p2block">
+          <h3>Bots / Droids</h3>
+          <table class="p2table"><colgroup><col><col style="width:20%;"><col></colgroup>
+            <tr><th>Nombre</th><th>Loc</th><th>Habilidades</th></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+          </table>
+        </div>
+        <div class="p2block">
+          <h3>Dinero</h3>
+          <table class="p2table">
+            <tr><th>Detalle</th></tr>
+            <tr><td><input type="text"></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- COLUMNA 2: Perfil -->
+      <div class="col p2col">
+        <div class="p2block">
+          <h3>Perfil</h3>
+          <div class="perfil-row"><span>Pseudónimo</span><input type="text"></div>
+          <div class="perfil-row"><span>Fecha nacim.</span><input type="text"></div>
+          <div class="perfil-row"><span>Fecha entrada</span><input type="text"></div>
+          <div class="perfil-row"><span>Jefe</span><input type="text"></div>
+          <div class="perfil-row"><span>Sexo</span><input type="text"></div>
+          <div class="perfil-row"><span>Edad</span><input type="text"></div>
+          <div class="perfil-row"><span>Aparente</span><input type="text"></div>
+          <div class="perfil-row"><span>Estudios</span><input type="text"></div>
+          <div class="perfil-row"><span>Profesión</span><input type="text"></div>
+          <div class="perfil-row"><span>Etnia</span><input type="text"></div>
+          <div class="perfil-row"><span>Estatura</span><input type="text"></div>
+          <div class="perfil-row"><span>Peso</span><input type="text"></div>
+          <div class="perfil-row"><span>Pelo</span><input type="text"></div>
+          <div class="perfil-row"><span>Ojos</span><input type="text"></div>
+          <div class="perfil-row"><span>Envergadura</span><input type="text"></div>
+          <div class="perfil-row"><span>Domicilio</span><input type="text"></div>
+          <div class="perfil-row"><span>Ciudad</span><input type="text"></div>
+          <div class="perfil-row"><span>Nacionalidad</span><input type="text"></div>
+          <div class="perfil-row"><span>Vestimenta</span><input type="text"></div>
+          <div class="perfil-row"><span>Manías</span><input type="text"></div>
+        </div>
+      </div>
+
+      <!-- COLUMNA 3: Objeto/Contenedor -->
+      <div class="col p2col">
+        <div class="p2block">
+          <h3>Objeto / Contenedor</h3>
+          <table class="p2table"><colgroup><col><col style="width:16%;"><col style="width:16%;"><col></colgroup>
+            <tr><th>Nombre</th><th>Loc</th><th>Huecos</th><th>Notas</th></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+            <tr><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- COLUMNA 4: Trasfondo / Notas -->
+      <div class="col p2col">
+        <div class="p2block" style="flex:1;display:flex;flex-direction:column;">
+          <h3>Trasfondo / Notas</h3>
+          <table class="p2table" style="flex:1;">
+            <tr><th>Registro</th></tr>
+            <tr><td><textarea style="height:100%;min-height:200px;"></textarea></td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

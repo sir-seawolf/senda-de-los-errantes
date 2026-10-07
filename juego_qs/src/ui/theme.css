@@ -1,0 +1,140 @@
+/* theme.css — lenguaje visual semántico de La Senda de los Errantes (Iteración 7).
+   Consolida y nombra por SIGNIFICADO, no por color, los tokens que ya
+   existían sueltos en style.css (--accent, --accent-2...) y añade los que
+   faltaban. Cargar ANTES de style.css — solo declara variables, no reglas.
+
+   Principio de identidad: el cian saturado (--color-mosaico) NO es un
+   acento decorativo — está reservado para anomalía/Mosaico/interferencia
+   (ver senda_estilo.css del gateway en juego.html, y §19 de la guía de
+   Iteración 7: "no reutilizar su estética para botones normales"). El
+   motor NO debe usarlo como color de hover/selección genérico: por eso
+   existe --color-seleccion, un tono cálido (ámbar) que enlaza
+   deliberadamente con los Puntos Épicos — la selección del jugador es su
+   propia agencia dentro de la partida, no "porque queda futurista". */
+:root {
+  /* Fondo y superficie */
+  --color-fondo: #0d0f12;
+  --color-superficie: #15181d;
+  --color-superficie-alta: #1c2028;
+  --color-borde: #2a2f38;
+
+  /* Texto */
+  --color-texto: #e6e6e6;
+  --color-texto-tenue: #8b93a1;
+
+  /* Información — lecturas de sistema, etiquetas, texto secundario.
+     Azul apagado deliberadamente distinto del cian de Mosaico: informa,
+     no señala una anomalía. */
+  --color-informacion: #6f93a8;
+
+  /* Selección — hover/foco/elegido. Ámbar, familia de --color-critico:
+     la elección del jugador comparte lenguaje visual con sus Puntos
+     Épicos, no con la tecnología corporativa (rojo) ni con el Mosaico
+     (cian). */
+  --color-seleccion: #c9a227;
+
+  /* Peligro — corporaciones, amenazas, la marca roja de La Senda desde
+     el callejón original. */
+  --color-peligro: #b3323c;
+  --color-peligro-texto: #e16f77;
+
+  /* Tecnología / Mosaico / anomalía — reservado, no decorativo. Mismo
+     valor que usa juego.html para el gateway; aquí solo para elementos
+     que de verdad son tecnología del Mosaico (p.ej. iconografía futura de
+     habilidades Tecnológicas), nunca para hover genérico. */
+  --color-mosaico: #22d3ee;
+
+  /* Heridas — Sano/Herido/Tullido comparten la familia de peligro pero
+     más apagada; el rojo pleno queda para pifia/crítico de daño real. */
+  --color-herida: #b3323c;
+
+  /* Resultados de tirada */
+  --color-exito: #3f9e5e;
+  --color-fallo: #7a7f88;
+  --color-critico: #d4af37;
+  --color-pifia: #b3323c;
+
+  /* Carcasa de mando inspirada en instrumental industrial: geometría y
+     profundidad compartidas por menú, escena, ficha y overlays. */
+  --shell-fondo: #080d10;
+  --shell-metal: #11191e;
+  --shell-metal-alto: #18242b;
+  --shell-linea: #30404a;
+  --shell-linea-activa: #65b7c7;
+  --shell-radio: 5px;
+  --shell-sombra: 0 12px 32px rgba(0, 0, 0, .42);
+
+  /* Compatibilidad: nombres antiguos usados en el resto de style.css
+     durante la migración — apuntan a los tokens semánticos de arriba.
+     Se pueden retirar cuando ya no quede ningún var(--accent...) suelto. */
+  --bg: var(--color-fondo);
+  --panel: var(--color-superficie);
+  --panel-2: var(--color-superficie-alta);
+  --ink: var(--color-texto);
+  --muted: var(--color-texto-tenue);
+  --accent: var(--color-peligro);
+  --accent-2: var(--color-informacion);
+  --success: var(--color-exito);
+  --fail: var(--color-fallo);
+  --critico: var(--color-critico);
+  --pifia: var(--color-pifia);
+
+  /* Recurso decorativo de panel (encargo de sesión, 2026-08-21) -- token
+     genérico que la interfaz táctica responsive consume sin conocer
+     qué hay detrás (tacticalResponsiveUI.js: `background-image:
+     var(--panel-decorado, none)`). El tema base no decora nada; un
+     tema de módulo puede sustituirlo por su propio recurso CC0 con
+     licencia verificada (ver el bloque predator-urban más abajo). */
+  --panel-decorado: none;
+}
+
+/* ===== Capa de tema por módulo (encargo de sesión, 2026-08-21) =====
+   El bloque :root de arriba ES el tema "senda-base": el lenguaje visual
+   por defecto de La Senda de los Errantes, y sigue siendo la base de
+   todo cuando ningún módulo declara nada distinto. Un módulo puede
+   pedir una variación seleccionando `[data-theme="<id>"]` en <html>
+   (ver moduleLoader.js `cargarModulo()`, mismo patrón genérico que ya
+   usa `music`: el motor no conoce ningún id de tema concreto, solo lee
+   `manifest.theme` y lo aplica). Cada bloque de aquí SOLO redefine los
+   mismos tokens semánticos de arriba -- ningún archivo que consuma
+   `var(--color-*)` cambia de estructura, tamaño o comportamiento por
+   tener un tema distinto, solo de color/recurso decorativo.
+
+   Jerarquía prevista (de más a menos general): tema base de La Senda →
+   tema de módulo (lo que hay aquí) → variación de localización dentro
+   del módulo → acento puntual de facción. Solo los dos primeros
+   niveles existen todavía -- localización y facción quedan para cuando
+   haga falta, no se diseñan por adelantado.
+
+   Temas pendientes de un módulo real que los reclame (NO desarrollar
+   todavía, solo dejar el hueco entendido): monstruoplantas, mundo-chatarra,
+   mundo-maquina, madcity. */
+
+/* predator-urban -- Predator N-5.2, "Las guerras secretas": thriller
+   urbano contemporáneo atravesado por una guerra corporativa secreta.
+   Hormigón, asfalto húmedo, metal táctico; colores civiles apagados,
+   nunca neón genérico ni aspecto de nave espacial. La paleta es la ya
+   validada en la interfaz táctica responsive (Fase 6B) y en el
+   manifiesto de recursos 6D -- aquí se generaliza como tema para que
+   alcance también las pantallas narrativas (callejón, diálogo, ficha),
+   que ya leen estos mismos tokens en style.css. */
+:root[data-theme="predator-urban"] {
+  --color-fondo: #141719;         /* carbón */
+  --color-superficie: #1b1e21;
+  --color-superficie-alta: #282e31; /* metal */
+  --color-borde: #282e31;         /* metal */
+  --color-texto: #e3ded2;         /* hueso claro */
+  --color-texto-tenue: #9a9a92;
+  --color-informacion: #65b7c7;   /* cian instrumental -- con moderación, nunca glow permanente */
+  --color-seleccion: #d79a35;     /* ámbar de decisión */
+  --color-peligro: #b84b47;       /* rojo contenido, no saturado */
+  --color-peligro-texto: #e27a74;
+  --color-herida: #b84b47;
+
+  /* Textura CC0 ya incorporada y verificada (Fase 6D, ver
+     docs/PREDATOR_VISUAL_RESOURCES_MANIFEST_6D.md) -- hormigón, atenuada
+     con un degradado semitransparente para que el texto encima siga
+     legible. Sin recortar ni retocar el archivo original. */
+  --panel-decorado: linear-gradient(rgba(20,23,25,0.93), rgba(20,23,25,0.93)),
+    url("../../assets/shared/tactical/textures/concrete_floor_1k.jpg");
+}

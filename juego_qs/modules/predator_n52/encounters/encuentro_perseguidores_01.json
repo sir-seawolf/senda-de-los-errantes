@@ -1,0 +1,70 @@
+{
+  "id": "encuentro_perseguidores_01",
+  "descripcion": "Composición táctica del combate del callejón: cuántos ejecutores MORT según el tamaño del grupo, qué cobertura hay disponible, y qué pasa al ganar/huir/caer. El motor de combate (src/engine/renderers/combat.js) no sabe que son 'perseguidores' — solo lee estos campos genéricos.",
+  "coberturaDisponible": [
+    {
+      "id": "cajas",
+      "etiqueta": "Cajas apiladas",
+      "nivel": "parcial"
+    },
+    {
+      "id": "contenedor",
+      "etiqueta": "Contenedor metálico",
+      "nivel": "solida"
+    }
+  ],
+  "coberturaDisponibleNota": "Mismos objetos que describe la interacción 'mirar_cobertura' del callejón (modules/predator_n52/scenes/callejon.json) — cada objeto declara su nivel (src/rules/cover.js) y el jugador elige entre los disponibles al pulsar 'Cubrirse'.",
+  "ajusteEjecutores": {
+    "fuente": "QUICKSTART_Kit_de_Inicio_v2.md líneas 448-457",
+    "tabla": [
+      {
+        "personajes": 1,
+        "enemyId": "ejecutorMort",
+        "cantidad": 2
+      },
+      {
+        "personajes": 2,
+        "enemyId": "ejecutorMort",
+        "cantidad": 3
+      },
+      {
+        "personajes": 3,
+        "enemyId": "ejecutorMort",
+        "cantidad": 4
+      },
+      {
+        "personajes": 4,
+        "enemyId": "ejecutorMort",
+        "cantidad": 6
+      },
+      {
+        "personajes": 5,
+        "enemyId": "ejecutorMort",
+        "cantidad": 6
+      }
+    ]
+  },
+  "onVictory": {
+    "registerDecision": "Combate: victoria — los ejecutores corporativos caen.",
+    "transition": "aparcamiento_panoramico_piloto"
+  },
+  "onVictoryNota": "COMBAT UX 0.2: antes transicionaba a 'finales' (pantalla de expediente cerrado), dando la sensación de que la aventura terminaba al ganar — bug de datos, no del motor (aplicarConsecuencias() ya soportaba transition a cualquier escena). Corregido al siguiente paso jugable común: aparcamiento, elección de vehículo, interior y rastreo de la tarjeta — ganar el combate deja al grupo exactamente en la misma situación que perderles el rastro con sigilo: con la tarjeta-llave del muerto y el peligro inmediato atrás. 'combate_victoria' se retira de finales.json por quedar inalcanzable.",
+  "onFlee": {
+    "registerDecision": "Combate: huida exitosa a mitad de combate.",
+    "transition": "persecucion"
+  },
+  "onDeathWithEpicPoint": {
+    "setFinalTipo": "casi_muerto",
+    "registerDecision": "Combate: \"Parecía que había muerto\" — Punto Épico gastado.",
+    "transition": "finales"
+  },
+  "onDeath": {
+    "setFinalTipo": "muerte",
+    "registerDecision": "Combate: derrota.",
+    "transition": "finales"
+  },
+  "tactical": {
+    "definitionId": "predator_combate_inicial_tactical"
+  },
+  "tacticalNota": "Production Integration Phase 4 (docs/TACTICAL_PRODUCTION_PHASE4.md): referencia ESTABLE a la TacticalEncounterDefinition real del módulo (modules/predator_n52/encounters/tactical/predatorTacticalEncounter.js, registrada en encounters/tactical/index.js). El gateway táctico (src/tactical/tacticalPhaserRenderer.js) la lee de aquí para saber qué definición cargar cuando TACTICAL_PHASER_ENABLED=true — el motor de combate legacy (combat.js) sigue ignorando por completo este campo, exactamente igual que ignora cualquier otro campo que no reconoce."
+}

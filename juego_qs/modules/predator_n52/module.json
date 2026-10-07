@@ -1,0 +1,139 @@
+{
+  "id": "predator_n52",
+  "title": "Predator N-5.2",
+  "subtitle": "Las guerras secretas",
+  "system": "senda_qs",
+  "version": "0.2",
+  "startScene": "callejon",
+  "theme": "predator-urban",
+  "referenceModule": true,
+  "credits": [
+    "Vertical slice no oficial basado en el Quick Starter <em>Predator N-5.2 — Las guerras secretas</em> de <strong>La Senda de los Errantes</strong>.",
+    "Reglas, personajes y arte: fuente original del Kit de Inicio. Ver <code>docs/QS_RULE_MAP.md</code> para la trazabilidad completa de cada mecánica.",
+    "Prototipo jugable — placeholders donde no hay arte original disponible (ver <code>modules/predator_n52/docs/ASSET_NEEDS.md</code>)."
+  ],
+  "allowImportedCharacters": true,
+  "allowImportedCharactersNota": "El módulo mantiene sus 5 pregenerados canónicos y permite además jugar con personajes JSON guardados en la biblioteca local del navegador.",
+  "paths": {
+    "scenes": "scenes/",
+    "maps": "maps/",
+    "encounters": "encounters/",
+    "characters": "characters/characters.json",
+    "enemies": "enemies/enemies.json",
+    "weapons": "weapons/weapons.json",
+    "assets": "assets/"
+  },
+  "engineRequirements": {
+    "sceneTypes": [
+      "point_click",
+      "decision",
+      "single_roll",
+      "raycast",
+      "combat",
+      "ending",
+      "dialogue",
+      "tactical-phaser",
+      "panoramic"
+    ]
+  },
+  "devEntryPoints": [
+    {
+      "id": "persecucion",
+      "label": "Prueba de persecución en tercera persona",
+      "nota": "Entrada directa a la persecución real. Conserva sus metas, tiradas y consecuencias; permite revisar la presentación moderna sin repetir el prólogo."
+    },
+    {
+      "id": "combate_inicial",
+      "label": "Encuentro: callejón de servicio",
+      "nota": "Entrada directa al encuentro jugable del callejón. Carga el mismo escenario, reglas y recursos del recorrido narrativo."
+    },
+    {
+      "id": "callejon_panoramico_piloto",
+      "label": "Prueba panorámica del callejón",
+      "nota": "Piloto aislado de Localización C (docs/CONTRATO_VISUAL_PREDATOR.md). NO forma parte del recorrido narrativo de Predator todavía -- entrada temporal de desarrollo para que el autor pruebe desplazamiento, cámara, interacción, ficha y adaptación móvil. Retirar cuando se decida migrar el callejón real."
+    },
+    {
+      "id": "aparcamiento_panoramico_piloto",
+      "label": "Prueba panorámica del aparcamiento",
+      "nota": "Segunda localización panorámica (tras la verja del callejón). Entrada de desarrollo aislada para probar sus tres vehículos interactivos sin depender de haber cruzado la verja primero. No forma parte del recorrido narrativo definitivo."
+    },
+    {
+      "id": "callejon_panoramico_tramo_b_piloto",
+      "label": "Prueba panorámica del tramo B (huérfano)",
+      "nota": "Actualmente sin ningún punto de entrada real en el juego (el Exit del callejón se redirigió al aparcamiento en un commit posterior). Se conserva y se hace accesible aquí para no perder el trabajo mientras se decide su futuro narrativo -- ver devNote de la propia escena."
+    },
+    {
+      "id": "rastrear_tarjeta",
+      "label": "Prueba del interior del vehículo",
+      "nota": "Escena single_roll con capas de presentación (sceneLayers.js), no panorámica. Entrada aislada para probar la escena sin haber robado antes un vehículo concreto en el aparcamiento -- el indicador del salpicadero (icono según vehículo robado) no aparecerá porque ningún flag de vehículo estará activo; comportamiento degradado esperado, no un error."
+    }
+  ],
+  "music": {
+    "exploration": "predator_exploration.mp3",
+    "tension": "predator_tension.mp3",
+    "chase": "predator_chase.mp3",
+    "combat": "predator_combat.mp3"
+  },
+  "audio": {
+    "sounds": {
+      "vehicle_cabin_rain": {
+        "src": "assets/audio/vehicle_cabin_rain.wav",
+        "status": "ready",
+        "volume": 0.55,
+        "license": "original-project"
+      },
+      "chip_reader_scan": {
+        "src": "assets/audio/chip_reader_scan.wav",
+        "status": "ready",
+        "volume": 0.7,
+        "license": "original-project"
+      },
+      "chip_reader_confirm": {
+        "src": "assets/audio/chip_reader_confirm.wav",
+        "status": "ready",
+        "volume": 0.72,
+        "license": "original-project"
+      }
+    }
+  },
+  "content": {
+    "scenes": [
+      "almacenes",
+      "aparcamiento_panoramico_piloto",
+      "arthur_apartamento",
+      "callejon",
+      "captura_transporte",
+      "combate_inicial",
+      "contacto_chafry",
+      "decision",
+      "decision_arthur",
+      "dialogo_cinthia",
+      "drake_street",
+      "drake_street_combate",
+      "drake_street_trato",
+      "esconderse",
+      "finales",
+      "mapa_investigacion",
+      "persecucion",
+      "pitagoras",
+      "portal_primus",
+      "rastrear_tarjeta",
+      "satelite_aterrizaje",
+      "satelite_lanzadera",
+      "satelite_llegada",
+      "satelite_terraplen"
+    ],
+    "maps": [
+      "callejon_entorno"
+    ],
+    "encounters": [
+      "encuentro_drake_street",
+      "encuentro_perseguidores_01",
+      "encuentro_plantacion"
+    ],
+    "devScenes": [
+      "callejon_panoramico_piloto",
+      "callejon_panoramico_tramo_b_piloto"
+    ]
+  }
+}

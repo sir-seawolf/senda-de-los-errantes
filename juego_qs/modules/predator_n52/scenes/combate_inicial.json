@@ -1,0 +1,14 @@
+{
+  "id": "combate_inicial",
+  "type": "tactical-phaser",
+  "typeNota": "Production Integration Phase 4 (docs/TACTICAL_PRODUCTION_PHASE4.md): antes era \"combat\" (dispatch directo a src/engine/renderers/combat.js). Ahora despacha al gateway táctico (src/tactical/tacticalPhaserRenderer.js), que con TACTICAL_PHASER_ENABLED=false (su default) llama exactamente al MISMO renderer legacy (montarCombate) para esta misma escena -- el jugador no nota ningún cambio. Con el flag en true, intenta el stub táctico (Fase 1, sin Phaser) y cae de vuelta al legacy si no puede completarse. Ningún otro campo de esta escena cambió.",
+  "musicState": "combat",
+  "title": "Combate — Callejón",
+  "background": "assets/backgrounds/callejon.jpg",
+  "sheetContext": "combate",
+  "availableParty": ["player", "bishop", "salim"],
+  "availablePartyNota": "El combate ahora refleja el mismo grupo que acompaña al jugador en el callejón (hasta 3). La tabla de ajuste de ejecutores ya escala en consecuencia (3 personajes -> 4 ejecutores, QS L.448-457).",
+  "introText": "Las figuras metálicas cierran el paso. Empieza el combate.",
+  "encounter": "encuentro_perseguidores_01",
+  "encounterNota": "Iteración 5: la composición táctica (enemigos/cobertura/condiciones de victoria) vive en modules/predator_n52/encounters/encuentro_perseguidores_01.json, no en la propia escena — ver docs/MODULE_ARCHITECTURE.md, sección Encuentros."
+}

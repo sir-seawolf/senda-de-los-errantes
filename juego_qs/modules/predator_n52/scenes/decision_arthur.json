@@ -1,0 +1,117 @@
+{
+  "id": "decision_arthur",
+  "type": "decision",
+  "renderer": "location_selector",
+  "musicState": "exploration",
+  "title": "Red de investigación",
+  "background": "assets/backgrounds/mapa_investigacion.svg",
+  "sheetContext": "callejon",
+  "sheetLayout": "overlay",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "introText": "Las pistas siguen abiertas. Podéis visitar contactos, volver sobre líneas conocidas o buscar una salida del sector. Lo resuelto queda registrado y el resto permanece accesible.",
+  "choices": [
+    {
+      "id": "pitagoras",
+      "label": "CONSULTAR A PITÁGORAS",
+      "unavailableLabel": "PITÁGORAS — INFORMACIÓN OBTENIDA"
+    },
+    {
+      "id": "cinthia",
+      "label": "VISITAR A CINTHIA MOLLIS",
+      "unavailableLabel": "CINTHIA MOLLIS — CONVERSACIÓN RESUELTA"
+    },
+    {
+      "id": "chafry",
+      "label": "CONTACTAR CON CHAFRY CORP",
+      "unavailableLabel": "CHAFRY CORP — CONTACTO RESUELTO"
+    },
+    {
+      "id": "drake",
+      "label": "ACUDIR A DRAKE STREET",
+      "unavailableLabel": "DRAKE STREET — RUTA AGOTADA"
+    },
+    {
+      "id": "almacenes",
+      "label": "IR A LOS ALMACENES",
+      "hideWhenUnavailable": true
+    }
+  ],
+  "interactions": [
+    {
+      "id": "ir_pitagoras",
+      "trigger": {
+        "choice": "pitagoras"
+      },
+      "blockedByFlags": [
+        "pitagoras_resuelto"
+      ],
+      "onAlways": {
+        "transition": "pitagoras"
+      }
+    },
+    {
+      "id": "ir_cinthia",
+      "trigger": {
+        "choice": "cinthia"
+      },
+      "blockedByFlags": [
+        "cinthia_resuelta"
+      ],
+      "onAlways": {
+        "transition": "dialogo_cinthia"
+      }
+    },
+    {
+      "id": "ir_chafry",
+      "trigger": {
+        "choice": "chafry"
+      },
+      "blockedByFlags": [
+        "chafry_resuelto"
+      ],
+      "onAlways": {
+        "transition": "contacto_chafry"
+      }
+    },
+    {
+      "id": "ir_drake",
+      "trigger": {
+        "choice": "drake"
+      },
+      "blockedByFlags": [
+        "drake_street_agotado"
+      ],
+      "onAlways": {
+        "transition": "drake_street"
+      }
+    },
+    {
+      "id": "ir_almacenes_pasaje",
+      "trigger": {
+        "choice": "almacenes"
+      },
+      "requiresFlags": [
+        "pasaje_almacenes"
+      ],
+      "onAlways": {
+        "transition": "almacenes"
+      }
+    },
+    {
+      "id": "ir_almacenes_ruta",
+      "trigger": {
+        "choice": "almacenes"
+      },
+      "requiresFlags": [
+        "ruta_almacenes"
+      ],
+      "onAlways": {
+        "transition": "almacenes"
+      }
+    }
+  ]
+}

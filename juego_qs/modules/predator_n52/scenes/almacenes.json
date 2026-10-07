@@ -1,0 +1,39 @@
+{
+  "id": "almacenes",
+  "type": "single_roll",
+  "musicState": "tension",
+  "title": "Escena 4 — Los Almacenes",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introTextNota": "QUICKSTART_Kit_de_Inicio_v2.md líneas 567-580 (Escena 4). Entrada por la Ruta A (Acuerdo con Mort, vía Drake Street) -- MORT ya los espera, así que se digitaliza el pasaje por contactos (línea 577), no las vías de infiltración no vigilada (colarse/sobornar/sabotear), que corresponden a las Rutas B/C todavía no habilitadas (ver PREDATOR_QUICKSTART_GAP_AUDIT_2026-08-22.md §3).",
+  "introText": "Los muelles de carga son un hervidero incluso de noche. Sobre todo destaca una grúa industrial amarilla, altísima, moviendo contenedores en una danza automática e hipnótica. Vías de tren rodean el complejo como un circuito de juguete y se meten en un túnel hacia el este, todo cercado por vallas de alta tensión. En el centro, dos edificios administrativos con el rótulo de una empresa de logística de nombre corriente — pero el fucsia y el negro lo impregnan todo, si uno sabe mirar. Alguien del turno de noche os esperaba: \"¿El envío? Sí, ya me han avisado. 1.000 PC por persona, máximo tres por contenedor. Poneos esto.\" Os tiende trajes estancos.",
+  "actions": [
+    { "id": "embarcar", "label": "Poneros los trajes y embarcar" }
+  ],
+  "interactions": [
+    {
+      "id": "embarcar_contenedor",
+      "trigger": { "action": "embarcar" },
+      "executors": "party",
+      "delegationTitle": "¿Quién vigila mientras os preparáis?",
+      "roll": {
+        "skill": "Alerta",
+        "difficulty": -10,
+        "difficultyLabel": "Difícil",
+        "label": "Detectar al ratero que pincha trajes"
+      },
+      "onSuccess": {
+        "registerDecision": "Almacenes: detectáis al saboteador antes de que actúe.",
+        "text": "Un tipo demasiado interesado en los trajes se aleja en cuanto nota que lo habéis visto. Vuestros trajes llegan intactos al contenedor.",
+        "transition": "satelite_llegada"
+      },
+      "onFailure": {
+        "registerDecision": "Almacenes: un ratero pincha uno de los trajes sin que os deis cuenta.",
+        "setFlags": ["traje_pinchado"],
+        "text": "Nadie nota nada raro — hasta que ya es tarde para comprobarlo. Los trajes parecen intactos, pero uno de ellos no lo está del todo.",
+        "transition": "satelite_llegada"
+      }
+    }
+  ]
+}

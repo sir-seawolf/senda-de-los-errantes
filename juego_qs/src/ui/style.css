@@ -1,0 +1,1012 @@
+/* Tokens de color: ver theme.css (cargado antes que este archivo) — aquí
+   solo queda lo que no es un token de color. */
+:root {
+  font-family: "Barlow Condensed", sans-serif;
+}
+
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("../../assets/shared/fonts/barlow-condensed/BarlowCondensed-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("../../assets/shared/fonts/barlow-condensed/BarlowCondensed-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; background: var(--shell-fondo); color: var(--ink); }
+body { overflow: hidden; }
+button, input, select, textarea { font: inherit; }
+::selection { background: var(--color-informacion); color: var(--shell-fondo); }
+:focus-visible { outline: 2px solid var(--color-informacion); outline-offset: 3px; }
+* { scrollbar-color: var(--shell-linea-activa) var(--shell-metal); scrollbar-width: thin; }
+
+#game-shell { position: relative; height: 100dvh; display: grid; grid-template-rows: 54px minmax(0, 1fr); padding: 0 12px 12px; background: var(--shell-fondo); box-shadow: inset 2px 0 0 rgba(114,199,220,.32), inset -2px 0 0 rgba(114,199,220,.32); }
+#game-header {
+  position: relative;
+  display: grid; grid-template-columns: minmax(280px, auto) 1fr; align-items: center; gap: 22px;
+  border-bottom: 1px solid var(--shell-linea); min-width: 0;
+}
+#game-header::after { content: ""; position: absolute; left: 0; bottom: -1px; width: clamp(72px, 12vw, 180px); height: 2px; background: var(--color-informacion); box-shadow: 0 0 16px rgba(114,199,220,.32); }
+.game-brand { font-size: clamp(1rem, 2vw, 1.45rem); font-weight: 800; letter-spacing: .055em; color: var(--color-texto); white-space: nowrap; }
+.game-contexto { min-width: 0; border-left: 1px solid var(--shell-linea); padding-left: 16px; display: flex; flex-direction: column; line-height: 1.05; text-transform: uppercase; }
+.game-contexto span { color: var(--color-informacion); font-size: .72rem; letter-spacing: .14em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.game-contexto strong { color: var(--color-texto-tenue); font-size: .8rem; letter-spacing: .08em; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+#app {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76% 24%;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  border: 1px solid var(--shell-linea);
+  border-top: 0;
+  background: var(--shell-metal);
+  box-shadow: var(--shell-sombra), inset 0 0 0 1px rgba(111, 167, 181, .035);
+  outline: 1px solid rgba(114,199,220,.18);
+  outline-offset: -5px;
+}
+
+/* Marco común de aplicación. Vive fuera de cualquier renderer para que
+   menú, relato, panorámicas y combate hereden el mismo lenguaje visual. */
+#app::before,
+#app::after {
+  content: "";
+  position: absolute;
+  z-index: 240;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: .7;
+}
+#app::before {
+  top: 5px;
+  left: 5px;
+  border-top: 2px solid var(--color-informacion);
+  border-left: 2px solid var(--color-informacion);
+}
+#app::after {
+  right: 5px;
+  bottom: 5px;
+  border-right: 2px solid var(--color-informacion);
+  border-bottom: 2px solid var(--color-informacion);
+}
+
+/* Menús, selector de módulos y finales no montan ficha. En esos estados el
+   escenario recupera todo el marco, como en una consola real sin panel vacío. */
+#app:not(:has(#sheet-panel > *)) { grid-template-columns: minmax(0, 1fr) 0; }
+#app:not(:has(#sheet-panel > *)) #sheet-panel { padding: 0; border: 0; overflow: hidden; }
+
+@media (max-width: 900px) {
+  #app { grid-template-columns: 1fr; grid-template-rows: 65vh 35vh; }
+  #app:not(:has(#sheet-panel > *)) { grid-template-rows: minmax(0, 1fr) 0; }
+}
+
+#scenario {
+  position: relative;
+  overflow: hidden;
+  background: #050809;
+  display: flex;
+  flex-direction: column;
+}
+
+#sheet-panel {
+  background: var(--shell-metal);
+  border-left: 1px solid var(--shell-linea);
+  padding: 14px;
+  overflow-y: auto;
+}
+
+/* ---------- Configuración de audio (Iteración Audio, punto 22-23) ----------
+   Botón discreto, fijo, coherente con el resto del cromado (mismo patrón que
+   la anomalía del gateway): nunca tapa HUD/joystick/INTERACTUAR, que viven
+   dentro de #scenario con sus propios z-index más altos cuando hace falta. */
+#config-toggle {
+  position: fixed; right: 22px; bottom: 22px; z-index: 250;
+  width: 44px; height: 44px; border-radius: var(--shell-radio);
+  background: var(--shell-metal-alto); border: 1px solid var(--shell-linea);
+  color: var(--color-texto-tenue, #8a94a3); font-size: 16px; line-height: 1;
+  cursor: pointer; transition: color .2s, border-color .2s;
+}
+#config-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+#config-toggle:hover, #config-toggle:focus-visible { color: var(--color-informacion, #6cb6e0); border-color: var(--color-informacion, #6cb6e0); outline: none; }
+#config-panel {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,.35);
+}
+#config-panel[hidden] { display: none; }
+.ajustes-caja {
+  position: fixed; right: 12px; bottom: 54px; z-index: 301;
+  width: min(260px, 80vw); max-height: calc(100vh - 66px); overflow-y: auto;
+  padding: 16px; background: #0c0e14;
+  border: 1px solid var(--color-borde, #333); box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  font-family: "Barlow Condensed", sans-serif;
+}
+.ajustes-fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.ajustes-fila-bus { display: grid; grid-template-columns: 1fr auto; }
+.ajustes-fila-bus input { grid-column: 1 / -1; width: 100%; }
+.ajustes-etiqueta { font-size: .78em; letter-spacing: 1px; color: var(--color-texto-tenue, #8a94a3); text-transform: uppercase; }
+.ajustes-onoff {
+  min-width: 52px; padding: 5px 10px; background: rgba(255,255,255,.05);
+  border: 1px solid var(--color-borde, #333); color: var(--ink); cursor: pointer; font-family: inherit;
+}
+.ajustes-onoff[aria-pressed="true"] { border-color: var(--color-informacion, #6cb6e0); color: var(--color-informacion, #6cb6e0); }
+.ajustes-cerrar {
+  width: 100%; padding: 8px; margin-top: 4px; background: none;
+  border: 1px solid var(--color-borde, #333); color: var(--color-texto-tenue, #8a94a3);
+  cursor: pointer; font-family: inherit; letter-spacing: 1px;
+}
+.ajustes-cerrar:hover, .ajustes-cerrar:focus-visible { color: var(--ink); border-color: var(--ink); outline: none; }
+#ajustes-volumen { width: 130px; }
+
+/* ---------- Menú ---------- */
+.menu-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background:
+    linear-gradient(135deg, rgba(101,183,199,.045), transparent 38%),
+    var(--shell-fondo);
+  text-align: center;
+  padding: 24px;
+}
+.menu-titulo { font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: .035em; color: var(--color-texto); max-width: 14ch; line-height: .95; }
+.menu-subtitulo { font-size: .78rem; color: var(--color-informacion); letter-spacing: .16em; text-transform: uppercase; }
+.menu-botones { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; width: 320px; }
+.btn-menu {
+  background: var(--shell-metal-alto); color: var(--ink); border: 1px solid var(--shell-linea);
+  border-radius: var(--shell-radio); padding: 12px 18px; min-height: 46px; cursor: pointer; font-size: .82rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  transition: background .18s ease-out, border-color .18s ease-out, color .18s ease-out, transform .18s ease-out;
+}
+.btn-menu:hover { background: #203039; border-color: var(--color-informacion); color: #eefcff; transform: translateY(-1px); }
+.btn-menu:disabled { opacity: .4; cursor: not-allowed; }
+
+@media (max-width: 700px) {
+  #game-shell { grid-template-rows: 48px minmax(0, 1fr); padding: 0 6px 6px; }
+  #game-header { grid-template-columns: 1fr auto; gap: 10px; }
+  .game-brand { font-size: .82rem; letter-spacing: .035em; }
+  .game-contexto { max-width: 42vw; padding-left: 10px; }
+  .game-contexto span { font-size: .66rem; }
+  .game-contexto strong { font-size: .72rem; }
+  #config-toggle { right: 14px; bottom: 14px; }
+}
+
+/* Entradas de desarrollo (module.json: devEntryPoints) -- claramente
+   diferenciadas del menú real: etiqueta propia, borde distinto, nunca se
+   confunden con "Nueva partida" ni con el recorrido narrativo real. */
+.menu-dev-entradas { margin-top: 24px; width: min(620px, 100%); border-top: 1px solid var(--shell-linea); color: var(--color-texto-tenue); }
+.menu-dev-entradas summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; }
+.menu-dev-entradas summary:hover, .menu-dev-entradas summary:focus-visible { color: var(--color-informacion); }
+.menu-dev-lista { display: grid; gap: 8px; padding: 8px 0 2px; }
+.btn-menu-dev { border-color: var(--color-informacion); color: var(--color-informacion); }
+.btn-menu-dev:hover { background: var(--color-informacion); color: #08090b; border-color: var(--color-informacion); }
+
+.volver-modulos { margin-top: 6px; font-size: .85em; }
+.volver-modulos a { color: var(--muted); text-decoration: none; }
+.volver-modulos a:hover { color: var(--ink); }
+
+/* ---------- Selector de módulos (nivel 1) — registro de expedientes, no
+   tienda de tarjetas (§11/§15 de la guía de Iteración 7). Lista vertical,
+   numerada, con el estado como un sello alineado a la derecha en vez de
+   una badge redondeada — sigue siendo 100% data-driven desde
+   modules/modules.json (ver moduleMenu.js), ningún id hardcodeado aquí. */
+.modulos-lista { display: flex; flex-direction: column; width: 100%; max-width: 640px; border-top: 1px solid var(--color-borde); }
+.expediente {
+  display: flex; align-items: baseline; gap: 14px; padding: 16px 6px;
+  border-bottom: 1px solid var(--color-borde); text-align: left; background: none;
+}
+.expediente.jugable { cursor: pointer; }
+.expediente.jugable:hover, .expediente.jugable:focus-visible { background: rgba(201,162,39,.06); outline: none; }
+.expediente.jugable:hover .exp-titulo, .expediente.jugable:focus-visible .exp-titulo { color: var(--color-seleccion); }
+.expediente.bloqueado { opacity: .45; }
+.exp-num { font-size: .78em; color: var(--color-texto-tenue); letter-spacing: 1px; flex-shrink: 0; padding-top: 2px; }
+.exp-cuerpo { flex: 1; min-width: 0; }
+.exp-titulo { font-weight: bold; font-size: 1.05em; letter-spacing: .5px; }
+.exp-subtitulo { font-weight: normal; color: var(--color-informacion); font-size: .88em; }
+.exp-desc { color: var(--color-texto-tenue); font-size: .8em; margin-top: 5px; line-height: 1.4; }
+.exp-estado {
+  font-size: .78rem; letter-spacing: 1.5px; color: var(--color-peligro-texto); flex-shrink: 0;
+  text-transform: uppercase; padding-top: 3px; white-space: nowrap;
+}
+.expediente.bloqueado .exp-estado { color: var(--color-texto-tenue); }
+
+/* ---------- Selección de personaje ---------- */
+.seleccion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; width: 100%; max-width: 900px; }
+.card-pj-wrap { position: relative; display: flex; min-width: 0; flex-direction: column; background: var(--color-superficie-alta); border-radius: var(--shell-radio); box-shadow: 0 8px 20px rgba(0,0,0,.22); overflow: hidden; }
+/* El retrato domina la tarjeta (§12): marco mínimo, más alto, la fortaleza
+   mecánica va siempre visible (no solo al pasar el ratón — en móvil no hay
+   hover) para decidir sin abrir la ficha completa. */
+.seleccion-intro { margin: -2px 0 18px; color: var(--color-texto-tenue); font-size: .9rem; letter-spacing: .02em; }
+.card-pj { appearance: none; flex: 1; width: 100%; color: var(--color-texto); background: transparent; border: 1px solid var(--color-borde); border-radius: var(--shell-radio); cursor: pointer; padding: 0 0 12px; text-align: left; overflow: hidden; transition: border-color .18s ease-out; }
+.card-pj:hover, .card-pj:focus-visible { border-color: var(--color-seleccion); outline: none; }
+.card-pj-wrap:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(0,0,0,.34); }
+.btn-eliminar-pj { min-height: 38px; margin: -1px 1px 1px; border: 0; border-top: 1px solid var(--color-borde); background: rgba(8,13,16,.72); color: var(--color-texto-tenue); cursor: pointer; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+.btn-eliminar-pj:hover, .btn-eliminar-pj:focus-visible { color: var(--color-peligro-texto); outline: 1px solid var(--color-peligro); outline-offset: -2px; }
+.cp-retrato { position: relative; display: grid; place-items: center; width: 100%; height: 180px; overflow: hidden; background: linear-gradient(145deg, var(--shell-metal-alto), var(--shell-fondo)); color: var(--color-informacion); }
+.cp-retrato::after { content: ""; position: absolute; inset: 12px; border: 1px solid rgba(101,183,199,.16); clip-path: polygon(0 0, 28px 0, 28px 1px, 1px 1px, 1px 28px, 0 28px, 0 0, 100% 0, 100% 100%, 0 100%); }
+.cp-retrato-iniciales { font-size: 2.25rem; font-weight: 600; letter-spacing: .12em; }
+.cp-retrato img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.cp-identidad { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 10px 12px 0; }
+.card-pj .cp-nombre { font-weight: 700; letter-spacing: .055em; }
+.card-pj .cp-rol { display: block; color: var(--color-texto-tenue); font-size: .8em; margin: 2px 12px 0; }
+.card-pj .cp-fortaleza { display: block; color: var(--color-informacion); font-size: .72em; margin-top: 5px; padding: 0 12px; line-height: 1.35; }
+.cp-origen { color: var(--color-seleccion); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; }
+.importar-personaje { width: min(900px, 100%); margin-top: 20px; padding: 14px 16px; border: 1px solid var(--shell-linea); border-radius: var(--shell-radio); background: var(--shell-metal); display: grid; grid-template-columns: 1fr auto; gap: 6px 18px; align-items: center; }
+.importar-copy { display: flex; flex-direction: column; text-align: left; }
+.importar-copy strong { color: var(--color-texto); text-transform: uppercase; letter-spacing: .08em; }
+.importar-copy span { color: var(--color-texto-tenue); font-size: .82rem; line-height: 1.4; }
+.btn-importar { margin: 0; min-width: 150px; }
+#estado-importacion { grid-column: 1 / -1; min-height: 1.2em; margin: 0; color: var(--color-peligro-texto); }
+.importar-confirmacion { grid-column: 1 / -1; border-top: 1px solid var(--shell-linea); padding-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 14px; text-align: left; color: var(--color-texto); }
+.importar-confirmacion[hidden] { display: none; }
+.importar-confirmacion > span { min-width: 0; overflow-wrap: anywhere; }
+.importar-confirmacion > div { display: flex; gap: 8px; flex-shrink: 0; }
+.importar-confirmacion .btn-menu { min-height: 44px; padding: 8px 14px; }
+@media (max-width: 620px) {
+  .importar-personaje { grid-template-columns: 1fr; }
+  .btn-importar { width: 100%; }
+  .importar-confirmacion { align-items: stretch; flex-direction: column; }
+  .importar-confirmacion > div { display: grid; grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- Escena narrativa ---------- */
+.narrativa {
+  flex: 1; display: block; position: relative; overflow: hidden;
+  min-height: 0; background-size: cover; background-position: center;
+}
+.narrativa-fondo { position: absolute; inset: 0; min-height: 0; background-size: cover; background-position: center; overflow: hidden; }
+.narrativa-presentacion {
+  position: absolute; left: 50%; top: 50%; transform-origin: center;
+  pointer-events: none;
+}
+.narrativa-fondo > .hotspots { z-index: 300; }
+.narrativa-texto {
+  background: rgba(10,10,12,.92); padding: 14px 18px; border-top: 2px solid var(--accent);
+  max-height: 40%; overflow-y: auto; font-size: .95em; line-height: 1.5;
+}
+.narrativa-texto em { color: var(--accent-2); }
+.narrativa-hud {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 320;
+  background: linear-gradient(to top, rgba(6,8,10,.98) 0%, rgba(8,10,12,.92) 68%, rgba(8,10,12,0) 100%);
+  padding-top: clamp(34px, 7vh, 76px);
+}
+
+/* En una composición por capas el escenario no debe cambiar de tamaño
+   cuando el texto pasa de una a varias líneas. Texto y acciones forman un
+   HUD inferior superpuesto; cada uno gestiona su propio desbordamiento. */
+.narrativa-con-presentacion { position: relative; overflow: hidden; }
+.narrativa-con-presentacion .narrativa-fondo { position: absolute; inset: 0; }
+.narrativa-con-presentacion .narrativa-texto { height: clamp(96px, 18vh, 150px); box-sizing: border-box; overflow-y: auto; }
+.narrativa-con-presentacion .acciones-bar { min-height: 62px; align-items: center; }
+
+/* ---------- Diálogo (type: "dialogue") ---------- */
+.dialogo-caja {
+  background: rgba(10,10,12,.94); padding: 16px 20px; border-top: 2px solid var(--accent);
+  max-height: 55%; overflow-y: auto;
+}
+.dialogo-hablante { font-family: "Barlow Condensed", sans-serif; font-weight: 600; letter-spacing: 1px; color: var(--color-informacion); font-size: .9em; margin-bottom: 6px; }
+.dialogo-texto { line-height: 1.6; font-size: .95em; }
+/* Respuestas como líneas narrativas, no botones de formulario (§9): sin
+   caja/borde propio, una marca `>` que se ilumina en selección/foco en
+   vez de un rectángulo — el objetivo táctil sigue siendo >=44px de alto. */
+.dialogo-opciones { display: flex; flex-direction: column; gap: 2px; margin-top: 14px; border-top: 1px solid var(--color-borde); }
+.dialogo-opcion {
+  display: block; width: 100%; text-align: left; background: none; border: none;
+  border-bottom: 1px solid var(--color-borde); color: var(--color-texto);
+  font-family: inherit; font-size: .95em; letter-spacing: .3px;
+  padding: 12px 4px 12px 20px; min-height: 44px; cursor: pointer; position: relative;
+}
+.dialogo-opcion::before { content: ""; position: absolute; left: 3px; top: 50%; width: 5px; height: 5px; border-top: 1px solid var(--color-texto-tenue); border-right: 1px solid var(--color-texto-tenue); transform: translateY(-50%) rotate(45deg); }
+.dialogo-opcion:hover, .dialogo-opcion:focus-visible { color: var(--color-seleccion); outline: none; }
+.dialogo-opcion:hover::before, .dialogo-opcion:focus-visible::before { color: var(--color-seleccion); }
+.acciones-bar { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 18px; background: #08090b; border-top: 1px solid #222; }
+.btn-accion {
+  background: var(--panel-2); color: var(--ink); border: 1px solid #333; padding: 8px 14px;
+  cursor: pointer; font-family: inherit; letter-spacing: .5px;
+}
+.btn-accion:hover { border-color: var(--accent); }
+.btn-accion:disabled { opacity: .3; cursor: not-allowed; }
+.btn-accion.destacado { border-color: var(--accent); background: #2a1216; }
+
+.hotspots { position: absolute; inset: 0; }
+.hotspot {
+  position: absolute; border: 1px dashed rgba(255,255,255,.25); cursor: pointer;
+  display: flex; align-items: flex-end; justify-content: center; color: #fff;
+  font-size: .75em; text-shadow: 0 0 4px #000;
+}
+.hotspot:hover { border-color: var(--color-seleccion); background: rgba(201,162,39,.12); }
+.hotspot.descubierto { border-style: solid; }
+
+/* Menú contextual táctil (narrative.js: tap directo sobre una zona con
+   varias acciones válidas) — pequeño, anclado a la zona, no un panel a
+   toda anchura. Objetivos >=44px de alto (§20 de la guía de Iteración 7).
+   BUG real encontrado con Playwright (2026-08-21, sesión de playtest):
+   antes vivía DENTRO de #scenario (overflow:hidden) posicionado con
+   porcentajes -- con zonas de varios verbos y poco alto disponible
+   (móvil horizontal) se recortaba y #sheet-panel se veía a través del
+   hueco. Ahora narrative.js lo monta en document.body (capa de overlay
+   común, fuera de cualquier overflow:hidden/grid de página) con
+   position:fixed y coordenadas de píxel reales, con abrazadera al
+   viewport -- position:fixed aquí es la mitad del arreglo, la otra
+   mitad (el cálculo de posición) vive en menuContextual(). */
+.hotspot-menu {
+  position: fixed; z-index: 260; display: flex; flex-direction: column;
+  background: var(--color-superficie-alta); border: 1px solid var(--color-seleccion);
+  min-width: 140px; box-shadow: 0 4px 14px rgba(0,0,0,.5);
+}
+.hotspot-menu-opcion {
+  background: transparent; border: none; border-bottom: 1px solid var(--color-borde);
+  color: var(--color-texto); font-family: inherit; font-size: .85em; letter-spacing: .5px;
+  padding: 12px 14px; min-height: 44px; text-align: left; cursor: pointer;
+}
+.hotspot-menu-opcion:last-child { border-bottom: none; }
+.hotspot-menu-opcion:hover, .hotspot-menu-opcion:active { background: rgba(201,162,39,.15); color: var(--color-seleccion); }
+
+/* ---------- Escena panorámica (Localización C, docs/CONTRATO_VISUAL_PREDATOR.md) ----------
+   .panoramica-viewport recorta; .panoramica-escala ajusta el fondo maestro
+   (2400x900) a la altura disponible con un solo transform:scale; dentro de
+   ella, .panoramica-mundo vive a tamaño natural y se desplaza en X (cámara)
+   -- así todas las coordenadas de mundo del JSON (hotspots, objetos, avatar)
+   se declaran en píxeles del maestro, sin depender del viewport real. */
+.panoramica { flex: 1; display: flex; flex-direction: column; position: relative; }
+.panoramica-viewport { flex: 1; position: relative; overflow: hidden; background: #000; }
+.panoramica-escala { position: absolute; top: 0; left: 0; transform-origin: top left; }
+.panoramica-mundo { position: relative; will-change: transform; }
+.panoramica-fondo-master { position: absolute; top: 0; left: 0; display: block; pointer-events: none; }
+.panoramica-capas { display: contents; }
+.panoramica-capa { position: absolute; display: block; max-width: none; will-change: transform; }
+.panoramica-capa--lighting { mix-blend-mode: screen; }
+.panoramica-capa-sombras { z-index: 10; }
+.panoramica-capa-objetos { z-index: 20; }
+.panoramica-avatar-grupo { z-index: 30; }
+.panoramica-capa-oclusion { z-index: 40; }
+.panoramica-capa-luces { z-index: 50; }
+.panoramica-capa-primer-plano { z-index: 100; }
+.panoramica-hotspots { z-index: 200; }
+.panoramica-capa-sombras, .panoramica-capa-objetos, .panoramica-capa-luces, .panoramica-capa-oclusion, .panoramica-capa-primer-plano, .panoramica-hotspots { position: absolute; inset: 0; }
+.panoramica-capa-sombras, .panoramica-capa-luces, .panoramica-capa-primer-plano, .panoramica-hotspots { pointer-events: none; }
+.panoramica-hotspots > * { pointer-events: auto; }
+.panoramica-objeto, .panoramica-luz { position: absolute; display: block; pointer-events: none; }
+/* Sombra de contacto: elipse difusa bajo el punto de apoyo del objeto —
+   CSS puro (radial-gradient + blur), ningún PNG original se toca. */
+.panoramica-sombra-contacto {
+  position: absolute; height: 22px; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.55) 0%, rgba(0,0,0,.28) 55%, transparent 80%);
+  filter: blur(3px); transform: translateX(-50%);
+}
+
+/* ---------- Avatar: silueta provisional real (calibración 2026-08-22) ----------
+   modules/predator_n52/assets/panoramic/callejon/actor_silueta_provisional.svg
+   -- autoría propia, lienzo 180x240 con los pies ya en el borde inferior:
+   a diferencia del sprite anterior (executor_side.png, enemigo reutilizado
+   con una etiqueta de texto incrustada de la lámina fuente), este archivo
+   no necesita ningún recorte por CSS. Anclado en los pies: el grupo se
+   posiciona por su ESQUINA superior izquierda ya calculada en JS a partir
+   de avatarX/walkable.y, no por transform. */
+.panoramica-avatar-grupo { position: absolute; }
+.panoramica-avatar { display: block; transform-origin: bottom center; }
+.panoramica-avatar-grupo.caminando .panoramica-avatar-sombra { transform: translateX(-50%) scaleX(.86); opacity: .72; }
+.panoramica-avatar-sombra {
+  position: absolute; bottom: -4px; left: 50%; width: 70%; height: 14px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.5) 0%, transparent 75%);
+  transform: translateX(-50%); filter: blur(2px);
+}
+
+/* El contenedor vive en .panoramica-capa-oclusion, montada DESPUÉS del
+   avatar en el DOM: siempre que el avatar quede geométricamente detrás de
+   su footprint, el contenedor lo cubre -- máscara de oclusión estructural,
+   sin ningún flag de por medio. */
+.panoramica-capa-oclusion .panoramica-objeto { pointer-events: none; }
+
+/* Primer plano parallax: silueta oscura, deliberadamente sin detalle. Se
+   desplaza un poco más que el mundo para aportar profundidad sin generar
+   otra ilustración completa ni convertir la escena en un falso 3D. */
+.panoramica-primer-plano {
+  position: absolute; display: block; pointer-events: none;
+  transform-origin: bottom left; will-change: transform;
+  filter: drop-shadow(8px 0 12px rgba(0,0,0,.55));
+}
+
+/* Luces de la farola: mix-blend-mode:screen -- funde el resplandor con la
+   fotografía (aditivo) en vez de pegarlo encima con alfa normal, que es lo
+   que producía la "caja" cálida rectangular perceptible (Hallazgo de
+   auditoría visual, 2026-08-22). Los PNG en sí ya son degradados radiales
+   limpios (ver MANIFIESTO_PROCEDENCIA.md) -- el arreglo es puramente de
+   composición, no se ha tocado ningún archivo de imagen. */
+.panoramica-luz { mix-blend-mode: screen; }
+
+/* ---------- Hotspots independientes del dibujo ----------
+   Sin círculo/rótulo permanentes en presentación normal (Hallazgo de
+   auditoría visual): el área interactiva (tamaño real, igual que antes)
+   sigue ahí y sigue siendo alcanzable por teclado -- solo la MARCA VISUAL es
+   contextual, aparece por proximidad real (.cerca, actualizada en cada
+   movimiento) o por foco de teclado, nunca por hover exclusivamente. */
+.panoramica-hotspot {
+  position: absolute; cursor: pointer;
+  background: transparent; border: none;
+}
+.panoramica-hotspot:focus-visible { outline: 2px solid var(--color-seleccion); outline-offset: 2px; }
+/* `display` (no opacity/transition): se alterna directamente desde JS por
+   proximidad/foco (panoramic.js, actualizarProximidadHotspots()) -- un
+   estado binario sin fotogramas intermedios, para no depender de que un
+   `transition` de opacidad quede bien compuesto en cualquier motor de
+   render (se observó un artefacto real de repintado con la versión
+   anterior basada en opacity+transform, reproducido tanto en Playwright
+   como en un navegador real).
+   Flota ENCIMA de la caja del hotspot (bottom:100%, no centrada dentro de
+   ella): la caja ahora coincide con el hueco real del objeto, así que un
+   rótulo centrado quedaría a la altura del propio personaje al acercarse
+   -- tapándolo (Hallazgo de calibración, 2026-08-22, punto 8: "el rótulo
+   FORZAR PUERTA no puede tapar al personaje"). */
+.panoramica-hotspot-etiqueta {
+  position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); margin-bottom: 6px;
+  background: rgba(8,9,11,.92); color: #fff; border: 1px solid var(--color-seleccion);
+  font-size: .78em; font-weight: 600; letter-spacing: .5px; white-space: nowrap;
+  padding: 6px 12px; border-radius: 3px; pointer-events: none;
+}
+/* Depuración (config.debug.showHotspotAreas, en `false` por defecto): deja
+   el área y el rótulo siempre visibles, para verificar cobertura sin tener
+   que acercar el avatar a cada uno -- panoramic.js ya fuerza `display` a
+   "block" en este modo; el borde punteado es solo la señal adicional del
+   área en sí. */
+.panoramica.debug-hotspots .panoramica-hotspot { border: 1px dashed rgba(255,255,255,.35); background: rgba(255,255,255,.04); }
+
+/* ---------- Nota técnica del piloto (config.debug.showPanoramicDevNote,
+   en `false` por defecto) ---------- Fuera del flujo (position:fixed): en
+   cualquier estado (visible u oculta) nunca resta alto al escenario, a
+   diferencia de la maqueta anterior donde ocupaba una franja fija debajo
+   del viewport (Hallazgo de auditoría visual). */
+.panoramica-dev-nota {
+  position: fixed; left: 12px; bottom: 12px; z-index: 230; max-width: min(520px, 80vw);
+  background: rgba(8,9,11,.92); border: 1px solid var(--color-borde); color: var(--color-texto-tenue);
+  font-size: .72em; line-height: 1.4; padding: 8px 12px; pointer-events: none;
+}
+
+/* ---------- Capa de calibración (config.debug.showPanoramicCalibration,
+   "false" por defecto) ---------- Vive DENTRO de #mundo (panoramicCalibration.js
+   la monta como hija más), así que hereda la misma transformación de
+   escala/cámara que el fondo y los objetos -- ninguna coordenada propia en
+   píxeles de viewport. Genérica: no conoce "callejón" ni ningún id. */
+.panoramica-calibracion { position: absolute; top: 0; left: 0; pointer-events: none; }
+.cal-grid line { stroke: rgba(255,255,255,.12); stroke-width: 1; }
+.cal-grid text { fill: rgba(255,255,255,.35); font-size: 11px; font-family: monospace; }
+.cal-banda { fill: rgba(80,180,255,.12); stroke: rgba(80,180,255,.4); stroke-width: 1; }
+.cal-linea-pies { stroke: rgba(80,255,140,.7); stroke-width: 2; stroke-dasharray: 6 4; }
+.cal-caja-objeto { fill: none; stroke: rgba(255,210,60,.85); stroke-width: 2; }
+.cal-caja-hotspot { fill: none; stroke: rgba(255,90,90,.85); stroke-width: 2; stroke-dasharray: 4 3; }
+.cal-anclaje line { stroke: rgba(255,60,220,.95); stroke-width: 2; }
+.cal-etiqueta { fill: rgba(255,210,60,.95); font-size: 12px; font-family: monospace; font-weight: bold; }
+
+.panoramica-controles-movimiento { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 8px; background: #08090b; border-top: 1px solid #222; }
+.panoramica-mov-btn {
+  background: var(--panel-2); color: var(--ink); border: 1px solid #333;
+  min-width: 56px; min-height: 44px; font-size: 1.1em; cursor: pointer; font-family: inherit;
+}
+.panoramica-mov-btn:hover { border-color: var(--accent); }
+.panoramica-efectos-toggle {
+  background: none; color: var(--color-texto-tenue); border: 1px solid var(--color-borde);
+  min-height: 44px; padding: 0 12px; font-size: .72em; letter-spacing: 1px; cursor: pointer; font-family: inherit;
+}
+.panoramica-efectos-toggle[aria-pressed="true"] { color: var(--color-informacion); border-color: var(--color-informacion); }
+.panoramica-texto {
+  background: rgba(10,10,12,.92); padding: 12px 18px; border-top: 2px solid var(--accent);
+  max-height: 30%; overflow-y: auto; font-size: .9em; line-height: 1.5;
+}
+.panoramica-texto em { color: var(--accent-2); }
+/* Reutiliza los breakpoints ya existentes de #app (móvil vertical/horizontal
+   comparten los mismos umbrales que el resto del motor) -- el panel de
+   controles se compacta, nunca se oculta (accesibilidad táctil). */
+@media (max-width: 900px) {
+  .panoramica-mov-btn { min-width: 48px; }
+  .panoramica-efectos-toggle { font-size: .64em; padding: 0 8px; }
+}
+
+/* ---------- Tiradas ----------
+   Jerarquía deliberada (§6): quién/qué -> efectiva -> EL DADO (dominante
+   un instante) -> resultado -> consecuencia. Los números de desglose
+   (base, dificultad, herida) quedan en <details> — existen, pero no son
+   lo primero que se lee. Nunca modal de formulario: sin líneas
+   etiqueta/valor a lo largo de toda la tarjeta. */
+.roll-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.75);
+  display: flex; align-items: center; justify-content: center; z-index: 400;
+}
+.roll-card {
+  background: var(--color-superficie-alta); border: 1px solid var(--color-peligro); padding: 22px 28px;
+  width: 320px; text-align: center;
+}
+.roll-quien { margin-bottom: 10px; }
+.roll-actor { display: block; font-size: .95em; letter-spacing: 1px; color: var(--color-texto); }
+.roll-habilidad { display: block; font-size: .82em; color: var(--color-informacion); margin-top: 2px; }
+.roll-efectiva-cifra { display: flex; align-items: baseline; justify-content: center; gap: 8px; }
+.roll-efectiva-cifra strong { font-size: 1.8em; font-weight: 700; }
+.roll-efectiva-cifra span { font-size: .68em; letter-spacing: 1.5px; color: var(--color-texto-tenue); text-transform: uppercase; }
+.roll-detalles { margin-top: 10px; text-align: left; }
+.roll-detalles summary { cursor: pointer; font-size: .72em; letter-spacing: 1px; color: var(--color-texto-tenue); text-transform: uppercase; }
+.roll-detalles summary:hover { color: var(--color-seleccion); }
+.roll-line { display: flex; justify-content: space-between; padding: 3px 0; font-size: .85em; }
+.res-herida { color: var(--pifia); }
+.btn-epico {
+  margin: 12px 0; background: rgba(201,162,39,.1); border: 1px solid var(--color-critico);
+  color: var(--color-critico); padding: 8px 10px; cursor: pointer; font-family: inherit; width: 100%;
+  font-size: .82em; letter-spacing: .5px;
+}
+.btn-epico span { margin-left: 4px; font-weight: 700; }
+.btn-epico:disabled { opacity: .55; cursor: default; }
+/* El dado domina un instante: tipografía grande, sin decoración, entre la
+   habilidad efectiva y el resultado — nunca comparte peso con el resto. */
+.roll-dado { font-size: 3.2em; font-weight: 700; margin: 10px 0 6px; letter-spacing: 4px; line-height: 1; }
+.roll-result { min-height: 50px; }
+.res-titulo { font-size: 1.15em; font-weight: bold; letter-spacing: 1px; }
+.res-sub { color: var(--color-texto-tenue); font-size: .78em; margin-top: 4px; }
+.res-progreso { color: var(--color-critico); font-size: .76em; margin-top: 6px; border-top: 1px dashed var(--color-borde); padding-top: 5px; }
+.res-exito .res-titulo { color: var(--color-exito); }
+.res-fallo .res-titulo { color: var(--color-fallo); }
+.res-critico .res-titulo { color: var(--color-critico); }
+.res-pifia .res-titulo { color: var(--color-pifia); }
+/* Vínculo visual con el Punto Épico (§7): un borde propio y sobrio en el
+   bloque de resultado cuando ese resultado ya incorpora el PE gastado —
+   nunca el glitch del gateway (reservado a Mosaico/anomalía). */
+.roll-result-pe { position: relative; }
+.roll-result-pe::before {
+  content: ""; position: absolute; left: -14px; top: 0; bottom: 0; width: 2px;
+  background: var(--color-critico); box-shadow: 0 0 6px rgba(212,175,55,.6);
+}
+.btn-continuar { margin-top: 14px; background: var(--color-peligro); border: none; color: #fff; padding: 10px 20px; cursor: pointer; font-family: inherit; min-height: 44px; }
+
+/* ---------- Ficha lateral ---------- */
+.ficha { display: flex; flex-direction: column; gap: 11px; font-size: 1.04em; }
+.ficha-retrato { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; overflow: hidden; border: 1px solid #333; background: linear-gradient(145deg, var(--shell-metal-alto), var(--shell-fondo)); color: var(--color-informacion); font-size: 2.5rem; font-weight: 600; letter-spacing: .12em; }
+.ficha-retrato img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ficha-nombre { font-size: 1.4em; letter-spacing: 1px; }
+.ficha-rol { color: var(--muted); font-size: .85em; margin-top: -8px; }
+.ficha-bloque { border-top: 1px solid #262a31; padding-top: 9px; }
+.ficha-titulo { color: var(--accent-2); font-size: .82em; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
+.barra-vida { background: #2a1216; height: 11px; border: 1px solid #333; }
+.barra-vida-fill { background: var(--success); height: 100%; }
+.vida-detalle { font-size: .78em; color: var(--muted); margin-top: 3px; }
+.ep-dots { display: flex; gap: 8px; }
+.ep-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #56606b; }
+.ep-dot.activo { border-color: var(--critico); background: var(--critico); }
+.ficha-inventario { margin: 0; padding-left: 16px; font-size: .85em; color: var(--muted); line-height: 1.5; }
+.ficha-inventario-vacio { list-style: none; margin-left: -16px; font-style: italic; color: var(--color-texto-tenue); }
+.ficha-inventario-gestionar, .ficha-inventario-acceso { border: 1px solid var(--color-borde); background: rgba(10,14,17,.88); color: var(--color-informacion); min-height: 40px; padding: 7px 10px; cursor: pointer; text-transform: uppercase; letter-spacing: .08em; font-size: .72em; }
+.ficha-inventario-acceso { margin: 2px 34px 2px 4px; }
+.ficha-inventario-gestionar:hover, .ficha-inventario-acceso:hover { border-color: var(--color-seleccion); color: var(--color-texto); }
+.inventario-overlay { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 18px; background: rgba(1,4,6,.86); }
+.inventario-panel { width: min(1180px, 98vw); height: min(820px, 94dvh); overflow: hidden; display: grid; grid-template-rows: auto auto minmax(0,1fr) auto; color: var(--color-texto); background: var(--shell-fondo); background-image: var(--panel-decorado, none); border: 1px solid var(--shell-linea); box-shadow: 0 24px 80px rgba(0,0,0,.68); }
+.inventario-cabecera { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 15px 18px; border-bottom: 1px solid var(--shell-linea); background: rgba(8,13,16,.94); }
+.inventario-cabecera h2 { margin: 0 0 3px; font-size: 1.4rem; letter-spacing: .06em; text-transform: uppercase; }
+.inventario-cabecera p { margin: 0; color: var(--color-texto-tenue); font-size: .8rem; }
+.inventario-cerrar { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border: 1px solid var(--shell-linea); background: var(--shell-metal); color: var(--color-texto-tenue); cursor: pointer; }
+.inventario-cerrar:hover, .inventario-cerrar:focus-visible { color: var(--color-texto); border-color: var(--color-seleccion); }
+.inventario-cerrar svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.inventario-miembros { display: flex; overflow-x: auto; padding: 0 12px; border-bottom: 1px solid var(--shell-linea); background: rgba(10,16,19,.92); scrollbar-color: var(--shell-linea-activa) var(--shell-fondo); }
+.inventario-miembros button { min-width: 132px; min-height: 54px; padding: 7px 12px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--color-texto-tenue); cursor: pointer; text-align: left; text-transform: uppercase; letter-spacing: .05em; }
+.inventario-miembros button span, .inventario-miembros button small { display: block; }
+.inventario-miembros button small { max-width: 18ch; margin-top: 2px; overflow: hidden; color: inherit; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+.inventario-miembros button.activo { color: var(--color-texto); border-bottom-color: var(--color-informacion); background: rgba(101,183,199,.06); }
+.inventario-estacion { min-height: 0; display: grid; grid-template-columns: minmax(0,1.45fr) minmax(280px,.75fr); }
+.inventario-personaje { position: relative; min-height: 0; overflow: hidden; border-right: 1px solid var(--shell-linea); background: linear-gradient(110deg, rgba(8,13,16,.96), rgba(17,25,30,.76)); }
+.inventario-identidad { position: absolute; z-index: 3; top: 18px; left: 20px; max-width: 34%; }
+.inventario-identidad strong, .inventario-identidad span { display: block; }
+.inventario-identidad strong { font-size: 1.55rem; letter-spacing: .08em; }
+.inventario-identidad span { color: var(--color-informacion); font-size: .78rem; }
+.inventario-figura { position: absolute; inset: 12% 29% 0; display: grid; place-items: center; overflow: hidden; background: linear-gradient(145deg, var(--shell-metal-alto), var(--shell-fondo)); color: var(--color-informacion); filter: saturate(.68) contrast(1.08); opacity: .9; }
+.inventario-figura > span { font-size: clamp(2rem,5vw,4rem); font-weight: 600; letter-spacing: .12em; }
+.inventario-figura img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.inventario-figura::before { content: ""; position: absolute; z-index: 2; inset: 0; background: linear-gradient(to top, var(--shell-fondo) 0, transparent 32%); pointer-events: none; }
+.inventario-figura::after { content: ""; position: absolute; z-index: 3; inset: 0; border: 1px solid rgba(101,183,199,.18); pointer-events: none; }
+.inventario-ranuras { position: absolute; inset: 0; pointer-events: none; }
+.inventario-ranura { position: absolute; z-index: 4; width: min(31%,220px); min-height: 84px; padding: 8px; border: 1px solid var(--shell-linea); background: rgba(8,13,16,.9); pointer-events: auto; }
+.inventario-ranura::after { content: ""; position: absolute; top: 50%; width: 36px; border-top: 1px solid var(--color-informacion); opacity: .55; }
+.inventario-ranura-armor { top: 23%; left: 18px; }
+.inventario-ranura-ranged { top: 18%; right: 18px; }
+.inventario-ranura-melee { bottom: 19%; left: 18px; }
+.inventario-ranura-uso { bottom: 14%; right: 18px; }
+.inventario-ranura-armor::after, .inventario-ranura-melee::after { left: 100%; }
+.inventario-ranura-ranged::after, .inventario-ranura-uso::after { right: 100%; }
+.inventario-ranura-label { display: block; margin-bottom: 6px; color: var(--color-informacion); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; }
+.inventario-ranura-vacia { display: block; color: var(--color-texto-tenue); font-size: .76rem; }
+.inventario-objeto { width: 100%; min-height: 48px; padding: 8px 10px; border: 1px solid var(--shell-linea); background: var(--shell-metal); color: var(--color-texto); cursor: pointer; text-align: left; }
+.inventario-objeto + .inventario-objeto { margin-top: 5px; }
+.inventario-objeto:hover, .inventario-objeto:focus-visible { border-color: var(--color-informacion); background: var(--shell-metal-alto); }
+.inventario-objeto.seleccionado { border-color: var(--color-seleccion); color: var(--color-seleccion); }
+.inventario-objeto-nombre, .inventario-objeto-estado { display: block; overflow-wrap: anywhere; }
+.inventario-objeto-nombre { font-weight: 600; }
+.inventario-objeto-estado { margin-top: 2px; color: var(--color-texto-tenue); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; }
+.inventario-objeto.en-ranura { border: 0; padding: 2px 0; min-height: 40px; background: transparent; }
+.inventario-mochila { min-height: 0; display: grid; grid-template-rows: auto 1fr; background: rgba(8,13,16,.92); }
+.inventario-mochila-titulo { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 18px 10px; border-bottom: 1px solid var(--shell-linea); }
+.inventario-mochila-titulo h3 { margin: 0; font-size: 1.1rem; letter-spacing: .08em; text-transform: uppercase; }
+.inventario-mochila-titulo span { color: var(--color-texto-tenue); font-size: .72rem; }
+.inventario-mochila-lista { min-height: 0; overflow-y: auto; padding: 10px 12px 18px; scrollbar-color: var(--shell-linea-activa) var(--shell-fondo); }
+.inventario-vacio { max-width: 32ch; margin: 24px auto; color: var(--color-texto-tenue); font-size: .82rem; line-height: 1.5; text-align: center; }
+.inventario-operaciones { display: grid; grid-template-columns: minmax(190px,1fr) auto minmax(320px,1.25fr); align-items: center; gap: 14px; padding: 11px 16px; border-top: 1px solid var(--shell-linea); background: rgba(8,13,16,.98); }
+.inventario-seleccion { min-width: 0; }
+.inventario-seleccion strong, .inventario-seleccion span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inventario-seleccion span { margin-top: 3px; color: var(--color-informacion); font-size: .7rem; }
+.inventario-seleccion span.no-vinculado { color: var(--color-peligro-texto); }
+.inventario-seleccion span.instruccion { color: var(--color-texto-tenue); }
+.inventario-anuncio { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.inventario-acciones, .inventario-transferencia { display: flex; align-items: center; gap: 5px; }
+.inventario-acciones button, .inventario-transferencia button { min-height: 44px; padding: 7px 11px; border: 1px solid var(--shell-linea); background: var(--shell-metal); color: var(--color-texto); cursor: pointer; text-transform: uppercase; letter-spacing: .05em; }
+.inventario-acciones button:hover:not([disabled]), .inventario-transferencia button:hover:not([disabled]), .inventario-acciones button:focus-visible, .inventario-transferencia button:focus-visible { border-color: var(--color-seleccion); color: var(--color-seleccion); }
+.inventario-acciones button[disabled], .inventario-transferencia button[disabled] { opacity: .36; cursor: not-allowed; }
+.inventario-transferencia { justify-content: flex-end; overflow-x: auto; }
+.inventario-transferencia > span { flex: none; color: var(--color-texto-tenue); font-size: .68rem; text-transform: uppercase; }
+@media (max-width: 1100px) {
+  .inventario-operaciones { grid-template-columns: minmax(180px,1fr) auto; }
+  .inventario-transferencia { grid-column: 1 / -1; justify-content: flex-start; }
+}
+@media (max-width: 820px) {
+  .inventario-overlay { padding: 0; }
+  .inventario-panel { width: 100vw; height: 100dvh; }
+  .inventario-estacion { grid-template-columns: 1fr; overflow-y: auto; }
+  .inventario-personaje { min-height: 480px; border-right: 0; border-bottom: 1px solid var(--shell-linea); }
+  .inventario-figura { inset-inline: 26%; }
+  .inventario-mochila { min-height: 300px; }
+  .inventario-operaciones { grid-template-columns: 1fr; align-items: stretch; }
+  .inventario-transferencia { justify-content: flex-start; }
+}
+@media (max-width: 520px) {
+  .inventario-cabecera p { display: none; }
+  .inventario-miembros button { min-width: 105px; }
+  .inventario-personaje { min-height: 540px; }
+  .inventario-figura { inset: 18% 18% 5%; opacity: .48; }
+  .inventario-identidad { max-width: 65%; }
+  .inventario-ranura { width: calc(50% - 24px); }
+  .inventario-ranura-armor, .inventario-ranura-melee { left: 10px; }
+  .inventario-ranura-ranged, .inventario-ranura-uso { right: 10px; }
+  .inventario-ranura::after { display: none; }
+  .inventario-acciones button { flex: 1; }
+}
+.btn-historial { margin-top: 4px; background: transparent; border: 1px solid #333; color: var(--muted); padding: 6px; cursor: pointer; font-family: inherit; font-size: .72em; letter-spacing: .5px; }
+.btn-historial:hover { border-color: var(--color-seleccion); color: var(--ink); }
+.ficha-municion { font-size: .82em; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+
+/* ---------- Ficha plegable (Iteración 0.3, punto 7-9 del encargo) ----------
+   El escenario es el protagonista: la ficha debe poder recuperar su espacio.
+   #sheet-panel.colapsada la reduce a una tira compacta legible (nunca solo
+   iconos); #app reacciona vía :has() para devolver el ancho/alto al
+   escenario — sin duplicar el estado en dos sitios. */
+/* BUG real encontrado con Playwright (ver docs/UI_UX_03.md): un botón
+   posicionado para "salirse" del borde de #sheet-panel y solaparse
+   visualmente sobre #scenario terminaba con el hit-test ganado por
+   #hotspots (la capa de zonas point&click), pase lo que pase con z-index —
+   ambos son items directos del mismo grid y #hotspots vive dentro de un
+   descendiente con su propio position:relative, así que ninguna
+   combinación de z-index del lado de la ficha llegaba a ganarle de forma
+   fiable. Solución más simple y robusta: el botón se queda DENTRO de la
+   caja de #sheet-panel (nunca se solapa con #scenario), evitando el
+   problema de raíz en vez de perseguir el stacking context. */
+#sheet-panel { position: relative; }
+.ficha-toggle {
+  position: absolute; top: 8px; right: 8px;
+  width: 44px; height: 44px; min-height: 44px;
+  background: var(--panel-2); border: 1px solid #333;
+  color: var(--muted); cursor: pointer; font-family: inherit; font-size: 1em;
+  display: flex; align-items: center; justify-content: center;
+}
+.ficha-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.ficha-toggle:hover { color: var(--ink); border-color: var(--color-seleccion); }
+
+.ficha-compacta {
+  display: flex; flex-direction: column; gap: 7px; padding: 7px 34px 7px 8px;
+  cursor: pointer; height: 100%; justify-content: center;
+}
+.fc-nombre { font-size: .92em; letter-spacing: .5px; }
+.fc-recursos { display: flex; flex-direction: column; gap: 5px; }
+.fc-vida-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; width: 100%; height: 7px; }
+.fc-vida-segmento { display: block; overflow: hidden; background: #242932; border: 1px solid rgba(255,255,255,.08); }
+.fc-vida-segmento i { display: block; height: 100%; background: var(--color-informacion); }
+.fc-vida-segmento.herido i { background: var(--color-seleccion); }
+.fc-vida-segmento.tullido i { background: var(--color-peligro); }
+.fc-pe { display: flex; gap: 4px; color: #56606b; font-size: .72em; line-height: 1; }
+.fc-pe-punto { width: 7px; height: 7px; border: 1px solid currentColor; transform: rotate(45deg); }
+.fc-pe-punto.activo { color: var(--color-seleccion); background: currentColor; box-shadow: 2px 2px 6px rgba(0,0,0,.35); }
+
+#sheet-panel.colapsada { padding: 10px 8px; }
+
+/* BUG real encontrado con Playwright (ver docs/UI_UX_03.md): esta regla
+   vivía sin media query, así que en móvil su especificidad
+   (#app:has(#sheet-panel...) > #app a secas) ganaba a la del layout
+   móvil de una sola columna y volvía a partir la pantalla en dos columnas
+   incluso en 375px de ancho. Debe quedar exclusivamente dentro del
+   breakpoint de escritorio. */
+@media (min-width: 901px) {
+  #app:has(#sheet-panel.colapsada) { grid-template-columns: 1fr 150px; }
+}
+@media (max-width: 900px) {
+  #app:has(#sheet-panel.colapsada) { grid-template-rows: 1fr 56px; }
+  #sheet-panel.colapsada .ficha-toggle { top: 6px; right: 6px; }
+  #sheet-panel.colapsada .ficha-compacta { flex-direction: row; gap: 14px; align-items: center; padding: 0 44px 0 12px; }
+}
+
+/* ---------- Ficha en cajón superpuesto (escena.sheetLayout === "overlay",
+   piloto de Localización C, docs/CONTRATO_VISUAL_PREDATOR.md) ----------
+   El escenario debe ocupar todo el ancho/alto en escenas panorámicas; la
+   ficha deja de reservar columna/fila y sale del flujo del grid
+   (position:fixed) para aparecer como cajón temporal sobre la escena.
+   Reutiliza intacto TODO lo de arriba (#sheet-panel, .colapsada,
+   .ficha-toggle, .ficha-compacta, renderFicha()) -- ninguna implementación
+   nueva, solo su posicionamiento cambia en este modo. */
+#app.ficha-superpuesta,
+#app.ficha-superpuesta:has(#sheet-panel.colapsada) {
+  grid-template-columns: 1fr;
+}
+#app.ficha-superpuesta #sheet-panel {
+  position: fixed; top: 0; right: 0; height: 100vh; z-index: 220;
+  width: min(320px, 86vw);
+  box-shadow: -10px 0 26px rgba(0,0,0,.55);
+}
+/* Colapsada: SOLO una pestaña (alto ajustado al contenido, no 100vh) -- si
+   ocupara toda la altura se solapaba con la barra de controles de
+   movimiento al pie de la pantalla en móvil vertical, tapando parte de
+   "◀"/"▶" (Hallazgo de calibración, 2026-08-22, punto 2: "ningún control
+   de movimiento puede quedar recortado"). Expandida sigue a pantalla
+   completa (100vh, desplazable) para caber toda la ficha real. */
+#app.ficha-superpuesta #sheet-panel.colapsada { width: 116px; height: auto; max-height: calc(100vh - 24px); }
+@media (max-width: 900px) {
+  #app.ficha-superpuesta,
+  #app.ficha-superpuesta:has(#sheet-panel.colapsada) {
+    grid-template-rows: 1fr;
+  }
+  /* La regla móvil de más arriba (línea ~382) pone la ficha compacta en
+     fila porque ahí el panel colapsado es una TIRA HORIZONTAL al pie de la
+     pantalla (56px de alto, ancho completo). Aquí, en cajón superpuesto, el
+     panel colapsado sigue siendo una columna vertical angosta (150px de
+     ancho) igual que en escritorio -- forzar "row" la rompía (Hallazgo de
+     auditoría visual: texto solapado/cortado en móvil). */
+  #app.ficha-superpuesta #sheet-panel.colapsada { width: 104px; }
+  #app.ficha-superpuesta #sheet-panel.colapsada .ficha-compacta {
+    flex-direction: column; align-items: stretch; gap: 4px; padding: 0 6px;
+  }
+  #app.ficha-superpuesta #sheet-panel.colapsada .ficha-toggle { top: 8px; right: 8px; }
+}
+
+/* ---------- Historial de tiradas ---------- */
+.log-table { width: 100%; border-collapse: collapse; font-size: .72em; }
+.log-table th, .log-table td { border-bottom: 1px solid #262a31; padding: 4px 6px; text-align: left; white-space: nowrap; }
+.log-table th { color: var(--accent-2); position: sticky; top: 0; background: var(--panel-2); }
+.log-card { background: var(--panel-2); border: 1px solid var(--accent); padding: 18px; width: min(720px, 92vw); max-height: 80vh; display: flex; flex-direction: column; }
+.log-scroll { overflow: auto; margin-top: 10px; }
+
+/* ---------- Delegación ---------- */
+.delegar-lista { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.delegar-opcion { display: flex; justify-content: space-between; gap: 10px; background: var(--panel-2); border: 1px solid #333; padding: 8px 12px; cursor: pointer; font-family: inherit; color: var(--ink); text-align: left; }
+.delegar-opcion:hover { border-color: var(--color-seleccion); }
+.delegar-opcion:focus-visible { border-color: var(--color-seleccion); outline: 2px solid var(--color-informacion); outline-offset: 2px; }
+.delegar-opcion:disabled { opacity: .55; cursor: wait; }
+.delegar-opcion .deleg-hab { color: var(--muted); font-size: .82em; }
+.delegar-cancelar {
+  width: 100%; margin-top: 10px; min-height: 44px; cursor: pointer;
+  background: transparent; border: 1px solid var(--color-borde);
+  color: var(--color-texto-tenue); font: inherit;
+}
+.delegar-cancelar:hover, .delegar-cancelar:focus-visible { color: var(--color-texto); border-color: var(--color-seleccion); outline: none; }
+
+/* ---------- Notificación breve ---------- */
+.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--panel-2); border: 1px solid var(--critico); color: var(--critico); padding: 8px 16px; font-size: .82em; z-index: 200; opacity: 0; transition: opacity .3s; }
+.toast.mostrar { opacity: 1; }
+
+/* ---------- Decisión principal ---------- */
+.decision-bar { display: flex; gap: 10px; justify-content: center; padding: 16px; background: #08090b; border-top: 2px solid var(--accent); }
+.btn-decision { background: var(--panel-2); border: 1px solid var(--accent); color: var(--ink); padding: 14px 26px; font-size: 1.1em; cursor: pointer; font-family: inherit; letter-spacing: 1px; }
+.btn-decision:hover { background: var(--accent); }
+
+/* ---------- Persecución 2.5D ---------- */
+.persecucion-wrap { flex: 1; display: flex; flex-direction: column; position: relative; min-height: 0; --runner-bob: 0px; --runner-lean: 0deg; }
+.raycast-viewport { flex: 1; display: flex; position: relative; overflow: hidden; min-height: 320px; background: #080d10; }
+#raycast-canvas { width: 100%; height: 100%; flex: 1; image-rendering: pixelated; background: #111; transition: transform .05s; }
+.persecucion-tercera-persona #raycast-canvas { image-rendering: auto; filter: saturate(.82) contrast(1.08) brightness(.8); transform: scale(1.015); }
+
+.chase-instrumentacion {
+  position: absolute; z-index: 7; inset: 14px 14px auto; display: flex; justify-content: space-between; align-items: flex-start;
+  color: var(--ink); pointer-events: none; font-variant-numeric: tabular-nums;
+}
+.chase-ruta, .chase-amenaza { background: rgba(8,13,16,.88); box-shadow: 0 8px 22px rgba(0,0,0,.38); padding: 9px 12px; }
+.chase-ruta { border-bottom: 1px solid var(--accent); }
+.chase-ruta span, .chase-amenaza > span { display: block; color: var(--muted); font-size: .64em; letter-spacing: .13em; }
+.chase-ruta strong { display: block; margin-top: 2px; color: var(--accent-2); font-size: .92em; letter-spacing: .07em; }
+.chase-amenaza { width: min(240px, 32vw); display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; border-bottom: 1px solid var(--color-peligro); }
+.chase-amenaza-track { grid-column: 1 / -1; height: 5px; overflow: hidden; background: #263139; }
+.chase-amenaza-track i { display: block; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left; background: var(--accent); transition: transform .18s cubic-bezier(.19,1,.22,1), background-color .18s; }
+.chase-amenaza strong { grid-column: 2; grid-row: 1; color: var(--ink); font-size: .92em; }
+.threat-critical .chase-amenaza-track i { background: var(--color-peligro); }
+
+.chase-avatar {
+  position: absolute; z-index: 5; left: 50%; bottom: -7%; height: clamp(210px, 48%, 430px); width: auto;
+  transform: translate3d(-50%, var(--runner-bob), 0) rotate(var(--runner-lean)); transform-origin: 50% 88%;
+  filter: drop-shadow(0 18px 15px rgba(0,0,0,.68)); pointer-events: none; transition: transform .12s cubic-bezier(.19,1,.22,1);
+}
+.chase-direccion { position: absolute; z-index: 6; left: 50%; top: 23%; transform: translateX(-50%); color: var(--accent-2); text-align: center; opacity: .82; pointer-events: none; }
+.chase-direccion i { display: block; width: 18px; height: 18px; margin: 0 auto 3px; border-top: 2px solid currentColor; border-left: 2px solid currentColor; transform: rotate(45deg); }
+.chase-direccion span { font-size: .6em; letter-spacing: .16em; }
+.chase-velocidad { position: absolute; z-index: 4; inset: 28% 8% 8%; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.is-running .chase-velocidad { opacity: .44; }
+.chase-velocidad i { position: absolute; width: 1px; height: 22%; background: linear-gradient(to bottom, transparent, rgba(177,216,224,.72)); transform: rotate(15deg); animation: chase-streak .7s linear infinite; }
+.chase-velocidad i:nth-child(1) { left: 9%; top: 4%; animation-delay: -.2s; }
+.chase-velocidad i:nth-child(2) { left: 26%; top: 42%; animation-delay: -.5s; }
+.chase-velocidad i:nth-child(3) { right: 24%; top: 18%; animation-delay: -.35s; }
+.chase-velocidad i:nth-child(4) { right: 8%; top: 55%; animation-delay: -.65s; }
+@keyframes chase-streak { from { transform: translateY(-40px) rotate(15deg); opacity: 0; } 35% { opacity: 1; } to { transform: translateY(180px) rotate(15deg); opacity: 0; } }
+
+/* Controles táctiles (config.js -> input.touchControls). Ocultos por
+   defecto ([hidden]); activados desde raycast.js según capacidad táctil o
+   configuración explícita — nunca sustituyen WASD, solo se suman. Zona
+   inferior, pulgar-friendly, con margen de safe-area para notch/gestos. */
+.touch-controls { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+.touch-controls[hidden] { display: none; }
+.touch-stick, .touch-interact {
+  position: absolute; bottom: max(18px, env(safe-area-inset-bottom)); pointer-events: auto; touch-action: none;
+}
+.touch-stick {
+  width: 108px; height: 108px; border-radius: 50%;
+  background: rgba(20,22,28,.5); border: 2px solid rgba(201,162,39,.35);
+}
+.touch-stick-nub {
+  position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px;
+  border-radius: 50%; background: rgba(201,162,39,.55); transition: background .1s;
+}
+.touch-controls.lado-left .touch-stick { left: max(18px, env(safe-area-inset-left)); }
+.touch-controls.lado-left .touch-interact { right: max(18px, env(safe-area-inset-right)); }
+.touch-controls.lado-right .touch-stick { right: max(18px, env(safe-area-inset-right)); }
+.touch-controls.lado-right .touch-interact { left: max(18px, env(safe-area-inset-left)); }
+.touch-interact {
+  width: 76px; height: 76px; border-radius: 50%; border: 2px solid var(--color-peligro);
+  background: rgba(20,22,28,.55); color: var(--color-texto); font-family: inherit; font-size: 1.1em; letter-spacing: 1px;
+}
+.touch-interact.pressed, .touch-stick:active .touch-stick-nub { background: var(--color-peligro); color: #000; }
+.persecucion-hud { display: flex; flex-direction: column; gap: 5px; padding: 10px 16px; background: #08090b; border-top: 1px solid var(--color-borde); }
+.persecucion-tercera-persona .persecucion-hud { position: absolute; z-index: 7; left: 14px; right: 14px; bottom: 12px; padding: 10px 12px; background: linear-gradient(90deg, rgba(8,13,16,.94), rgba(8,13,16,.72) 70%, transparent); border-top: 1px solid rgba(101,183,199,.38); pointer-events: none; }
+.hud-datos { display: flex; gap: 22px; }
+.hud-datos > div { display: flex; flex-direction: column; }
+.hud-etiqueta { font-size: .68em; color: var(--muted); letter-spacing: 1px; }
+.hud-datos strong { font-size: 1.05em; color: var(--ink); letter-spacing: .5px; }
+.hud-mensaje { font-size: .85em; color: var(--accent-2); min-height: 1.2em; }
+.hud-controles { font-size: .68em; color: var(--muted); letter-spacing: 1px; }
+.raycast-vignette { position: absolute; z-index: 3; inset: 0; pointer-events: none; box-shadow: inset 0 0 120px 40px rgba(0,0,0,.85); }
+.raycast-rain { position: absolute; z-index: 6; inset: 0; pointer-events: none; background: repeating-linear-gradient(100deg, transparent 0 8px, rgba(180,210,220,.08) 8px 9px); animation: rain-fall 0.34s linear infinite; mix-blend-mode: screen; }
+@keyframes rain-fall { from { background-position: 0 0; } to { background-position: -12px 20px; } }
+.interaction-prompt { position: absolute; left: 50%; bottom: 20%; transform: translateX(-50%); background: rgba(0,0,0,.75); border: 1px solid var(--accent-2); color: var(--ink); padding: 6px 14px; font-size: .82em; letter-spacing: .5px; }
+.persecucion-tercera-persona .interaction-prompt { z-index: 9; bottom: 28%; padding: 10px 16px; background: #10191e; border-color: var(--color-seleccion); box-shadow: 0 10px 28px rgba(0,0,0,.5); }
+.raycast-minimapa { position: absolute; z-index: 7; right: 14px; top: 82px; width: 112px; height: 112px; background: rgba(8,13,16,.86); border: 1px solid var(--color-borde); box-shadow: 0 8px 22px rgba(0,0,0,.38); }
+
+@media (max-width: 700px) {
+  .raycast-viewport { min-height: 280px; }
+  .chase-instrumentacion { inset: 7px 7px auto; }
+  .chase-ruta { display: none; }
+  .chase-amenaza { margin-left: auto; width: min(210px, 55vw); }
+  .chase-avatar { height: clamp(170px, 43%, 290px); bottom: -5%; }
+  .raycast-minimapa { width: 82px; height: 82px; right: 7px; top: 70px; }
+  .persecucion-tercera-persona .persecucion-hud { left: 7px; right: 7px; bottom: 6px; padding: 7px 9px; }
+  .persecucion-tercera-persona .hud-controles { display: none; }
+}
+
+/* Sugerencia discreta de landscape (§21) — solo dispositivos táctiles en
+   portrait (pointer:coarse, no user-agent). Nunca bloquea la partida. */
+.orientacion-sugerencia { display: none; }
+@media (orientation: portrait) and (pointer: coarse) {
+  .orientacion-sugerencia {
+    display: block; position: absolute; top: max(10px, env(safe-area-inset-top)); left: 50%;
+    transform: translateX(-50%); background: rgba(0,0,0,.7); color: var(--color-texto-tenue);
+    font-size: .68em; letter-spacing: .5px; padding: 5px 12px; z-index: 9; pointer-events: none;
+  }
+}
+.screen-shake { animation: shake .3s; }
+@keyframes shake { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-4px,2px); } 50% { transform: translate(4px,-2px); } 75% { transform: translate(-3px,-3px); } }
+
+/* ---------- Efectos baratos de combate (config.js -> visualEffects) ---------- */
+.fx-overlay { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 5; }
+.fx-muzzle { background: radial-gradient(circle at 50% 85%, rgba(255,200,120,.85), transparent 60%); }
+.fx-muzzle.activo { opacity: 1; animation: fx-fade .15s ease-out; }
+.fx-impact { background: radial-gradient(circle at 50% 40%, rgba(255,80,60,.55), transparent 55%); }
+.fx-impact.activo { opacity: 1; animation: fx-fade .25s ease-out; }
+.fx-danio { background: rgba(120,0,0,.35); }
+.fx-danio.activo { opacity: 1; animation: fx-fade .4s ease-out; }
+@keyframes fx-fade { from { opacity: 1; } to { opacity: 0; } }
+
+/* ---------- Fundido entre escenas ---------- */
+#scenario.fundiendo { animation: escena-fade .22s cubic-bezier(.19,1,.22,1); }
+@keyframes escena-fade { from { opacity: .72; filter: brightness(.78); } to { opacity: 1; filter: brightness(1); } }
+
+/* ---------- Carga y error recuperable entre escenas (Hallazgo 7) ---------- */
+.escena-cargando {
+  display: flex; align-items: center; justify-content: center; height: 100%;
+  color: var(--muted); font-size: .9em; letter-spacing: .5px;
+}
+.escena-error {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  height: 100%; padding: 24px; text-align: center; color: var(--ink);
+}
+.escena-error-titulo { font-size: 1.1em; color: var(--color-peligro); }
+.escena-error-detalle { color: var(--muted); font-size: .82em; max-width: 480px; }
+.escena-error-botones { display: flex; gap: 10px; }
+.escena-error-botones button {
+  background: var(--panel-2); border: 1px solid var(--color-borde); color: var(--ink);
+  padding: 10px 18px; font-family: inherit; cursor: pointer; min-height: 44px;
+}
+.escena-error-botones button:hover { border-color: var(--color-seleccion); }
+
+:root.reduce-motion .screen-shake { animation: none; }
+:root.reduce-motion .chase-velocidad i, :root.reduce-motion .raycast-rain { animation: none; }
+:root.reduce-motion .chase-avatar, :root.reduce-motion .chase-amenaza-track i { transition: none; }
+:root.large-ui { font-size: 18px; }
+
+/* ---------- Combate ---------- */
+.combate-wrap { flex: 1; display: flex; flex-direction: column; }
+.combate-escena { flex: 1; background-size: cover; background-position: center; position: relative; display: flex; align-items: flex-end; padding: 12px; }
+.combate-log { background: rgba(0,0,0,.5); padding: 8px; font-size: .78em; max-height: 90px; overflow-y: auto; width: 100%; }
+.combate-acciones { display: flex; gap: 8px; padding: 10px 14px; background: #08090b; flex-wrap: wrap; align-items: center; }
+/* Jerarquía de acciones (§10): la ofensiva disponible domina; cubrirse/
+   mover quedan como apoyo; huir se distingue como salida, nunca al mismo
+   peso visual que atacar. */
+.btn-accion-principal { background: var(--color-peligro); border-color: var(--color-peligro); color: #fff; font-size: 1.05em; padding: 10px 20px; order: -1; }
+.btn-accion-principal:hover { background: #d13c47; }
+.btn-accion-secundaria { opacity: .85; font-size: .92em; }
+.btn-accion-salida { margin-left: auto; border-color: var(--color-texto-tenue); color: var(--color-texto-tenue); background: transparent; }
+.btn-accion-salida:hover { border-color: var(--color-informacion); color: var(--color-informacion); }
+.combate-prob { font-size: .75em; color: var(--muted); }
+.combate-turno-indicador { position: absolute; top: 8px; left: 12px; background: rgba(0,0,0,.6); padding: 4px 10px; font-size: .8em; }
+.combate-orden { position: absolute; top: 8px; right: 12px; background: rgba(0,0,0,.6); padding: 4px 10px; font-size: .7em; color: var(--muted); letter-spacing: .5px; max-width: 60%; text-align: right; }
+.combate-companero-aviso { width: 100%; color: var(--accent-2); font-size: .82em; margin-bottom: 4px; letter-spacing: .5px; }
+.combate-tag { font-size: .72em; color: var(--muted); }
+
+/* Munición del actor en turno — cargador/reserva siempre visibles mientras
+   decide, no solo tras disparar (Combat UX 0.2, punto 8). */
+.combate-hud-arma { width: 100%; display: flex; justify-content: space-between; font-size: .78em; color: var(--muted); letter-spacing: .3px; margin-bottom: 2px; }
+.hud-arma-municion { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* Estado táctico persistente (punto 9-11, 23): vida/cobertura/munición de
+   todo el grupo, visible en todo momento — no solo en el turno de cada
+   uno, para no tener que recordar qué se hizo dos turnos antes. */
+.combate-tactico { position: absolute; bottom: 8px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 4px 14px; background: rgba(0,0,0,.55); padding: 6px 10px; font-size: .72em; }
+.tactico-fila { display: flex; align-items: center; gap: 6px; opacity: .95; }
+.tactico-fila.caido { opacity: .4; text-decoration: line-through; }
+.tactico-nombre { color: var(--ink); letter-spacing: .3px; }
+.tactico-nombre em { color: var(--muted); font-style: normal; font-size: .9em; }
+.tactico-cobertura { color: var(--color-texto-tenue); }
+.tactico-cobertura.activa { color: var(--color-informacion); }
+.tactico-municion { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Selector de modo/velocidad — vive DENTRO de la pantalla de combate
+   (punto 33 del encargo), no en Configuración global. */
+.combate-modo { display: flex; flex-direction: column; gap: 4px; padding: 6px 14px; background: #050607; border-top: 1px solid #222; }
+.modo-fila { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.modo-btn, .modo-vel, .modo-detener { background: var(--panel-2); border: 1px solid #333; color: var(--muted); padding: 5px 10px; font-size: .72em; letter-spacing: .3px; cursor: pointer; font-family: inherit; }
+.modo-btn:hover, .modo-vel:hover { border-color: var(--accent); color: var(--ink); }
+.modo-btn.activo, .modo-vel.activo { border-color: var(--accent); color: var(--ink); background: #1a1a1a; }
+.modo-detener { margin-left: auto; border-color: var(--color-peligro); color: var(--color-peligro); }
+.modo-detener:hover { background: var(--color-peligro); color: #fff; }
+
+/* ---------- Final — "expediente cerrado", no card genérica con botón
+   (Iteración 7.2). Documento alineado a la izquierda, con una franja de
+   cierre y los datos reales de la partida (personaje, vida, Puntos
+   Épicos, pistas, decisiones) como líneas de expediente — nunca una
+   card centrada con glow. Genérico: no conoce el módulo activo. ---------- */
+.final-screen { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
+.final-expediente { width: 100%; max-width: 560px; border-top: 1px solid var(--color-peligro); padding: 22px 0 4px; }
+.final-eyebrow { font-size: .68em; letter-spacing: 2.5px; text-transform: uppercase; color: var(--color-texto-tenue); margin-bottom: 10px; }
+.final-titulo { font-size: 1.55em; letter-spacing: 1px; color: var(--color-texto); line-height: 1.3; }
+.final-texto { margin-top: 12px; line-height: 1.6; font-size: .92em; color: var(--color-texto); }
+.final-datos { margin-top: 22px; border-top: 1px solid var(--color-borde); padding-top: 14px; display: flex; flex-direction: column; gap: 7px; }
+.final-dato { display: flex; justify-content: space-between; gap: 16px; font-size: .8em; }
+.final-dato span { color: var(--color-texto-tenue); letter-spacing: .5px; flex-shrink: 0; }
+.final-dato strong { color: var(--color-informacion); text-align: right; font-weight: normal; }
+.btn-cerrar-expediente {
+  margin-top: 22px; background: none; border: 1px solid var(--color-borde); color: var(--color-texto-tenue);
+  padding: 10px 18px; min-height: 44px; cursor: pointer; font-family: inherit; font-size: .85em; letter-spacing: .5px;
+}
+.btn-cerrar-expediente:hover, .btn-cerrar-expediente:focus-visible { border-color: var(--color-seleccion); color: var(--color-seleccion); outline: none; }

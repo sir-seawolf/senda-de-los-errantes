@@ -1,0 +1,46 @@
+{
+  "id": "encuentro_drake_street",
+  "descripcion": "Combate de la sala trasera de Drake Street Nº34 si la negociación con MORT sale mal (QUICKSTART_Kit_de_Inicio_v2.md líneas 534-551, Escena 3D). A diferencia del callejón, el Quickstart da un número FIJO de ejecutores (6), no una tabla que escale con el tamaño del grupo -- se declara una sola fila para que el motor (construirEnemigos(), que siempre cae al último/único valor si no hay coincidencia exacta) resuelva siempre a 6, sea cual sea el tamaño del grupo presente. El Quickstart no describe cobertura para esta sala -- no se inventa ninguna.",
+  "ajusteEjecutores": {
+    "fuente": "QUICKSTART_Kit_de_Inicio_v2.md línea 543: \"en la sala trasera esperan 6 ejecutores de MORT armados\" -- número fijo, sin tabla de escalado (a diferencia de encuentro_perseguidores_01.json, que sí escala por QS L.448-457).",
+    "tabla": [
+      {
+        "personajes": 5,
+        "enemyId": "ejecutorMort",
+        "cantidad": 6
+      }
+    ]
+  },
+  "onVictory": {
+    "registerDecision": "Drake Street: los ejecutores de MORT caen en la sala trasera.",
+    "transition": "decision_arthur",
+    "setFlags": [
+      "drake_street_agotado",
+      "ruta_almacenes",
+      "drake_street_combate_ganado"
+    ],
+    "text": "Los ejecutores caen; la base queda abierta y regresáis a la red de investigación."
+  },
+  "onVictoryNota": "El Quickstart no describe qué ocurre si los PJs ganan el tiroteo dentro de la propia base de MORT -- 'con éxito' en el texto se refiere a la tirada de Persuasión, no a ganar un combate. No se inventa una consecuencia: se deja como checkpoint honesto, igual criterio que los demás límites de contenido del módulo.",
+  "onFlee": {
+    "registerDecision": "Drake Street: huida de la sala trasera en pleno tiroteo.",
+    "transition": "decision_arthur",
+    "setFlags": [
+      "drake_street_agotado",
+      "ruta_almacenes",
+      "drake_street_huida"
+    ],
+    "text": "Escapáis y retomáis las rutas todavía viables."
+  },
+  "onFleeNota": "Mismo motivo que onVictoryNota -- no hay ruta de persecución escrita para esta localización (el mapa de persecución existente, callejon_entorno.json, es geográficamente el callejón, no Drake Street). Checkpoint honesto en vez de reutilizar un mapa que no corresponde al lugar.",
+  "onDeathWithEpicPoint": {
+    "setFinalTipo": "casi_muerto",
+    "registerDecision": "Drake Street: \"Parecía que había muerto\" — Punto Épico gastado.",
+    "transition": "finales"
+  },
+  "onDeath": {
+    "setFinalTipo": "muerte",
+    "registerDecision": "Drake Street: derrota.",
+    "transition": "finales"
+  }
+}

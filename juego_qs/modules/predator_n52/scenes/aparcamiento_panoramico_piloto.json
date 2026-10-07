@@ -1,0 +1,303 @@
+{
+  "id": "aparcamiento_panoramico_piloto",
+  "type": "panoramic",
+  "musicState": "chase",
+  "title": "Aparcamiento trasero",
+  "sheetContext": "callejon",
+  "sheetLayout": "overlay",
+  "tiledMap": "tiled/aparcamiento_piloto.tmj",
+  "assetBase": "assets/panoramic/aparcamiento/",
+  "availableParty": ["player", "bishop", "salim"],
+  "introText": "El callejón desemboca en un aparcamiento de servicio. Tres vehículos esperan bajo la lluvia; cualquiera podría sacar al grupo de aquí, pero ninguno ofrece la misma clase de huida.",
+  "defaultText": "No parece que puedas hacer eso ahí.",
+  "camera": {
+    "deadzoneWidthPct": 30,
+    "limits": { "minX": 0 }
+  },
+  "player": {
+    "sprite": "../callejon/agente_campo.png",
+    "walkFrames": ["../callejon/agente_campo.png"],
+    "walkFrameMs": 130,
+    "spriteWidth": 180,
+    "spriteHeight": 240,
+    "walkSpeed": 820
+  },
+  "foregroundLayers": [],
+  "objects": [
+    {
+      "id": "vehiculo_utilitario",
+      "states": {
+        "aparcado": "vehiculo_utilitario.png",
+        "arrancado": "vehiculo_utilitario.png"
+      },
+      "defaultState": "aparcado",
+      "activeState": "arrancado",
+      "stateFlag": "aparcamiento_utilitario_arrancado",
+      "contactShadow": true
+    },
+    {
+      "id": "vehiculo_furgoneta",
+      "states": {
+        "aparcada": "vehiculo_furgoneta.png",
+        "arrancada": "vehiculo_furgoneta.png"
+      },
+      "defaultState": "aparcada",
+      "activeState": "arrancada",
+      "stateFlag": "aparcamiento_furgoneta_arrancada",
+      "contactShadow": true
+    },
+    {
+      "id": "vehiculo_prototipo",
+      "states": {
+        "apagado": "vehiculo_prototipo_mort.png",
+        "arrancado": "vehiculo_prototipo_mort.png"
+      },
+      "defaultState": "apagado",
+      "activeState": "arrancado",
+      "stateFlag": "aparcamiento_prototipo_arrancado",
+      "contactShadow": true
+    }
+  ],
+  "lighting": [],
+  "hotspots": [
+    {
+      "id": "utilitario",
+      "objectRef": "vehiculo_utilitario",
+      "marginX": 35,
+      "marginY": 20,
+      "label": "UTILITARIO CIVIL",
+      "trigger": "utilitario",
+      "actions": [
+        { "label": "Examinar el utilitario", "trigger": "utilitario_examinar" },
+        { "label": "Forzar y arrancar — Fácil +10 · 2 pulsos", "trigger": "utilitario_arrancar" },
+        { "label": "Dejarlo", "closeOnly": true }
+      ]
+    },
+    {
+      "id": "furgoneta",
+      "objectRef": "vehiculo_furgoneta",
+      "marginX": 35,
+      "marginY": 20,
+      "label": "FURGONETA DE REPARTO",
+      "trigger": "furgoneta",
+      "actions": [
+        { "label": "Examinar la furgoneta", "trigger": "furgoneta_examinar" },
+        { "label": "Ocultarse y vigilar — Normal 0", "trigger": "aparcamiento_vigilar" },
+        { "label": "Forzar y arrancar — Normal 0 · 1 pulso", "trigger": "furgoneta_arrancar" },
+        { "label": "Dejarla", "closeOnly": true }
+      ]
+    },
+    {
+      "id": "prototipo",
+      "objectRef": "vehiculo_prototipo",
+      "marginX": 35,
+      "marginY": 20,
+      "label": "SEDÁN NEGRO",
+      "trigger": "prototipo",
+      "actions": [
+        { "label": "Examinar el sedán", "trigger": "prototipo_examinar" },
+        { "label": "Forzar y arrancar — Difícil −10 · 2 pulsos", "trigger": "prototipo_arrancar" },
+        { "label": "Dejarlo", "closeOnly": true }
+      ]
+    }
+  ],
+  "exits": [
+    {
+      "id": "salida_callejon",
+      "label": "VOLVER AL CALLEJÓN",
+      "lejosText": "La entrada del callejón queda al extremo izquierdo del aparcamiento."
+    }
+  ],
+  "interactions": [
+    {
+      "id": "utilitario_examinar",
+      "trigger": { "hotspot": "utilitario_examinar" },
+      "onAlways": {
+        "text": "Un utilitario corriente y gastado. Será el más fácil de forzar y no lleva tecnología corporativa, pero su propietario denunciará el robo y la matrícula deja un rastro civil."
+      }
+    },
+    {
+      "id": "utilitario_arrancar_bloqueado",
+      "trigger": { "hotspot": "utilitario_arrancar" },
+      "requiresFlags": ["aparcamiento_vehiculo_elegido"],
+      "onAlways": { "text": "Ya habéis elegido un vehículo. No hay tiempo para cambiar de plan." }
+    },
+    {
+      "id": "utilitario_arrancar",
+      "trigger": { "hotspot": "utilitario_arrancar" },
+      "blockedByFlags": ["aparcamiento_vehiculo_elegido"],
+      "executors": "party",
+      "delegationTitle": "¿Quién fuerza el utilitario?",
+      "oncePerActor": true,
+      "timeCostPulses": 2,
+      "roll": {
+        "skill": "Seguridad",
+        "fallbackSkill": "Tecnológica",
+        "difficulty": 10,
+        "difficultyLabel": "Fácil",
+        "label": "Forzar y arrancar el utilitario",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "setFlags": ["aparcamiento_vehiculo_elegido", "aparcamiento_utilitario_arrancado", "vehiculo_civil_robado", "policia_robo_pendiente"],
+        "registerDecision": "Huyó en el utilitario civil: 2 pulsos, sin rastreo corporativo; queda una denuncia por robo.",
+        "text": "El motor protesta durante dos pulsos y termina arrancando. MORT no podrá rastrearlo por sus sistemas, pero alguien denunciará el robo y la matrícula señalará vuestra ruta. Con el chip de Arthur a salvo, podéis rastrear la tarjeta-llave.",
+        "transition": "rastrear_tarjeta",
+        "transitionDelay": 2400
+      },
+      "onFailure": {
+        "registerDecision": "Falló al arrancar el utilitario; perdió 2 pulsos.",
+        "text": "Dos pulsos y el motor solo devuelve un tosido. El vehículo sigue disponible, pero MORT está más cerca."
+      }
+    },
+    {
+      "id": "furgoneta_examinar",
+      "trigger": { "hotspot": "furgoneta_examinar" },
+      "onAlways": {
+        "text": "Una furgoneta de reparto amplia: permite cargar heridos, cuerpos y equipo, y debería arrancar deprisa. Su motor y su volumen harán evidente la ruta de huida."
+      }
+    },
+    {
+      "id": "aparcamiento_vigilar_repetido",
+      "trigger": { "hotspot": "aparcamiento_vigilar" },
+      "requiresFlags": ["aparcamiento_agentes_observados"],
+      "onAlways": { "text": "Ya habéis visto bastante: los agentes se coordinan sin hablar ni mirarse." }
+    },
+    {
+      "id": "aparcamiento_vigilar_tarde",
+      "trigger": { "hotspot": "aparcamiento_vigilar" },
+      "blockedByFlags": ["aparcamiento_agentes_observados"],
+      "requiresFlags": ["callejon_piloto_ruido_verja"],
+      "onAlways": {
+        "setFlags": ["aparcamiento_agentes_observados"],
+        "registerDecision": "Llegó al aparcamiento cuando los agentes MORT ya salían; no pudo observar su coordinación.",
+        "text": "El ruido de la verja os ha costado la ventaja. Llegáis justo cuando las puertas se cierran: los agentes ya se dispersan y no alcanzáis a ver cómo se coordinan."
+      }
+    },
+    {
+      "id": "aparcamiento_vigilar",
+      "trigger": { "hotspot": "aparcamiento_vigilar" },
+      "blockedByFlags": ["aparcamiento_agentes_observados", "callejon_piloto_ruido_verja"],
+      "executors": "party",
+      "delegationTitle": "¿Quién vigila desde la cobertura de la furgoneta?",
+      "oncePerActor": true,
+      "roll": {
+        "skill": "Sigilo",
+        "difficulty": 0,
+        "difficultyLabel": "Normal",
+        "label": "Ocultarse y observar",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "setFlags": ["aparcamiento_agentes_observados"],
+        "discoverClues": ["Los agentes MORT se coordinan sin palabras ni gestos visibles, como si compartieran el pensamiento."],
+        "registerDecision": "Observó desde el aparcamiento la coordinación silenciosa de los agentes MORT.",
+        "text": "Desde la sombra de la furgoneta observáis a los agentes. No cruzan una palabra ni un gesto, pero se separan y cubren ángulos al mismo tiempo, como si se leyeran la mente."
+      },
+      "onFailure": {
+        "setFlags": ["aparcamiento_agentes_observados"],
+        "text": "No encontráis una posición segura antes de que los agentes se dispersen. Solo queda elegir un vehículo."
+      }
+    },
+    {
+      "id": "furgoneta_arrancar_bloqueada",
+      "trigger": { "hotspot": "furgoneta_arrancar" },
+      "requiresFlags": ["aparcamiento_vehiculo_elegido"],
+      "onAlways": { "text": "Ya habéis elegido un vehículo. No hay tiempo para cambiar de plan." }
+    },
+    {
+      "id": "furgoneta_arrancar",
+      "trigger": { "hotspot": "furgoneta_arrancar" },
+      "blockedByFlags": ["aparcamiento_vehiculo_elegido"],
+      "executors": "party",
+      "delegationTitle": "¿Quién fuerza la furgoneta?",
+      "oncePerActor": true,
+      "timeCostPulses": 1,
+      "roll": {
+        "skill": "Seguridad",
+        "fallbackSkill": "Tecnológica",
+        "difficulty": 0,
+        "difficultyLabel": "Normal",
+        "label": "Forzar y arrancar la furgoneta",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "setFlags": ["aparcamiento_vehiculo_elegido", "aparcamiento_furgoneta_arrancada", "furgoneta_reparto_robada", "ruta_huida_revelada"],
+        "registerDecision": "Huyó en la furgoneta: 1 pulso y espacio para heridos/equipo; la ruta quedó expuesta.",
+        "text": "La furgoneta arranca en un pulso y admite todo el equipo — también a cualquiera que no pueda caminar. El motor retumba entre los edificios: MORT sabrá por dónde habéis salido. Con el chip de Arthur a salvo, podéis rastrear la tarjeta-llave.",
+        "transition": "rastrear_tarjeta",
+        "transitionDelay": 2400
+      },
+      "onFailure": {
+        "registerDecision": "Falló al arrancar la furgoneta; perdió 1 pulso y produjo ruido.",
+        "text": "El cierre se resiste y el intento hace saltar una bocina breve. Habéis perdido un pulso y revelado vuestra posición."
+      }
+    },
+    {
+      "id": "prototipo_examinar_repetido",
+      "trigger": { "hotspot": "prototipo_examinar" },
+      "requiresFlags": ["aparcamiento_prototipo_identificado"],
+      "onAlways": { "text": "No es un modelo civil conocido. Bajo la carrocería discreta hay un prototipo corporativo MORT." }
+    },
+    {
+      "id": "prototipo_examinar",
+      "trigger": { "hotspot": "prototipo_examinar" },
+      "blockedByFlags": ["aparcamiento_prototipo_identificado"],
+      "executors": "party",
+      "delegationTitle": "¿Quién examina el sedán negro?",
+      "oncePerActor": true,
+      "roll": {
+        "skill": "Tecnológica",
+        "fallbackSkill": "Percepción",
+        "difficulty": 0,
+        "difficultyLabel": "Normal",
+        "label": "Identificar el sedán",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "setFlags": ["aparcamiento_prototipo_identificado"],
+        "discoverClues": ["El sedán negro no corresponde a ningún modelo de serie conocido: es un prototipo corporativo camuflado."],
+        "text": "La silueta parece corriente, pero las juntas, los cristales y la ausencia de un número de serie reconocible no encajan. Es un prototipo corporativo disfrazado de coche normal."
+      },
+      "onFailure": {
+        "text": "Parece un sedán caro y anónimo. Si oculta algo, está hecho precisamente para que no se note."
+      }
+    },
+    {
+      "id": "prototipo_arrancar_bloqueado",
+      "trigger": { "hotspot": "prototipo_arrancar" },
+      "requiresFlags": ["aparcamiento_vehiculo_elegido"],
+      "onAlways": { "text": "Ya habéis elegido un vehículo. No hay tiempo para cambiar de plan." }
+    },
+    {
+      "id": "prototipo_arrancar",
+      "trigger": { "hotspot": "prototipo_arrancar" },
+      "blockedByFlags": ["aparcamiento_vehiculo_elegido"],
+      "executors": "party",
+      "delegationTitle": "¿Quién intenta arrancar el sedán?",
+      "oncePerActor": true,
+      "timeCostPulses": 2,
+      "roll": {
+        "skill": "Seguridad",
+        "fallbackSkill": "Tecnológica",
+        "difficulty": -10,
+        "difficultyLabel": "Difícil",
+        "label": "Forzar y arrancar el sedán",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "setFlags": ["aparcamiento_vehiculo_elegido", "aparcamiento_prototipo_arrancado", "prototipo_mort_robado", "alarma_mort_activa", "rastreo_mort_activo"],
+        "registerDecision": "Robó el prototipo MORT: 2 pulsos y máxima velocidad; alarma y rastreo corporativo activos.",
+        "text": "El primer intento despierta los sistemas; el segundo arranca el motor. El sedán es mucho más rápido de lo que aparenta, pero una alarma muda ya ha avisado a MORT y el rastreo viaja con vosotros. Con el chip de Arthur a salvo, podéis rastrear la tarjeta-llave.",
+        "transition": "rastrear_tarjeta",
+        "transitionDelay": 2400
+      },
+      "onFailure": {
+        "setFlags": ["alarma_mort_activa"],
+        "registerDecision": "Falló al arrancar el prototipo MORT; perdió 2 pulsos y activó la alarma.",
+        "text": "El segundo intento tampoco basta. La consola queda muda, pero un destello azul confirma que la alarma corporativa ya está activa."
+      }
+    }
+  ],
+  "performanceFallbackScene": "callejon"
+}

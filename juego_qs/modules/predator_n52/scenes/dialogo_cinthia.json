@@ -1,0 +1,91 @@
+{
+  "id": "dialogo_cinthia",
+  "type": "dialogue",
+  "musicState": "exploration",
+  "title": "Cinthia Mollis",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "startNode": "inicio",
+  "gmNotes": "SOURCE_OVERRIDE: simplificación documentada en docs/QS_RULE_MAP.md — el QS pide Persuasión Extremadamente difícil (−20) y, SI ya sabe que Arthur ha muerto, además tirar Empatía y usar la media de ambas tiradas. Promediar dos tiradas no es una mecánica que exista en ningún otro sitio del motor; implementarla solo para esta línea sería una regla nueva no reutilizable. Se usa solo Persuasión −20, sin la variante de la media, y se documenta la diferencia.",
+  "nodes": {
+    "inicio": {
+      "speaker": "Cinthia Mollis",
+      "text": "\"¿Preguntáis por Arthur? Hace un par de días que no sé nada de él... comimos juntos en Santini's, la última vez que nos vimos. Nos conocemos de hace años, aunque yo me mudé a Villa Armador y él se quedó por aquí.\"",
+      "choices": [
+        {
+          "label": "Preguntarle si notó algo raro en Arthur",
+          "next": "pregunta"
+        },
+        {
+          "label": "Despedirse sin insistir",
+          "consequence": {
+            "registerDecision": "Cinthia: conversación breve, sin insistir.",
+            "transition": "decision_arthur",
+            "setFlags": [
+              "cinthia_resuelta"
+            ]
+          }
+        }
+      ]
+    },
+    "pregunta": {
+      "speaker": "player",
+      "text": "Insistís, con tacto, por si hay algo más que contar sobre esos últimos días de Arthur.",
+      "executors": "party",
+      "delegationTitle": "¿Quién le pregunta?",
+      "roll": {
+        "skill": "Persuasión",
+        "difficulty": -20,
+        "difficultyLabel": "Extremadamente difícil",
+        "label": "Sonsacarle algo más sobre Arthur"
+      },
+      "onSuccessNext": "revelacion",
+      "onFailureNext": "evasiva"
+    },
+    "revelacion": {
+      "speaker": "Cinthia Mollis",
+      "text": "\"Ahora que lo decís... sí, estaba raro. A media comida le sonó el móvil, contestó, y de golpe se puso pálido. Canceló el resto de la comida sin dar muchas explicaciones. Parecía preocupado, como si le hubieran dado una mala noticia.\"",
+      "consequence": {
+        "setFlags": [
+          "cinthia_revelacion"
+        ],
+        "discoverClues": [
+          "Según Cinthia Mollis: Arthur recibió una llamada durante la comida, se puso pálido y canceló todo — parecía una mala noticia."
+        ]
+      },
+      "choices": [
+        {
+          "label": "Darle las gracias y marcharse",
+          "consequence": {
+            "registerDecision": "Cinthia: reveló que Arthur recibió una llamada preocupante antes de desaparecer.",
+            "transition": "decision_arthur",
+            "setFlags": [
+              "cinthia_resuelta"
+            ]
+          }
+        }
+      ]
+    },
+    "evasiva": {
+      "speaker": "Cinthia Mollis",
+      "text": "\"No... no sé, la verdad. Estaba como siempre.\" Cinthia aparta la mirada, incómoda con la pregunta. No parece dispuesta a decir mucho más.",
+      "choices": [
+        {
+          "label": "Dejarlo estar",
+          "consequence": {
+            "registerDecision": "Cinthia: no soltó más información.",
+            "transition": "decision_arthur",
+            "setFlags": [
+              "cinthia_resuelta"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

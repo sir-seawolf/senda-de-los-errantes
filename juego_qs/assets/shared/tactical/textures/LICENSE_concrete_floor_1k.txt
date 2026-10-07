@@ -1,0 +1,14 @@
+Recurso: Concrete Floor (textura difusa, 1K, JPG)
+Autor: eye-candy.xyz
+Fuente: Poly Haven -- https://polyhaven.com/a/concrete_floor
+Licencia: CC0 1.0 Universal (dominio público) -- https://polyhaven.com/license
+Archivo descargado: https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_floor/concrete_floor_diff_1k.jpg
+Fecha de consulta: 2026-08-21
+SHA-256 del archivo original: 5e06d0fb226f671470f59bf7798954b6965c9ed56dd45084dfd012e15737e444
+
+Sin obligación de atribución bajo CC0, pero se conserva esta ficha por
+trazabilidad editorial (ver docs/PREDATOR_VISUAL_RESOURCES_MANIFEST_6D.md).
+Uso actual: textura de fondo PROVISIONAL para los paneles de la interfaz
+táctica responsive (Fase 6B/6D) -- sin recolorear ni retocar todavía.
+Pendiente personalizar antes de considerarla identidad visual final de
+La Senda (paleta, suciedad, señalización propias).

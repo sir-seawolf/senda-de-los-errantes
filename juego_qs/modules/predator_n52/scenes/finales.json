@@ -1,0 +1,39 @@
+{
+  "id": "finales",
+  "type": "ending",
+  "musicState": "ending",
+  "title": "Resolución",
+  "defaultEnding": "refugio",
+  "defaultEndingNota": "COMBAT UX 0.2: era 'combate_victoria' — retirado (ver abajo), no puede seguir siendo el fallback de un final que ya no existe.",
+  "endings": {
+    "refugio": {
+      "titulo": "A SALVO — POR AHORA",
+      "texto": "Cierras la puerta del refugio de un golpe y te dejas caer contra la pared, sin aliento. Fuera, los pasos metálicos se alejan, indecisos. Has escapado del callejón — pero el chip que llevas encima dice CHAFRY CORP, y algo te dice que esto no ha hecho más que empezar.",
+      "definitivo": false,
+      "continuacion": "rastrear_tarjeta"
+    },
+    "vehiculo": {
+      "titulo": "LA CALLE QUEDA ATRÁS",
+      "texto": "El motor arranca al segundo intento. Aceleras entre callejones estrechos, dejando atrás las luces del perseguidor en el retrovisor. En el asiento del copiloto, el chip de Arthur Dicking sigue ahí, esperando a que alguien decida qué hacer con él.",
+      "definitivo": false,
+      "continuacion": "rastrear_tarjeta"
+    },
+    "casi_muerto": {
+      "titulo": "PARECÍA QUE HABÍAS MUERTO",
+      "texto": "El mundo se apaga de golpe. Cuando vuelves en ti, sigues en el suelo del callejón, el pecho ardiendo, pero vivo. Alguien — o algo — decidió que tu historia no terminaba aquí.",
+      "definitivo": false,
+      "continuacion": "rastrear_tarjeta"
+    },
+    "muerte": {
+      "titulo": "FIN DE LA PARTIDA",
+      "texto": "El disparo no da lugar a una segunda oportunidad. Tu historia con La Senda de los Errantes termina en un callejón cualquiera, un martes lluvioso, con un chip que ya no significa nada para ti.",
+      "definitivo": true
+    },
+    "cierre_predator_mundo_maquina": {
+      "titulo": "MUNDO MÁQUINA",
+      "texto": "El Maestro de Portales canaliza el cruce final. La luz se dobla sobre sí misma, y cuando el mundo vuelve a ser sólido, estáis en un planeta despertado donde las máquinas lo controlan todo. El chip, la huida, Drake Street, el satélite — todo queda atrás, en una tesela que ya no es la vuestra. Vuestra historia con PREDATOR N-5.2 termina aquí. La que sigue, en Mundo Máquina, es la de \"De Ratones y Hombres\" — todavía en desarrollo.",
+      "definitivo": false,
+      "definitivoNota": "Cierre REAL de módulo (QUICKSTART_Kit_de_Inicio_v2.md línea 608, enlace explícito), no muerte ni final de personaje -- por eso definitivo:false: la partida y el personaje se conservan, coherente con 'no termina la campaña ni destruye el personaje'. Sin `continuacion` porque \"De Ratones y Hombres\" está marcado '(en desarrollo)' en la propia fuente -- no existe todavía destino real al que enlazar."
+    }
+  }
+}

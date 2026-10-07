@@ -1,0 +1,234 @@
+{
+  "id": "rastrear_tarjeta",
+  "type": "single_roll",
+  "musicState": "exploration",
+  "title": "Interior del vehículo — seguir el rastro",
+  "background": "assets/backgrounds/interior_vehiculo_noche.png",
+  "sheetContext": "callejon",
+  "sheetLayout": "overlay",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "introText": "La lluvia golpea el parabrisas mientras dejáis atrás el aparcamiento. Sobre la consola descansan el chip CHAFRY recuperado del cadáver de Arthur y la tarjeta-llave electrónica. El lector portátil puede buscar a qué edificio pertenece la tarjeta sin obligaros a detener el vehículo.",
+  "actions": [
+    {
+      "id": "rastrear",
+      "label": "Rastrear la tarjeta-llave — Difícil −10"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "rastrear_tarjeta",
+      "audioEvent": "scan",
+      "trigger": {
+        "action": "rastrear"
+      },
+      "executors": "party",
+      "delegationTitle": "¿Quién maneja el lector?",
+      "oncePerActor": true,
+      "noExecutorText": "Todos los que podían interpretar el lector ya lo han intentado. Repetir los mismos pasos no dará un resultado distinto.",
+      "roll": {
+        "skill": "Tecnológica",
+        "difficulty": -10,
+        "difficultyLabel": "Difícil",
+        "label": "Rastrear la tarjeta-llave",
+        "allowsHelp": true
+      },
+      "rollNota": "QS L.22 pide 'Electrónica + Tecnológica'; ningún pregenerado tiene 'Electrónica' como habilidad propia en su ficha (solo Tecnológica), así que se usa Tecnológica sola — desviación documentada en docs/QS_RULE_MAP.md.",
+      "onSuccess": {
+        "audioEvent": "success",
+        "setFlags": [
+          "direccion_arthur_localizada"
+        ],
+        "discoverClues": [
+          "La tarjeta-llave pertenece a un bloque de apartamentos baratos del extrarradio, tercer piso."
+        ],
+        "registerDecision": "Tarjeta-llave rastreada desde el vehículo.",
+        "text": "El lector enlaza varios registros y dibuja una ruta: un bloque de apartamentos baratos en el extrarradio, tercer piso. La dirección queda marcada en el navegador.",
+        "transition": "mapa_investigacion",
+        "transitionDelay": 1500
+      },
+      "onFailure": {
+        "registerDecision": "Un miembro del grupo no logró rastrear la tarjeta-llave desde el vehículo.",
+        "text": "El lector devuelve identificadores incompatibles. Ese enfoque ya está agotado para quien lo intentó; otro miembro del grupo puede probar con sus propios conocimientos."
+      },
+      "onExhausted": {
+        "setFlags": [
+          "direccion_arthur_localizada",
+          "rastreo_por_fragmentos"
+        ],
+        "discoverClues": [
+          "Al cruzar los fragmentos obtenidos por el grupo, la tarjeta-llave señala un bloque de apartamentos baratos del extrarradio, tercer piso."
+        ],
+        "registerDecision": "La dirección de Arthur se reconstruyó combinando varios rastreos incompletos.",
+        "text": "Nadie logra descifrar el sistema completo, pero los fragmentos no fallan en el mismo sitio. Al superponerlos aparece una dirección suficiente para continuar: extrarradio, tercer piso.",
+        "transition": "mapa_investigacion",
+        "transitionDelay": 1800
+      }
+    }
+  ],
+  "audio": {
+    "ambience": "vehicle_cabin_rain",
+    "events": {
+      "scan": "chip_reader_scan",
+      "success": "chip_reader_confirm"
+    }
+  },
+  "presentationNote": "La imagen compuesta existente sigue siendo el fallback. La ciudad nocturna se desplaza en un bucle suave detrás de los cristales transparentes; la lluvia vive sobre el vidrio y el recorte estable del habitáculo conserva salpicadero, asientos y siluetas en primer plano.",
+  "presentation": {
+    "schemaVersion": 1,
+    "width": 1672,
+    "height": 941,
+    "layers": [
+      {
+        "id": "window-exterior",
+        "resource": "assets/generated/raycast/environments/skyline_ciudad_02.png",
+        "optional": true,
+        "depth": 0,
+        "semantic": "background",
+        "position": {
+          "x": -36,
+          "y": 0
+        },
+        "size": {
+          "width": 1744,
+          "height": 941
+        },
+        "fit": "cover",
+        "parallax": {
+          "x": 0.92,
+          "y": 0.96
+        },
+        "pointer": {
+          "x": 3,
+          "y": 1
+        },
+        "oscillation": {
+          "x": 34,
+          "y": 1,
+          "periodMs": 16000
+        }
+      },
+      {
+        "id": "window-rain",
+        "resource": "assets/generated/effects/fx_rain.png",
+        "optional": true,
+        "depth": 10,
+        "semantic": "lighting",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "size": {
+          "width": 1672,
+          "height": 941
+        },
+        "fit": "cover",
+        "parallax": {
+          "x": 0.98,
+          "y": 0.98
+        },
+        "pointer": {
+          "x": 1,
+          "y": 0.5
+        },
+        "oscillation": {
+          "x": 1.5,
+          "y": 12,
+          "periodMs": 6200
+        }
+      },
+      {
+        "id": "vehicle-cabin-base",
+        "resource": "assets/backgrounds/interior_vehiculo_habitaculo_transparente.png",
+        "fallback": "assets/backgrounds/interior_vehiculo_noche.png",
+        "depth": 30,
+        "semantic": "foreground",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "size": {
+          "width": 1672,
+          "height": 941
+        },
+        "fit": "cover",
+        "parallax": {
+          "x": 1,
+          "y": 1
+        },
+        "pointer": {
+          "x": 0,
+          "y": 0
+        },
+        "oscillation": {
+          "x": 0,
+          "y": 0,
+          "periodMs": 12000
+        }
+      },
+      {
+        "id": "civil-dashboard-indicator",
+        "resource": "assets/generated/ui/ui_success.png",
+        "optional": true,
+        "depth": 50,
+        "semantic": "object",
+        "position": {
+          "x": 810,
+          "y": 655
+        },
+        "size": {
+          "width": 42,
+          "height": 53
+        },
+        "visibility": {
+          "all": [
+            "vehiculo_civil_robado"
+          ]
+        }
+      },
+      {
+        "id": "van-dashboard-indicator",
+        "resource": "assets/generated/ui/ui_armor.png",
+        "optional": true,
+        "depth": 50,
+        "semantic": "object",
+        "position": {
+          "x": 810,
+          "y": 655
+        },
+        "size": {
+          "width": 45,
+          "height": 50
+        },
+        "visibility": {
+          "all": [
+            "furgoneta_reparto_robada"
+          ]
+        }
+      },
+      {
+        "id": "prototype-dashboard-indicator",
+        "resource": "assets/generated/ui/ui_alert.png",
+        "optional": true,
+        "depth": 50,
+        "semantic": "object",
+        "position": {
+          "x": 810,
+          "y": 655
+        },
+        "size": {
+          "width": 40,
+          "height": 50
+        },
+        "visibility": {
+          "all": [
+            "prototipo_mort_robado"
+          ]
+        }
+      }
+    ]
+  }
+}

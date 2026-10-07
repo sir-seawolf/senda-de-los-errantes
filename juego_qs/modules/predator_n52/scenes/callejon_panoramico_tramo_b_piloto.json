@@ -1,0 +1,49 @@
+{
+  "id": "callejon_panoramico_tramo_b_piloto",
+  "type": "panoramic",
+  "musicState": "exploration",
+  "title": "Piloto panorámico — Tramo B",
+  "sheetContext": "callejon",
+  "sheetLayout": "overlay",
+  "tiledMap": "tiled/callejon_tramo_b_piloto.tmj",
+  "assetBase": "assets/panoramic/callejon/",
+  "availableParty": ["player", "bishop", "salim"],
+  "devNote": "Fixture técnico deliberado para validar Exit/Spawn, ida, vuelta y persistencia de estado. Reutiliza provisionalmente el maestro del primer tramo, no forma parte del grafo narrativo publicado y solo es accesible mediante devEntryPoint. Se conserva como escena QA no publicable porque tests/panoramicScene.test.mjs y tests/tiledPanoramicAdapter.test.mjs verifican con ella el contrato de retorno entre tramos.",
+  "introText": "El callejón continúa y se bifurca entre fachadas húmedas. Todavía puedes regresar por donde has venido.",
+  "defaultText": "No parece que puedas hacer eso ahí.",
+  "camera": {
+    "deadzoneWidthPct": 30,
+    "limits": { "minX": 0, "maxX": 1500 }
+  },
+  "player": {
+    "sprite": "agente_campo.png",
+    "walkFrames": ["agente_campo.png"],
+    "walkFrameMs": 130,
+    "spriteWidth": 90,
+    "spriteHeight": 140,
+    "walkSpeed": 820
+  },
+  "foregroundLayers": [
+    {
+      "id": "tuberias_primer_plano",
+      "file": "primer_plano_silueta.svg",
+      "x": 80,
+      "y": 0,
+      "width": 160,
+      "height": 900,
+      "parallaxFactor": 0.22
+    }
+  ],
+  "objects": [],
+  "lighting": [],
+  "hotspots": [],
+  "exits": [
+    {
+      "id": "salida_tramo_a",
+      "label": "VOLVER AL CRUCE ANTERIOR",
+      "lejosText": "La vuelta queda al extremo izquierdo del callejón."
+    }
+  ],
+  "interactions": [],
+  "performanceFallbackScene": "callejon_panoramico_piloto"
+}

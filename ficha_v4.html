@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha v4 · CAP2 completo</title>
+<link rel="stylesheet" href="senda_estilo.css">
+<style>
+  body{background:#eef2f7;padding:10px}
+  .layout{max-width:1400px;margin:auto;display:grid;grid-template-columns:260px 1fr;gap:10px}
+  .panel{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:10px}
+  .steps{display:flex;flex-direction:column;gap:6px}
+  .step-btn{padding:8px;border:1px solid #cbd5e1;background:#f8fafc;border-radius:6px;cursor:pointer;text-align:left;font-size:12px}
+  .step-btn.active{border-color:#1d4ed8;background:#dbeafe}
+  .step-btn.dirty{border-color:#b45309;background:#ffedd5}
+  .step{display:none}.step.active{display:block}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  label{display:flex;flex-direction:column;font-size:12px;gap:3px}
+  input,select,textarea,button{font-size:13px;padding:6px;border:1px solid #94a3b8;border-radius:4px}
+  .btn{background:#111827;color:#fff;border:none;cursor:pointer}
+  .btn.alt{background:#1d4ed8}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;background:#fff}
+  th,td{border:1px solid #dbe3ef;padding:5px;font-size:12px}
+  .skills-wrap{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .box{border:1px solid #dbe3ef;border-radius:6px;padding:8px;background:#f8fafc}
+  .chip{display:inline-block;margin:2px;padding:3px 8px;background:#111827;color:#fff;border-radius:999px;font-size:11px}
+  textarea{min-height:100px}
+  .iframe-wrap{height:74vh;border:1px solid #cbd5e1;border-radius:6px;overflow:hidden;background:#fff}
+  .iframe-wrap iframe{width:100%;height:100%;border:none}
+
+  @media (max-width: 860px){
+    body{padding:6px}
+    .layout{grid-template-columns:1fr;max-width:100%}
+    aside.panel{order:2}
+    main.panel{order:1}
+    .steps{flex-direction:row;flex-wrap:wrap;overflow-x:visible}
+    .step-btn{flex:1 1 45%;min-width:120px;font-size:11px;padding:10px 6px}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .skills-wrap{grid-template-columns:1fr}
+    table{font-size:11px}
+    th,td{padding:4px 3px}
+    input,select,textarea,button{font-size:16px;padding:8px}
+    .btn{min-height:44px}
+    .row{gap:6px}
+    .iframe-wrap{height:60vh}
+  }
+  @media (max-width: 480px){
+    .grid{grid-template-columns:1fr}
+    .step-btn{flex:1 1 100%}
+  }
+
+  /* ===== Ficha final — 4 páginas (Principal/Equipamiento/Iniciados/Instrucciones) =====
+     Mismo lenguaje visual que ficha.html (v3): marco negro grueso, cabeceras en barra
+     oscura, Bas/Apr/Mod/Tot como raya en vez de recuadro, letra grande y apretada. */
+  .ficha-pagina{background:#fff;border:3px solid #000;border-radius:0;padding:18px 22px;margin-bottom:16px;max-width:900px}
+  .ficha-pagina + .ficha-pagina{break-before:page}
+  .ficha-pagina h2{margin:0 0 8px;font-family:'Orbitron',sans-serif;letter-spacing:1px;font-size:15px;text-transform:uppercase;background:#0f1115;color:#fff;padding:4px 10px;border-bottom:none}
+  .ficha-cab{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 14px;font-size:13px;margin-bottom:10px}
+  .ficha-cab div b{display:block;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+  .ficha-attrs{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-bottom:10px}
+  .ficha-attrs div{border:1px solid #dbe3ef;border-radius:4px;text-align:center;padding:4px 2px}
+  .ficha-attrs div b{display:block;font-size:10px;color:#64748b;font-variant:small-caps;letter-spacing:-0.2px}
+  .ficha-attrs div span{font-size:19px;font-weight:700}
+  .ficha-stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;margin-bottom:10px;border:1px solid #dbe3ef;border-radius:6px;padding:6px 10px;background:#f8fafc}
+  .ficha-skills{display:grid;grid-template-columns:repeat(2,1fr);gap:0 16px}
+  .ficha-skills-cat{margin-bottom:8px;break-inside:avoid}
+  .ficha-skills-cat h4{margin:4px 0 2px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;background:#0f1115;color:#fff;padding:2px 6px;border-bottom:none}
+  .ficha-skill-row{display:grid;grid-template-columns:1fr 120px 34px;align-items:center;gap:4px;font-size:13.5px;padding:1px 0;border-bottom:none;letter-spacing:-0.2px}
+  .ficha-skill-row .esp{border-bottom:1px solid #000;height:12px}
+  .ficha-skill-row .tot{text-align:center;font-weight:700;border:none;border-bottom:1.5px solid #000;border-radius:0;background:transparent}
+  .ficha-combate{display:grid;grid-template-columns:repeat(3,1fr);gap:0 16px;margin-top:6px}
+  .ficha-blank-table{width:100%;border-collapse:collapse;margin-top:6px}
+  .ficha-blank-table th,.ficha-blank-table td{border:1px solid #cbd5e1;font-size:11px;padding:6px 4px;height:22px}
+  .ficha-blank-table th{background:#0f1115;color:#fff;text-transform:uppercase;font-size:9px}
+  .ficha-pv-box{display:flex;gap:14px;margin-top:8px}
+  .ficha-pv-nivel{flex:1;border:2px solid #000;border-radius:0;padding:8px;text-align:center}
+  .ficha-pv-nivel b{display:block;font-size:11px;text-transform:uppercase;color:#64748b}
+  .ficha-pv-boxes{display:flex;justify-content:center;gap:3px;flex-wrap:wrap;margin-top:4px}
+  .ficha-pv-boxes span{width:14px;height:14px;border:1px solid #000;display:inline-block;border-radius:2px}
+  .ficha-instr h3{font-size:13px;margin:10px 0 4px}
+  .ficha-instr p, .ficha-instr li{font-size:12px;line-height:1.5}
+  @page{size:A4 landscape;margin:5mm}
+  @media print{
+    body{background:#fff;padding:0;font-size:10px}
+    .layout{display:block}
+    aside.panel,.row,#stepsMenu,h1,.muted:first-of-type,details{display:none}
+    .step{display:none !important}
+    .step[data-step="10"]{display:block !important}
+    #fichaFinal{display:block}
+    .ficha-pagina{border:3px solid #000;box-shadow:none;padding:2mm 3mm;margin-bottom:0;max-width:100%}
+    .ficha-pagina + .ficha-pagina{break-before:page}
+    /* Página Principal es la más densa: apretar todo lo posible para que quepa en una sola hoja física. */
+    .ficha-pagina h2{font-size:14px;padding:3px 8px;margin-bottom:5px}
+    .ficha-cab{gap:1px 12px;margin-bottom:5px;font-size:11px}
+    .ficha-cab div b{font-size:9px}
+    .ficha-attrs{margin-bottom:5px;gap:3px}
+    .ficha-attrs div{padding:2px 1px}
+    .ficha-attrs div b{font-size:9px}
+    .ficha-attrs div span{font-size:15px}
+    .ficha-stats{margin-bottom:5px;padding:4px 8px;font-size:11px;gap:2px 12px}
+    .ficha-skills{grid-template-columns:repeat(3,1fr);gap:0 10px}
+    .ficha-skills-cat{margin-bottom:2px;break-inside:avoid}
+    .ficha-skills-cat h4{font-size:10px;margin:2px 0;padding:1px 4px;line-height:1.3}
+    .ficha-skill-row{font-size:10.5px;padding:0;line-height:1.2;grid-template-columns:1fr 44px 22px;gap:2px;letter-spacing:-0.2px}
+    .ficha-combate{margin-top:3px;grid-template-columns:repeat(4,1fr)}
+    .ficha-instr h3{font-size:12px;margin:6px 0 2px}
+    .ficha-instr p, .ficha-instr li{font-size:11px;line-height:1.35}
+    .ficha-blank-table th,.ficha-blank-table td{font-size:10px;padding:3px 3px;height:16px}
+    .ficha-pv-boxes span{width:11px;height:11px}
+  }
+</style>
+<link rel="stylesheet" href="ficha_marco.css">
+</head>
+<body>
+<nav class="senda-sheet-nav" aria-label="Secciones del juego"><strong>La Senda <span>· Ficha</span></strong><div><a href="juego.html">Juego</a><a href="quickstart.html">Quickstart</a></div></nav>
+<div class="row" style="max-width:1400px;margin:0 auto 10px;">
+  <button class="btn alt" type="button" id="modeBtnPersonaje" onclick="showMode('personaje')">Personaje</button>
+  <button class="btn" type="button" id="modeBtnVehiculo" onclick="showMode('vehiculo')">Vehículos</button>
+  <button class="btn" type="button" id="modeBtnRefugio" onclick="showMode('refugio')">Refugios / Bases</button>
+  <button class="btn" type="button" id="modeBtnMaster" onclick="showMode('master')">Master (Narrador)</button>
+</div>
+
+<div class="layout" id="modoPersonaje">
+  <aside class="panel">
+    <h3>Pasos CAP2</h3>
+    <div class="steps" id="stepsMenu"></div>
+    <div class="muted" style="margin-top:8px">Si cambias pasos tempranos, se marcarán como “revisar” los posteriores dependientes.</div>
+  </aside>
+
+  <main class="panel">
+    <h1>La Senda de los Errantes · Ficha v4</h1>
+    <div class="muted">Motor CAP2 avanzado + JSON completo</div>
+
+    <section class="step active" data-step="1">
+      <h2>Paso 1 · Tipo + Datos base</h2>
+      <div class="row" style="margin-bottom:8px"><button class="btn alt" type="button" onclick="randomTypeData()">Aleatorio paso 1</button></div>
+      <div class="grid">
+        <label>Jugador<input id="jugador"></label>
+        <label>Personaje<input id="personaje"></label>
+        <label>Corporación<input id="corporacion"></label>
+        <label>Naturaleza / Tipo<input id="naturaleza"></label>
+        <label>NT de origen
+          <select id="ntOrigen">
+            <option value="7">NT7+</option>
+            <option value="6">NT6</option>
+            <option value="5" selected>NT5</option>
+            <option value="4">NT4</option>
+            <option value="3">NT3</option>
+            <option value="2">NT2</option>
+            <option value="1">NT1</option>
+            <option value="0">NT0</option>
+          </select>
+        </label>
+        <label>Nivel Tecnológico (actual)<input id="nt"></label>
+        <label>Atributo objetivo bono NT
+          <select id="ntTargetAttr">
+            <option>Ca</option><option>A</option><option>P</option><option>C</option>
+            <option>I</option><option>F</option><option>V</option><option selected>H</option>
+          </select>
+        </label>
+        <label>Raza
+          <select id="raza"></select>
+        </label>
+        <label>Tipo de personaje
+          <select id="tipoPersonaje">
+            <option>Héroe</option><option>Madera de Héroe</option><option selected>Predestinado</option>
+          </select>
+        </label>
+        <label>Grupo primario
+          <select id="grupoPrimario">
+            <option>Físicos</option><option>Mentales</option>
+          </select>
+        </label>
+      </div>
+      <div id="resTipo" class="box" style="margin-top:8px"></div>
+      <div id="humanAdvBox" class="box" style="margin-top:8px">
+        <h3>Ventaja humana (si raza = Humano)</h3>
+        <div class="grid">
+          <label>Modo
+            <select id="humanMode">
+              <option value="none">Sin aplicar</option>
+              <option value="single10">+10 a 1 habilidad</option>
+              <option value="double5">+5 a 2 habilidades</option>
+            </select>
+          </label>
+          <label>Habilidad objetivo 1<select id="humanSkill1"></select></label>
+          <label>Habilidad objetivo 2<select id="humanSkill2"></select></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="2">
+      <h2>Paso 2 · Atributos CAP2</h2>
+      <div class="row" style="margin-bottom:8px"><button class="btn alt" type="button" onclick="randomAttrs()">Aleatorio paso 2</button></div>
+      <div class="box">
+        <div><span class="chip">Primario: <b id="primarioVal">30</b></span><span class="chip">Secundario: <b id="secundarioVal">25</b></span><span class="chip">PG total: <b id="pgTotal">30</b></span><span class="chip">PG restante: <b id="pgRest">30</b></span></div>
+        <div style="margin-top:4px"><span class="chip">Ajuste fino grupo primario (debe sumar 0): <b id="ajustePrimVal">0</b></span><span class="chip">Ajuste fino grupo secundario (debe sumar 0): <b id="ajusteSecVal">0</b></span></div>
+      </div>
+      <table style="margin-top:8px">
+        <thead><tr><th>Atributo</th><th>Base grupo</th><th>Ajuste fino</th><th>PG (+5)</th><th>Total</th></tr></thead>
+        <tbody id="attrsBody"></tbody>
+      </table>
+    </section>
+
+    <section class="step" data-step="3">
+      <h2>Paso 3 · Stats derivados</h2>
+      <div class="muted">Se recalculan solos según los atributos y profesiones ya elegidos — no hay nada que rellenar aquí.</div>
+      <div id="statsDerivadosBox" class="box" style="margin-top:8px"></div>
+    </section>
+
+    <section class="step" data-step="4">
+      <h2>Paso 4 · Profesiones</h2>
+      <div class="row" style="margin-bottom:8px"><button class="btn alt" type="button" onclick="randomProfs()">Aleatorio paso 4</button></div>
+      <div class="grid">
+        <label>Profesión 1<select id="prof1"></select></label>
+        <label>Profesión 2<select id="prof2"></select></label>
+        <label>Profesión 3<select id="prof3"></select></label>
+      </div>
+      <div id="profSummary" class="box" style="margin-top:8px"></div>
+      <div id="vocSummary" class="box" style="margin-top:8px"></div>
+    </section>
+
+    <section class="step" data-step="5">
+      <h2>Paso 5 · Habilidades por bolsa (+5)</h2>
+      <div class="row" style="margin-bottom:8px"><button class="btn alt" type="button" onclick="randomSkills()">Aleatorio paso 5</button></div>
+      <div id="poolChips" class="box"></div>
+      <div id="skillsWrap" class="skills-wrap"></div>
+      <div class="box" style="margin-top:8px">
+        <h3>Runas (solo Iniciado)</h3>
+        <div class="muted">3 runas por toma de Iniciado. Tope de nivel por número de tomas.</div>
+        <div id="runeWrap" class="row" style="margin-top:6px"></div>
+      </div>
+    </section>
+
+    <section class="step" data-step="6">
+      <h2>Paso 6 · MéritoDefecto especial</h2>
+      <div class="box">
+        <label>Especial
+          <select id="specialMerDef">
+            <option value="">Ninguno</option>
+            <option>Visionario</option>
+            <option>Furia desbocada</option>
+            <option>Ola de adrenalina</option>
+            <option>Belleza peligrosa</option>
+            <option>Visión Oscura</option>
+            <option>Sensible a la Distorsión</option>
+            <option>Gato curioso</option>
+            <option>Rata de navío</option>
+            <option>Grande</option>
+            <option>Pequeño</option>
+          </select>
+        </label>
+        <div class="muted">Coste fijo: 3 PE. Solo uno, solo en creación.</div>
+      </div>
+    </section>
+
+    <section class="step" data-step="7">
+      <h2>Paso 7 · Méritos y Defectos</h2>
+      <div class="row" style="margin-bottom:8px"><button class="btn alt" type="button" onclick="randomMerDef()">Aleatorio paso 7</button></div>
+      <div class="row">
+        <div class="box" style="flex:1;min-width:280px"><h3>Méritos</h3><div id="meritosBox"></div></div>
+        <div class="box" style="flex:1;min-width:280px"><h3>Defectos</h3><div id="defectosBox"></div></div>
+      </div>
+      <div class="box" style="margin-top:8px">
+        <label>Objetivo de "Característica mejorada"<select id="targetCar"></select></label>
+        <label>Objetivo de "Habilidad mejorada"<select id="targetHab"></select></label>
+        <label>Objetivo de "Característica empeorada" (Defecto)<select id="targetCarDef"></select></label>
+        <div id="peSummary" class="muted"></div>
+      </div>
+    </section>
+
+    <section class="step" data-step="8">
+      <h2>Paso 8 · Equipamiento y dinero</h2>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn alt" type="button" onclick="randomEconomy()">Aleatorio paso 8</button>
+        <button class="btn alt" type="button" onclick="rebuildEconomy()">Recalcular por profesiones</button>
+      </div>
+      <div id="ecoSummary" class="box" style="margin-top:8px"></div>
+      <label style="margin-top:8px">Equipo inicial (editable)<textarea id="equipoInicial"></textarea></label>
+      <label>Dinero final editable<input id="dineroFinal"></label>
+
+      <div class="box" style="margin-top:12px">
+        <h3>Tienda — Armadura (CAP03)</h3>
+        <div class="grid">
+          <label>Tipo<select id="tiendaArmadura"></select></label>
+          <label>&nbsp;<button class="btn alt" type="button" onclick="comprarArmadura()">Comprar / cambiar</button></label>
+        </div>
+        <div id="armaduraActual" class="muted" style="margin-top:6px"></div>
+      </div>
+
+      <div class="box" style="margin-top:8px">
+        <h3>Tienda — Implantes (CAP04e, Ibis-Forge)</h3>
+        <div class="muted">Un implante por atributo o función corporal — no se puede repetir. Reduce Humanidad al instalarlo.</div>
+        <div class="grid" style="margin-top:6px">
+          <label>Implantes de atributo<select id="tiendaImplAtrib"></select></label>
+          <label>&nbsp;<button class="btn alt" type="button" onclick="comprarImplante('atrib')">Comprar</button></label>
+          <label>Implantes de habilidad<select id="tiendaImplHab"></select></label>
+          <label>&nbsp;<button class="btn alt" type="button" onclick="comprarImplante('hab')">Comprar</button></label>
+        </div>
+        <div id="implantesLista" class="box" style="margin-top:6px"></div>
+      </div>
+    </section>
+
+    <section class="step" data-step="9">
+      <h2>Paso 9 · Resumen y consistencia</h2>
+      <div id="fullSummary" class="box"></div>
+    </section>
+
+    <section class="step" data-step="10">
+      <h2>Paso 10 · Ficha final (4 páginas)</h2>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn alt" type="button" onclick="renderFichaFinal()">Actualizar ficha final</button>
+        <button class="btn" type="button" onclick="window.print()">Imprimir / PDF</button>
+      </div>
+      <div id="fichaFinal"></div>
+      <details style="margin-top:10px">
+        <summary class="muted" style="cursor:pointer">Ver también el formulario v3 antiguo (iframe)</summary>
+        <div class="iframe-wrap" style="margin-top:6px">
+          <iframe id="finalV3Frame" src="ficha.html" title="Ficha v3"></iframe>
+        </div>
+        <div id="finalSheetV3" class="box" style="margin-top:8px"></div>
+      </details>
+    </section>
+
+    <div class="row" style="margin-top:10px">
+      <button class="btn alt" onclick="randomFillAll()">Aleatorio</button>
+      <button class="btn" onclick="guardarJSON()">Guardar JSON</button>
+      <label class="btn alt" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+        Cargar JSON<input id="jsonFileInput" type="file" accept=".json,application/json" style="display:none" onchange="cargarJSON(event)">
+      </label>
+      <button class="btn" onclick="prevStep()">Anterior</button>
+      <button class="btn alt" onclick="nextStep()">Siguiente</button>
+    </div>
+  </main>
+</div>
+
+<div class="panel" id="modoVehiculo" style="display:none;max-width:1400px;margin:auto;">
+  <h1>La Senda de los Errantes · Constructor de Vehículos</h1>
+  <div class="muted">CAP05b completo. Dinero propio — no tira del dinero de creación del personaje.</div>
+  <div class="row" style="margin:8px 0">
+    <button class="btn alt" type="button" onclick="randomVehiculo()">Aleatorio</button>
+    <button class="btn" type="button" onclick="resetVehiculo()">Vaciar / nuevo vehículo</button>
+    <label style="display:inline-flex;flex-direction:column;font-size:12px">Nombre<input id="vehNombre" style="width:200px"></label>
+    <label style="display:inline-flex;flex-direction:column;font-size:12px">Presupuesto (PC)<input id="vehPresupuesto" type="number" value="50000" style="width:120px" onchange="renderVehiculo()"></label>
+  </div>
+
+  <div class="grid" style="grid-template-columns:repeat(2,1fr)">
+    <div class="box">
+      <h3>1. Nivel</h3>
+      <select id="vehNivel" onchange="renderVehiculo()"></select>
+    </div>
+    <div class="box">
+      <h3>2. Calidad de base</h3>
+      <select id="vehCalidad" onchange="renderVehiculo()"></select>
+    </div>
+    <div class="box">
+      <h3>3. Propulsión</h3>
+      <select id="vehPropulsion" onchange="renderVehiculo()"></select>
+    </div>
+    <div class="box">
+      <h3>4. Blindaje</h3>
+      <select id="vehBlindaje" onchange="renderVehiculo()"></select>
+    </div>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>5. Armamento</h3>
+    <div class="row">
+      <select id="vehArmaSelect"></select>
+      <button class="btn alt" type="button" onclick="anadirArma()">Añadir arma</button>
+    </div>
+    <div id="vehArmasLista" style="margin-top:6px"></div>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>6. Complementos</h3>
+    <div class="row">
+      <select id="vehComplSelect"></select>
+      <button class="btn alt" type="button" onclick="anadirComplemento()">Añadir complemento</button>
+    </div>
+    <div id="vehComplLista" style="margin-top:6px"></div>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>Resumen</h3>
+    <div id="vehResumen"></div>
+  </div>
+</div>
+
+<div class="panel" id="modoRefugio" style="display:none;max-width:1400px;margin:auto;">
+  <h1>La Senda de los Errantes · Refugios y Bases</h1>
+  <div class="muted">CAP04d. Dinero propio — no tira del dinero de creación del personaje ni del de vehículos.</div>
+  <div class="row" style="margin:8px 0">
+    <button class="btn alt" type="button" onclick="randomRefugio()">Aleatorio</button>
+    <button class="btn" type="button" onclick="resetRefugioForm()">Vaciar formulario</button>
+    <label style="display:inline-flex;flex-direction:column;font-size:12px">Presupuesto (PC)<input id="refPresupuesto" type="number" value="50000" style="width:120px"></label>
+  </div>
+
+  <div class="box">
+    <h3>Añadir propiedad</h3>
+    <div class="grid">
+      <label>Nivel<select id="refNivel" onchange="renderRefugioForm()"></select></label>
+      <label>Nombre<input id="refNombre" placeholder="Ej: El Nido, Puesto 7..."></label>
+      <label>Coste elegido (dentro del rango)<input id="refCoste" type="number"></label>
+      <label>¿Tomado en vez de construido?
+        <select id="refTomado">
+          <option value="no">No — construido desde cero</option>
+          <option value="si">Sí — apropiado (~50% coste, hereda Tabla 4 + Rasgo Distintivo del Generador de Asentamientos como complicaciones)</option>
+        </select>
+      </label>
+    </div>
+    <div id="refInfo" class="muted" style="margin-top:6px"></div>
+    <button class="btn alt" type="button" style="margin-top:6px" onclick="anadirRefugio()">Añadir</button>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>Propiedades del grupo</h3>
+    <div id="refugiosLista"></div>
+    <div id="refResumen" style="margin-top:6px"></div>
+  </div>
+</div>
+
+<div class="panel" id="modoMaster" style="display:none;max-width:1400px;margin:auto;">
+  <h1>La Senda de los Errantes · Herramientas del Narrador</h1>
+  <div class="muted">PNJ rápidos con el mismo motor de creación, más acceso directo a Vehículos y Refugios, más un generador de semillas de aventura.</div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>PNJ rápido</h3>
+    <div class="muted">Genera un personaje completo con el motor de la pestaña Personaje (tipo, atributos, profesión, habilidades) y lo muestra en formato reducido — sin pasar por los 10 Pasos.</div>
+    <div class="row" style="margin-top:6px">
+      <select id="pnjTipo">
+        <option>Héroe</option><option>Madera de Héroe</option><option selected>Predestinado</option>
+      </select>
+      <button class="btn alt" type="button" onclick="generarPNJ()">Generar PNJ</button>
+    </div>
+    <div id="pnjLista" style="margin-top:8px"></div>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>Vehículo rápido</h3>
+    <div class="muted">Tira un vehículo aleatorio completo sin salir de aquí (dentro del presupuesto de la pestaña Vehículos). Para montarlo pieza a pieza, ve a la pestaña Vehículos.</div>
+    <div class="row" style="margin-top:6px">
+      <button class="btn alt" type="button" onclick="randomVehiculo()">Generar vehículo aleatorio</button>
+      <button class="btn" type="button" onclick="showMode('vehiculo')">Ir a Vehículos (montaje manual)</button>
+    </div>
+    <div id="vehiculosGuardadosListaMaster" style="margin-top:8px"></div>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>Refugio / Base rápida</h3>
+    <div class="muted">Tira una propiedad aleatoria sin salir de aquí. Se añade a la misma lista que la pestaña Refugios/Bases.</div>
+    <div class="row" style="margin-top:6px">
+      <button class="btn alt" type="button" onclick="randomRefugio()">Generar refugio aleatorio</button>
+      <button class="btn" type="button" onclick="showMode('refugio')">Ir a Refugios (ajuste manual)</button>
+    </div>
+    <div id="refugiosListaMaster" style="margin-top:8px"></div>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>Generador de semillas de aventura</h3>
+    <div class="row">
+      <button class="btn alt" type="button" onclick="generarSemilla()">Generar semilla</button>
+    </div>
+    <div id="semillasLista" style="margin-top:8px"></div>
+  </div>
+
+  <div class="box" style="margin-top:8px">
+    <h3>Generador de asentamientos y estaciones (Anexo)</h3>
+    <div class="muted">6 tiradas: NT, Tipo, Suministros, Artesanos, Presencia corporativa, Rasgo distintivo. ~2 minutos de un lugar con carácter.</div>
+    <div class="row">
+      <button class="btn alt" type="button" onclick="generarAsentamiento()">Generar asentamiento</button>
+    </div>
+    <div id="asentamientosLista" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<script src="FICHA_Personaje_Autocalculada_v4_json_preguntas.js"></script>
+</body>
+</html>

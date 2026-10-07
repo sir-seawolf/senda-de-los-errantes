@@ -1,0 +1,136 @@
+{
+  "id": "callejon",
+  "type": "point_click",
+  "musicState": "exploration",
+  "title": "Escena 1 — El Callejón",
+  "background": "assets/backgrounds/callejon.jpg",
+  "ambient": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "verbs": ["MIRAR", "COGER", "USAR", "HABLAR", "MOVERSE"],
+  "introText": "Es una tarde gris de entre semana. Caminas por una calle cualquiera cuando los oyes: disparos secos, cerca. La gente echa a correr; no hay sirenas. Te metes en un callejón estrecho entre cubos de basura y cajas, esperando a que pase. Los disparos suenan cada vez más cerca. Algo cae pesadamente sobre unas bolsas junto a la entrada del callejón. Luego, pasos metálicos, rápidos, que pasan de largo y se alejan. Cuando te asomas, ves a un hombre de mediana edad tirado entre la basura, sangrando de la cabeza y el pecho. No se mueve. Tiene el puño apretado, y entre los dedos asoma algo de color rojo oscuro.",
+  "defaultText": "No parece que puedas hacer eso ahí.",
+  "zones": [
+    { "id": "cuerpo", "label": "hombre caído", "rect": [38, 55, 24, 35] },
+    { "id": "salida", "label": "salida", "rect": [2, 10, 20, 80] },
+    { "id": "cobertura", "label": "cobertura", "rect": [70, 40, 22, 45] }
+  ],
+  "interactions": [
+    {
+      "id": "mirar_cuerpo_repetido",
+      "trigger": { "verb": "MIRAR", "zone": "cuerpo" },
+      "requiresFlags": ["cuerpo_examinado"],
+      "onAlways": { "text": "Ya lo has examinado. Un disparo limpio, colocado. Le han ejecutado." }
+    },
+    {
+      "id": "mirar_cuerpo",
+      "trigger": { "verb": "MIRAR", "zone": "cuerpo" },
+      "blockedByFlags": ["cuerpo_examinado"],
+      "executors": "party",
+      "delegationTitle": "¿Quién investiga al hombre caído?",
+      "roll": {
+        "skill": "Diagnóstico",
+        "fallbackSkill": "Percepción",
+        "difficulty": -10,
+        "difficultyLabel": "Difícil",
+        "label": "Examinar el cuerpo",
+        "allowsHelp": true
+      },
+      "onSuccess": {
+        "setFlags": ["cuerpo_examinado"],
+        "discoverClues": ["La muerte fue un disparo limpio y profesional: una ejecución, no un atraco."],
+        "text": "No es un robo que salió mal. El disparo es limpio, colocado. A este hombre lo han ejecutado. En el puño aprieta un chip pequeño, de un tipo que no reconoces — no encaja en ninguna ranura común."
+      },
+      "onFailure": {
+        "setFlags": ["cuerpo_examinado"],
+        "text": "La sangre y la confusión no dejan ver mucho más: hay una herida en la cabeza y otra en el pecho, nada más claro. Aun así, se ve que aprieta algo pequeño en el puño."
+      }
+    },
+    {
+      "id": "coger_cuerpo_prematuro",
+      "trigger": { "verb": "COGER", "zone": "cuerpo" },
+      "blockedByFlags": ["cuerpo_examinado"],
+      "onAlways": { "text": "Prefieres mirar antes de tocar nada — podría haber algo que se te escape." }
+    },
+    {
+      "id": "coger_cuerpo_repetido",
+      "trigger": { "verb": "COGER", "zone": "cuerpo" },
+      "requiresFlags": ["cuerpo_examinado", "chip_cogido"],
+      "onAlways": { "text": "Ya has cogido todo lo que llevaba encima." }
+    },
+    {
+      "id": "coger_cuerpo",
+      "trigger": { "verb": "COGER", "zone": "cuerpo" },
+      "requiresFlags": ["cuerpo_examinado"],
+      "blockedByFlags": ["chip_cogido"],
+      "onAlways": {
+        "setFlags": ["chip_cogido"],
+        "discoverObjects": ["Chip (logo CHAFRY CORP)", "Cartera con documentación — Arthur Dicking", "Tarjeta con 940 PC", "Tarjeta-llave electrónica"],
+        "inventoryAdd": ["Chip CHAFRY CORP", "Documentación de Arthur Dicking", "Tarjeta-llave electrónica"],
+        "text": "Le abres la mano con cuidado. Un chip pequeño, con el logo de <strong>CHAFRY CORP</strong> grabado. Junto al cuerpo: una cartera a nombre de <strong>Arthur Dicking</strong>, una tarjeta con 940 PC y una tarjeta-llave electrónica."
+      }
+    },
+    {
+      "id": "usar_cuerpo",
+      "trigger": { "verb": "USAR", "zone": "cuerpo" },
+      "onAlways": { "text": "No tienes nada que usar sobre él todavía." }
+    },
+    {
+      "id": "hablar_cuerpo",
+      "trigger": { "verb": "HABLAR", "zone": "cuerpo" },
+      "onAlways": { "text": "No responde. Está muerto." }
+    },
+    {
+      "id": "moverse_cuerpo",
+      "trigger": { "verb": "MOVERSE", "zone": "cuerpo" },
+      "onAlways": { "text": "Te acercas más al cuerpo." }
+    },
+    {
+      "id": "mirar_cobertura",
+      "trigger": { "verb": "MIRAR", "zone": "cobertura" },
+      "onAlways": {
+        "setFlags": ["cobertura_vista"],
+        "discoverClues": ["Cobertura disponible: contenedores y cajas apiladas junto al callejón."],
+        "text": "Contenedores metálicos y cajas apiladas. Si esto se pone feo, ahí podrías cubrirte."
+      }
+    },
+    {
+      "id": "mirar_salida",
+      "trigger": { "verb": "MIRAR", "zone": "salida" },
+      "onAlways": { "text": "La boca del callejón da a una calle en penumbra. No se ve movimiento, de momento." }
+    },
+    {
+      "id": "moverse_salida_ya",
+      "trigger": { "verb": "MOVERSE", "zone": "salida" },
+      "requiresFlags": ["perseguidores_detectados"],
+      "onAlways": { "transition": "decision" }
+    },
+    {
+      "id": "moverse_salida",
+      "trigger": { "verb": "MOVERSE", "zone": "salida" },
+      "blockedByFlags": ["perseguidores_detectados"],
+      "roll": {
+        "skill": "Percepción",
+        "fallbackSkill": "Alerta",
+        "difficulty": 0,
+        "difficultyLabel": "Normal",
+        "label": "Algo se acerca"
+      },
+      "onSuccess": {
+        "setFlags": ["perseguidores_detectados"],
+        "discoverClues": ["Dos figuras metálicas cierran las dos salidas de la manzana."],
+        "registerDecision": "Perseguidores detectados en la boca del callejón.",
+        "text": "Antes de dar dos pasos, algo te hace pararte: un reflejo metálico al fondo de la calle. Ahora que te fijas, son dos figuras — demasiado rígidas para ser normales, con algo en las manos que no es un teléfono. No solo vienen hacia aquí: se están abriendo para cerrar las dos salidas de la manzana.",
+        "transition": "decision",
+        "transitionDelay": 900
+      },
+      "onFailure": {
+        "setFlags": ["perseguidores_detectados"],
+        "registerDecision": "Perseguidores detectados en la boca del callejón.",
+        "text": "Sales del callejón sin pensarlo demasiado. Un segundo tarde: dos figuras giran la esquina, directas hacia ti. No hay tiempo de estudiarlas.",
+        "transition": "decision",
+        "transitionDelay": 900
+      }
+    }
+  ]
+}

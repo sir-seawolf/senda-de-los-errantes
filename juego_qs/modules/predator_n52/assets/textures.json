@@ -1,0 +1,47 @@
+{
+  "image": "assets/source_sheets/urban_atlas_source.png",
+  "sourceSize": { "w": 1536, "h": 1024 },
+  "measuredBy": "recorte visual verificado sobre el fichero real (ver docs/GENERATED_ASSETS.md) — sin OCR ni segmentación automática",
+  "grid": { "x0": 6, "pitchX": 104, "tileW": 96 },
+  "assets": {
+    "brick_red":        { "x": 6,   "y": 215, "w": 96, "h": 73, "repeat": true, "category": "wall", "outFile": "textures/brick_red.png" },
+    "brick_dark":       { "x": 110, "y": 215, "w": 96, "h": 73, "repeat": true, "category": "wall", "outFile": "textures/brick_dark.png" },
+    "brick_aged":       { "x": 214, "y": 215, "w": 96, "h": 73, "repeat": true, "category": "wall", "outFile": "textures/brick_aged.png" },
+    "concrete_block":   { "x": 318, "y": 215, "w": 96, "h": 73, "repeat": true, "category": "wall", "outFile": "textures/concrete_block.png" },
+    "concrete_smooth":  { "x": 422, "y": 215, "w": 96, "h": 73, "repeat": true, "category": "wall", "outFile": "textures/concrete_smooth.png" },
+    "concrete_dirty":   { "x": 526, "y": 215, "w": 96, "h": 73, "repeat": true, "category": "wall", "outFile": "textures/concrete_dirty.png" },
+    "wall_peeling":     { "x": 630, "y": 215, "w": 96, "h": 73, "repeat": true, "category": "wall", "outFile": "textures/wall_peeling.png" },
+    "wall_graffiti":    { "x": 734, "y": 215, "w": 96, "h": 73, "repeat": false, "category": "wall", "outFile": "textures/wall_graffiti.png" },
+
+    "asphalt":          { "x": 6,   "y": 378, "w": 96, "h": 55, "repeat": true, "category": "floor", "outFile": "textures/asphalt.png" },
+    "asphalt_wet":      { "x": 110, "y": 378, "w": 96, "h": 55, "repeat": true, "category": "floor", "outFile": "textures/asphalt_wet.png" },
+    "asphalt_cracked":  { "x": 214, "y": 378, "w": 96, "h": 55, "repeat": true, "category": "floor", "outFile": "textures/asphalt_cracked.png" },
+    "sidewalk_slab":    { "x": 318, "y": 378, "w": 96, "h": 55, "repeat": true, "category": "floor", "outFile": "textures/sidewalk_slab.png" },
+    "sidewalk_tile":    { "x": 422, "y": 378, "w": 96, "h": 55, "repeat": true, "category": "floor", "outFile": "textures/sidewalk_tile.png" },
+    "concrete_dirty_floor": { "x": 526, "y": 378, "w": 96, "h": 55, "repeat": true, "category": "floor", "outFile": "textures/concrete_dirty_floor.png" },
+    "dirt_gravel":      { "x": 630, "y": 378, "w": 96, "h": 55, "repeat": true, "category": "floor", "outFile": "textures/dirt_gravel.png" },
+    "puddle":           { "x": 734, "y": 378, "w": 96, "h": 55, "repeat": false, "category": "floor", "outFile": "textures/puddle.png" },
+
+    "metal_smooth":     { "x": 6,   "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/metal_smooth.png" },
+    "metal_scratched":  { "x": 110, "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/metal_scratched.png" },
+    "metal_riveted":    { "x": 214, "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/metal_riveted.png" },
+    "metal_grate":      { "x": 318, "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/metal_grate.png" },
+    "shutter_closed":   { "x": 422, "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/shutter_closed.png" },
+    "shutter_aged":     { "x": 526, "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/shutter_aged.png" },
+    "pipe_horizontal":  { "x": 630, "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/pipe_horizontal.png" },
+    "pipe_vertical":    { "x": 734, "y": 563, "w": 96, "h": 50, "repeat": true, "category": "metal", "outFile": "textures/pipe_vertical.png" },
+
+    "door_metal":       { "x": 6,   "y": 715, "w": 96, "h": 60, "repeat": false, "category": "door", "outFile": "textures/door_metal.png" },
+    "door_metal_aged":  { "x": 110, "y": 715, "w": 96, "h": 60, "repeat": false, "category": "door", "outFile": "textures/door_metal_aged.png" },
+    "door_wood":        { "x": 214, "y": 715, "w": 96, "h": 60, "repeat": false, "category": "door", "outFile": "textures/door_wood.png" },
+    "door_roll_gate":   { "x": 318, "y": 715, "w": 96, "h": 60, "repeat": false, "category": "door", "outFile": "textures/door_roll_gate.png" },
+    "window_barred":    { "x": 422, "y": 715, "w": 96, "h": 60, "repeat": false, "category": "window", "outFile": "textures/window_barred.png" },
+    "window_broken":    { "x": 526, "y": 715, "w": 96, "h": 60, "repeat": false, "category": "window", "outFile": "textures/window_broken.png" },
+    "window_dark":      { "x": 630, "y": 715, "w": 96, "h": 60, "repeat": false, "category": "window", "outFile": "textures/window_dark.png" },
+    "window_lit":       { "x": 734, "y": 715, "w": 96, "h": 60, "repeat": false, "category": "window", "outFile": "textures/window_lit.png" }
+  },
+  "pendingCrop": {
+    "detalles_row": "Fila DETALLES/OBJETOS URBANOS (cajas eléctricas, ventilación, cono, etc.) no medida con confianza suficiente en esta iteración — fuera del set mínimo obligatorio.",
+    "columna_derecha": "Grafitis/carteles, señales/información, bordes/remates y varios/decoración (columna derecha de la lámina) no medidos — no forman parte del set mínimo obligatorio de esta iteración."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "decision",
+  "type": "decision",
+  "musicState": "tension",
+  "title": "Decisión — perseguidores",
+  "background": "assets/backgrounds/callejon.jpg",
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introText": "Dos siluetas cierran el paso. Se mueven demasiado sincronizadas para ser policía, demasiado calladas para ser una pandilla. Tienes segundos para decidir qué haces.",
+  "choices": [
+    { "id": "huir", "label": "HUIR" },
+    { "id": "luchar", "label": "LUCHAR" },
+    { "id": "esconder", "label": "ESCONDERSE" }
+  ],
+  "interactions": [
+    {
+      "id": "elegir_huir",
+      "trigger": { "choice": "huir" },
+      "onAlways": { "registerDecision": "Decisión: HUIR", "transition": "persecucion" }
+    },
+    {
+      "id": "elegir_luchar",
+      "trigger": { "choice": "luchar" },
+      "onAlways": { "registerDecision": "Decisión: LUCHAR", "transition": "combate_inicial" }
+    },
+    {
+      "id": "elegir_esconder",
+      "trigger": { "choice": "esconder" },
+      "onAlways": { "registerDecision": "Decisión: ESCONDERSE", "transition": "esconderse" }
+    }
+  ]
+}

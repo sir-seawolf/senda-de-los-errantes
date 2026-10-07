@@ -1,0 +1,23 @@
+{
+  "id": "satelite_llegada",
+  "type": "decision",
+  "musicState": "chase",
+  "title": "Escena 5 — El satélite minero",
+  "background": null,
+  "sheetContext": "callejon",
+  "availableParty": ["player", "bishop", "salim"],
+  "introTextNota": "QUICKSTART_Kit_de_Inicio_v2.md líneas 582-594 (Escena 5). El QS no da una tirada para 'alcanzar la lanzadera' -- lo trata como el desenlace asumido de la escena, y ofrece 4 acciones de sabor (correr / cobertura / ayudar / devolver fuego) sin diferenciar mecánicamente el resultado. No se inventa una tirada que la fuente no pide.",
+  "introText": "Los contenedores son descargados en un satélite minero sin atmósfera. Tu terminal se llena de interferencias y gritos. Al asomarte por la esclusa, ves avanzar sobre la superficie a un grupo de soldados con uniformes impecables y anacrónicos —idénticos a las SS alemanas—, con máscaras de gas de cuero y cascos cerrados. Aparecen de entre los riscos y abren fuego sin mediar palabra, ejecutando al civil más cercano. Una brecha en el traje sin presión es muerte por asfixia si os quedáis quietos. Tenéis que alcanzar la lanzadera.",
+  "choices": [
+    { "id": "correr", "label": "CORRER HACIA LA LANZADERA" },
+    { "id": "cobertura", "label": "BUSCAR COBERTURA ENTRE LOS RISCOS" },
+    { "id": "ayudar", "label": "AYUDAR A UN SUPERVIVIENTE CERCANO" },
+    { "id": "devolver_fuego", "label": "DEVOLVER FUEGO PARA GANAR TIEMPO" }
+  ],
+  "interactions": [
+    { "id": "elegir_correr", "trigger": { "choice": "correr" }, "onAlways": { "registerDecision": "Satélite: corréis directos a la lanzadera.", "transition": "satelite_lanzadera" } },
+    { "id": "elegir_cobertura", "trigger": { "choice": "cobertura" }, "onAlways": { "registerDecision": "Satélite: avanzáis de risco en risco hasta la lanzadera.", "transition": "satelite_lanzadera" } },
+    { "id": "elegir_ayudar", "trigger": { "choice": "ayudar" }, "onAlways": { "registerDecision": "Satélite: os detenéis a ayudar a un superviviente antes de llegar a la lanzadera.", "discoverClues": ["Un superviviente del ataque llega con vosotros a la lanzadera, malherido pero vivo."], "transition": "satelite_lanzadera" } },
+    { "id": "elegir_devolver_fuego", "trigger": { "choice": "devolver_fuego" }, "onAlways": { "registerDecision": "Satélite: devolvéis fuego para cubrir la retirada hacia la lanzadera.", "transition": "satelite_lanzadera" } }
+  ]
+}

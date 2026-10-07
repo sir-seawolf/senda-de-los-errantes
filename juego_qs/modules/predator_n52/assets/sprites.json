@@ -1,0 +1,44 @@
+{
+  "image": "assets/source_sheets/predator_sprites_source.png",
+  "sourceSize": { "w": 1536, "h": 1024 },
+  "measuredBy": "recorte visual verificado sobre el fichero real (ver docs/GENERATED_ASSETS.md) — sin OCR ni segmentación automática",
+  "assets": {
+    "executor_front":   { "x": 20,  "y": 85,  "w": 70, "h": 110, "category": "enemy", "state": "idle",   "outFile": "sprites/executor_front.png", "trimBackground": true },
+    "executor_side":    { "x": 215, "y": 235, "w": 70, "h": 100, "category": "enemy", "state": "move",   "outFile": "sprites/executor_side.png", "trimBackground": true },
+    "executor_hurt":    { "x": 20,  "y": 360, "w": 70, "h": 75,  "category": "enemy", "state": "hurt",   "outFile": "sprites/executor_hurt.png", "trimBackground": true },
+
+    "fallen_man":       { "x": 595, "y": 100, "w": 80, "h": 105, "category": "npc", "outFile": "sprites/fallen_man.png", "trimBackground": true },
+
+    "container":        { "x": 690, "y": 460, "w": 80, "h": 125, "category": "object", "outFile": "objects/container.png", "trimBackground": true },
+    "barrel":           { "x": 990, "y": 460, "w": 70, "h": 125, "category": "object", "outFile": "objects/barrel.png", "trimBackground": true, "quality": "aceptable — leve contaminación de la etiqueta vecina en el borde superior" },
+    "fence_gate":       { "x": 1000,"y": 600, "w": 70, "h": 100, "category": "object", "outFile": "objects/fence_gate.png", "trimBackground": true },
+
+    "vehicle_sedan_black": { "x": 15,  "y": 460, "w": 80, "h": 125, "category": "vehicle", "outFile": "vehicles/vehicle_sedan_black.png", "trimBackground": true },
+    "vehicle_van":         { "x": 355, "y": 460, "w": 80, "h": 125, "category": "vehicle", "outFile": "vehicles/vehicle_van.png", "trimBackground": true },
+
+    "ui_health":        { "x": 908,  "y": 728, "w": 64, "h": 72, "category": "hud", "outFile": "ui/ui_health.png" },
+    "ui_armor":         { "x": 985,  "y": 728, "w": 65, "h": 72, "category": "hud", "outFile": "ui/ui_armor.png" },
+    "ui_ammo":          { "x": 1065, "y": 728, "w": 65, "h": 72, "category": "hud", "quality": "aceptable — leve contaminación del icono vecino (P. Épicos)", "outFile": "ui/ui_ammo.png" },
+    "ui_epic_points":   { "x": 1145, "y": 728, "w": 65, "h": 72, "category": "hud", "quality": "aceptable — leve contaminación del icono vecino (Munición)", "outFile": "ui/ui_epic_points.png" },
+    "ui_success":       { "x": 1225, "y": 850, "w": 60, "h": 75, "category": "hud", "outFile": "ui/ui_success.png" },
+    "ui_critical":      { "x": 1315, "y": 850, "w": 60, "h": 75, "category": "hud", "outFile": "ui/ui_critical.png" },
+    "ui_alert":         { "x": 1168, "y": 725, "w": 50, "h": 63, "category": "hud", "outFile": "ui/ui_alert.png", "trimBackground": true },
+    "ui_fumble":        { "x": 1368, "y": 822, "w": 50, "h": 63, "category": "hud", "outFile": "ui/ui_fumble.png", "trimBackground": true },
+
+    "fx_muzzle_flash":  { "x": 525, "y": 740, "w": 65, "h": 70, "category": "effect", "outFile": "effects/fx_muzzle_flash.png" },
+    "fx_impact":        { "x": 665, "y": 740, "w": 65, "h": 70, "category": "effect", "outFile": "effects/fx_impact.png" },
+    "fx_smoke":         { "x": 770, "y": 715, "w": 60, "h": 65, "category": "effect", "outFile": "effects/fx_smoke.png" },
+    "fx_rain":          { "x": 760, "y": 860, "w": 65, "h": 95, "category": "effect", "outFile": "effects/fx_rain.png" },
+
+    "weapon_pistol_side":  { "x": 15,  "y": 750, "w": 90,  "h": 25, "category": "weapon", "state": "idle", "outFile": "weapons/weapon_pistol_side.png", "trimBackground": true, "quality": "aceptable — recorte estrecho (25px alto), fiel al sprite lateral fuente; no usado todavía por ningún renderer" },
+    "weapon_smg_side":     { "x": 140, "y": 750, "w": 100, "h": 25, "category": "weapon", "state": "idle", "outFile": "weapons/weapon_smg_side.png", "trimBackground": true, "quality": "aceptable — mismo criterio que weapon_pistol_side" },
+    "weapon_shotgun_side": { "x": 270, "y": 750, "w": 100, "h": 25, "category": "weapon", "state": "idle", "outFile": "weapons/weapon_shotgun_side.png", "trimBackground": true, "quality": "aceptable — mismo criterio que weapon_pistol_side" },
+    "weapon_rifle_side":   { "x": 400, "y": 750, "w": 100, "h": 25, "category": "weapon", "state": "idle", "outFile": "weapons/weapon_rifle_side.png", "trimBackground": true, "quality": "aceptable — mismo criterio que weapon_pistol_side" }
+  },
+  "pendingCrop": {
+    "civiles_pnj": "Sección CIVILES/PNJ (informante, civil genérico) no medida — no forma parte del set mínimo obligatorio.",
+    "armas_manos_fps": "Solo se midió la vista lateral 'idle' de las 4 armas (pistola/subfusil/escopeta/fusil) — la variante 'disparando' (con fogonazo) de cada arma y la sección completa de MANOS (FPS)/Recarga no se han medido. El combate sigue sin representación FPS de armas en pantalla: los 4 sprites laterales quedan generados y disponibles en assets/generated/weapons/ pero ningún renderer los usa todavía (fuera del alcance de 'resolver pending_crop', ver docs/GENERATED_ASSETS.md).",
+    "zonas_dano": "Iconos de zonas de daño (cabeza/torso/brazo/pierna) no medidos — posible mejora futura de la ficha lateral.",
+    "pregenerados_sprite_completo": "Los sprites de cuerpo completo de los 5 pregenerados (además de sus retratos, ya existentes en assets/characters/) no se han medido — se sigue usando el retrato existente."
+  }
+}

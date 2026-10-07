@@ -1,0 +1,68 @@
+{
+  "id": "captura_transporte",
+  "type": "decision",
+  "renderer": "narrative",
+  "template": "capture",
+  "musicState": "tension",
+  "title": "Dentro del transporte corporativo",
+  "sheetContext": "callejon",
+  "availableParty": [
+    "player",
+    "bishop",
+    "salim"
+  ],
+  "capture": {
+    "mode": "adaptive",
+    "totalFlag": "captura_total",
+    "partialFlag": "captura_parcial",
+    "preservePlayerControl": true,
+    "temporaryCharacterPolicy": "future_content"
+  },
+  "contentStatus": "fallback",
+  "missingContent": [
+    "Plano específico del transporte",
+    "Secuencia canónica extensa de fuga/rescate",
+    "Personaje temporal si la captura se prolonga"
+  ],
+  "introText": "La reunión era una trampa. El transporte corporativo separa al grupo solo si la ficción lo exige; nadie pierde el control de su personaje. Los capturados pueden forzar una salida y los libres pueden facilitar el rescate. Esta resolución breve conserva el contrato hasta que exista contenido canónico más detallado.",
+  "choices": [
+    {
+      "id": "escapar",
+      "label": "FORZAR UNA SALIDA DESDE DENTRO"
+    },
+    {
+      "id": "coordinar",
+      "label": "COORDINAR CAPTURADOS Y LIBRES"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "escape",
+      "trigger": {
+        "choice": "escapar"
+      },
+      "onAlways": {
+        "setFlags": [
+          "captura_resuelta",
+          "ruta_almacenes"
+        ],
+        "registerDecision": "Captura: el grupo abrió una salida del transporte sin perder personajes.",
+        "transition": "decision_arthur"
+      }
+    },
+    {
+      "id": "rescate",
+      "trigger": {
+        "choice": "coordinar"
+      },
+      "onAlways": {
+        "setFlags": [
+          "captura_resuelta",
+          "ruta_almacenes"
+        ],
+        "registerDecision": "Captura parcial: capturados y libres coordinaron la fuga.",
+        "transition": "decision_arthur"
+      }
+    }
+  ]
+}

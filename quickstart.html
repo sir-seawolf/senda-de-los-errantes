@@ -1,0 +1,860 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LA SENDA DE LOS ERRANTES — KIT DE INICIO</title>
+<link rel="stylesheet" href="senda_estilo.css">
+
+<style>
+.comic-placeholder{border:2px dashed var(--accent2,#1d6fa3);
+  background:repeating-linear-gradient(45deg,#f8fafc,#f8fafc 10px,#eef2f7 10px,#eef2f7 20px);
+  color:#475569;text-align:center;padding:24px 16px;margin:18px 0;border-radius:6px;
+  font-family:'Share Tech Mono',monospace;}
+.comic-placeholder.double{padding:60px 16px;}
+.comic-placeholder .cl-tag{display:inline-block;background:var(--accent2,#1d6fa3);color:#fff;
+  font-size:11px;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:8px;-webkit-print-color-adjust:exact;}
+.margin-note{float:right;width:38%;margin:4px 0 12px 20px;clear:right;background:#f0f9ff;
+  border:1px solid #bae6fd;padding:30px 12px 12px;position:relative;
+  font-size:13px;border-radius:2px;color:#0c4a6e;}
+.margin-note::before{content:"Nota";position:absolute;top:0;left:0;right:0;
+  font-family:'Share Tech Mono',monospace;font-size:9.5px;text-transform:uppercase;
+  background:var(--accent-subtle,#38bdf8);color:#fff;padding:4px 12px;letter-spacing:1.5px;
+  border-radius:1px 1px 0 0;-webkit-print-color-adjust:exact;}
+.character-quote{background:#fffbeb;border:1px solid #fde68a;padding:14px 16px;
+  margin:20px 0;border-radius:2px;}
+.character-quote .cq-pnj{font-family:'Orbitron',sans-serif;font-size:12px;text-transform:uppercase;
+  color:#b45309;letter-spacing:1px;display:block;margin-bottom:5px;}
+.character-quote .cq-line{font-family:'Source Serif 4',Georgia,serif;font-style:italic;
+  font-size:15px;color:#1e293b;line-height:1.5;}
+@media print{.comic-placeholder,.margin-note,.character-quote{break-inside:avoid;}}
+</style>
+<style>
+@media print {
+  @page { margin: 20mm 16mm 20mm; @bottom-left { content: "LA SENDA DE LOS ERRANTES — KIT DE INICIO"; font-family:"Share Tech Mono",monospace; font-size:8.5px; color:#64748b; } @bottom-right { content: "Página " counter(page); font-family:"Share Tech Mono",monospace; font-size:8.5px; color:#64748b; } }
+}
+</style>
+</head>
+<body class="documento-quickstart">
+<header class="module-chrome kit-chrome">
+<div class="module-chrome-inner">
+<a class="module-back" href="juego.html"><span aria-hidden="true">←</span> Juego de rol</a>
+<nav class="kit-quicklinks" aria-label="Partes del kit"><a href="#parte-1-chuleta-de-reglas-para-el-narrador">Reglas</a><a href="#parte-2-personajes-pregenerados">Personajes</a><a href="#parte-3-modulo-0-5-predator-n-5-2">Aventura</a></nav>
+<span class="module-chrome-label">La Senda · Kit de inicio</span>
+</div>
+</header>
+<button type="button" class="toc-toggle" id="tocToggle" aria-expanded="false" aria-controls="docToc"><span class="toc-toggle-ico"></span><span class="toc-toggle-txt">Índice</span></button>
+<div class="toc-backdrop" id="tocBackdrop"></div>
+<nav class="doc-toc" id="docToc" aria-label="Índice del documento">
+<p class="toc-title">Índice</p>
+<ul><li class="toc-h2"><a href="#modulo-0-5-predator-n-5-2-las-guerras-secretas">Módulo 0.5: PREDATOR N-5.2 — "Las guerras secretas"</a></li><li class="toc-h2"><a href="#que-es-la-senda-de-los-errantes">¿QUÉ ES LA SENDA DE LOS ERRANTES?</a></li><li class="toc-h2"><a href="#parte-1-chuleta-de-reglas-para-el-narrador">PARTE 1 — CHULETA DE REGLAS (PARA EL NARRADOR)</a></li><li class="toc-h3"><a href="#tirada-basica-y-exitos">Tirada básica y éxitos</a></li><li class="toc-h3"><a href="#criticos-y-pifias">Críticos y pifias</a></li><li class="toc-h3"><a href="#dificultad-un-solo-modificador-a-la-habilidad">Dificultad — UN solo modificador a la habilidad</a></li><li class="toc-h3"><a href="#ventajas-y-desventajas-de-equipo-o-entorno-modifican-los-exitos">Ventajas y desventajas de equipo o entorno — modifican los ÉXITOS</a></li><li class="toc-h3"><a href="#puntos-epicos">Puntos Épicos</a></li><li class="toc-h3"><a href="#combate">Combate</a></li><li class="toc-h3"><a href="#iniciativa">Iniciativa</a></li><li class="toc-h3"><a href="#cadencia-de-fuego">Cadencia de fuego</a></li><li class="toc-h3"><a href="#fuego-repartido">Fuego repartido</a></li><li class="toc-h3"><a href="#penetracion-y-cobertura">Penetración y cobertura</a></li><li class="toc-h3"><a href="#defensa">Defensa</a></li><li class="toc-h3"><a href="#vida-y-heridas-graves">Vida y heridas graves</a></li><li class="toc-h3"><a href="#humanidad-y-alma">Humanidad y Alma</a></li><li class="toc-h3"><a href="#nota-sobre-deriva">Nota sobre Deriva</a></li><li class="toc-h2"><a href="#parte-2-personajes-pregenerados">PARTE 2 — PERSONAJES PREGENERADOS</a></li><li class="toc-h3"><a href="#1-kova-ex-militar-combatiente">1) KOVA — Ex-militar (Combatiente)</a></li><li class="toc-h3"><a href="#2-bishop-tecnico-especialista-tecnico">2) BISHOP — Técnico (Especialista Técnico)</a></li><li class="toc-h3"><a href="#3-salim-medico-cientifico">3) SALIM — Médico (Científico)</a></li><li class="toc-h3"><a href="#4-reyes-informador-fixer-civil">4) REYES — Informador / Fixer (Civil)</a></li><li class="toc-h3"><a href="#5-drago-mercenario-combatiente">5) DRAGO — Mercenario (Combatiente)</a></li><li class="toc-h3"><a href="#antes-del-callejon-la-noche-del-club">Antes del callejón — La noche del club</a></li><li class="toc-h2"><a href="#parte-3-modulo-0-5-predator-n-5-2">PARTE 3 — MÓDULO 0.5: PREDATOR N-5.2</a></li><li class="toc-h3"><a href="#antes-de-empezar-referencia-rapida">Antes de empezar — referencia rápida</a></li><li class="toc-h3"><a href="#el-mundo-no-se-adapta-a-los-personajes">El mundo no se adapta a los personajes</a></li><li class="toc-h3"><a href="#ajustar-ejecutores-por-tamano-del-grupo">Ajustar ejecutores por tamaño del grupo</a></li><li class="toc-h3"><a href="#escena-1-el-callejon">ESCENA 1 — EL CALLEJÓN</a></li><li class="toc-h3"><a href="#escena-2-la-casa-de-arthur-dicking">ESCENA 2 — LA CASA DE ARTHUR DICKING</a></li><li class="toc-h3"><a href="#escena-3-hilos-de-investigacion">ESCENA 3 — HILOS DE INVESTIGACIÓN</a></li><li class="toc-h3"><a href="#tres-rutas-hacia-los-almacenes">Tres rutas hacia los almacenes</a></li><li class="toc-h3"><a href="#escena-4-los-almacenes-tapadera-de-mort">ESCENA 4 — LOS ALMACENES (tapadera de MORT)</a></li><li class="toc-h3"><a href="#escena-5-el-giro-el-satelite-y-tierra-12">ESCENA 5 — EL GIRO: EL SATÉLITE Y TIERRA 12</a></li><li class="toc-h3"><a href="#escena-6-desenlace-y-enlace">ESCENA 6 — DESENLACE Y ENLACE</a></li><li class="toc-h3"><a href="#deriva-al-cruzar">Deriva al cruzar</a></li><li class="toc-h2"><a href="#apendice-datos-de-referencia">APÉNDICE — DATOS DE REFERENCIA</a></li><li class="toc-h3"><a href="#predator-n-5-2-prototipo-chafry-arma-media">PREDATOR N-5.2 (prototipo Chafry) — arma media</a></li><li class="toc-h3"><a href="#ejemplo-de-parecia-que-habia-muerto-para-narrar-la-regla-en-mesa">Ejemplo de "parecía que había muerto" (para narrar la regla en mesa)</a></li><li class="toc-h2"><a href="#pero-la-senda-no-es-solo-ancha-es-honda">Pero la Senda no es solo ancha. Es honda.</a></li><li class="toc-h2"><a href="#lo-que-te-espera-en-el-manual-completo">Lo que te espera en el manual completo</a></li><li class="toc-h2"><a href="#ficha-de-personaje-en-blanco">FICHA DE PERSONAJE EN BLANCO</a></li></ul>
+</nav>
+<script>(function(){var b=document.getElementById("tocToggle"),n=document.getElementById("docToc"),bd=document.getElementById("tocBackdrop");if(!b||!n)return;function cerrar(){n.classList.remove("open");b.setAttribute("aria-expanded","false");if(bd)bd.classList.remove("show");}function abrir(){n.classList.add("open");b.setAttribute("aria-expanded","true");if(bd)bd.classList.add("show");}b.addEventListener("click",function(){n.classList.contains("open")?cerrar():abrir();});if(bd)bd.addEventListener("click",cerrar);[].forEach.call(n.querySelectorAll("a"),function(a){a.addEventListener("click",cerrar);});document.addEventListener("keydown",function(e){if(e.key==="Escape")cerrar();});})();</script>
+<main class="document-container">
+<h1>LA SENDA DE LOS ERRANTES — KIT DE INICIO</h1>
+<h2 id="modulo-0-5-predator-n-5-2-las-guerras-secretas">Módulo 0.5: PREDATOR N-5.2 — "Las guerras secretas"</h2>
+<p><picture><source srcset="img/portada.webp" type="image/webp"><img alt="Portada" src="img/portada.jpg" /></picture></p>
+<hr />
+<blockquote>
+<p><em>Es martes. Llueve flojo y el mundo es exactamente lo que parece: coches, prisas, un café para llevar enfriándose en tu mano. La ciudad podría ser la tuya. Gente normal yendo a sitios normales, convencida —como tú hasta hace cinco minutos— de que esto es todo lo que hay.</em></p>
+<p><em>Entonces oyes los disparos.</em></p>
+<p><em>Y ves caer al hombre en el callejón, con un trozo de algo imposible apretado en el puño. Y a los que vienen detrás: demasiado rápidos, demasiado callados, con unos ojos que reflejan mal la luz. Los que no deberían existir, y existen.</em></p>
+<p><em>Toda tu vida en un solo mundo, creyéndolo el único. Y resulta que era una sola tesela entre incontables. Acabas de tropezar con el borde de la realidad —y al otro lado, algo enorme te devuelve la mirada.</em></p>
+</blockquote>
+<hr />
+<h2 id="que-es-la-senda-de-los-errantes">¿QUÉ ES LA SENDA DE LOS ERRANTES?</h2>
+<p>Hay más realidad de la que te contaron.</p>
+<p>La que conoces —tu ciudad, tu siglo, tu mundo— es una <strong>tesela</strong>: una dimensión entre incontables, engarzada con todas las demás en algo más vasto y más antiguo que cualquier civilización que las habite. Y por las junturas se mueven los que conocen el secreto. Corporaciones tan colosales que compran y venden dimensiones enteras. Maestros que abren puertas en el aire. Cosas que ya eran viejas cuando tu especie aún no tenía nombre. Y, de vez en cuando, alguien corriente que tropieza con la verdad y descubre que ya no hay vuelta atrás.</p>
+<p><strong>La Senda de los Errantes</strong> es un juego de rol para contar esas historias. Un sistema <strong>rápido y despiadado</strong>, donde una persona es frágil y una mala decisión se paga cara —así que la astucia, la palabra y saber cuándo huir valen tanto como un arma—. Aquí no hay héroes invulnerables: hay gente de carne y hueso tomando decisiones imposibles en un universo que es, a la vez, brutal y de una belleza que corta la respiración.</p>
+<p>Puedes jugar la intriga que se cuece a fuego lento o el enfrentamiento que lo incendia todo. La conspiración susurrada o la huida a tumba abierta. Y, si tienes el estómago, reírte por el camino: el cosmos es terrible, pero también absurdo.</p>
+<p>Lo que tienes en las manos es <strong>una puerta</strong>. Una aventura entera, lista para jugar. Cuando la cierres, habrás visto de qué va esto. Solo una esquina —pero bastará para que quieras el resto.</p>
+<hr />
+<h1>EL UNIVERSO EN UNA PÁGINA</h1>
+<p>La realidad no es un único universo. Existen miles de mundos, épocas y dimensiones, conectados por una red imposible: <strong>El Mosaico</strong>. Algunos la exploran. Algunos intentan controlarla. Otros solo intentan sobrevivir a ella.</p>
+<pre><code>                 El Mosaico
+                      ●
+        ┌─────────┬────┼────┬─────────┐
+        │         │         │         │
+   ERRANTES   CORPORACIONES   DISTORSIÓN
+                      │
+            MAESTROS DE PORTALES
+</code></pre>
+<p><strong>Los Errantes.</strong> Son quienes han descubierto —o están a punto de descubrir— que la realidad es mucho más grande de lo que parece. Algunos recorren mundos desde hace décadas; otros acaban de cruzar la primera puerta. Pueden ser exploradores, mercenarios, arqueólogos, hechiceros, agentes corporativos o simples supervivientes. Todos comparten una misma certeza: <strong>la realidad no termina donde les dijeron</strong>. Los primeros en descubrir nuevos horizontes —y los primeros en perderse en ellos.</p>
+<p><strong>El Mosaico.</strong> Una inmensa red de mundos, ruinas, corredores y realidades conectadas. Nadie conoce su extensión completa. Algunas teselas contienen civilizaciones enteras; otras llevan abandonadas milenios; algunas no deberían existir. Cada puerta puede conducir a una maravilla... o a una pesadilla.</p>
+<p><strong>Las Corporaciones.</strong> Grandes organizaciones que han descubierto parte de los secretos de El Mosaico. Controlan rutas, recursos, tecnología y mundos enteros. Compiten entre sí en una guerra silenciosa que la mayoría de la gente ni siquiera sabe que existe. Donde otros ven misterios, ellas ven beneficios.</p>
+<p><strong>La Distorsión.</strong> Una fuerza que altera la realidad. Puede manifestarse como magia, mutación, fenómenos imposibles o alteraciones del espacio y el tiempo. Nadie la comprende por completo. Todos la temen. La realidad no está tan bien construida como parece.</p>
+<p><strong>Los Maestros de Portales.</strong> Exploradores, científicos y visionarios capaces de abrir caminos entre dimensiones. Son responsables de muchas de las rutas que permiten viajar por El Mosaico. Sin ellos, la expansión entre mundos sería imposible. Cada portal es una apuesta contra lo desconocido.</p>
+<p><strong>¿Qué historias se juegan?</strong> Exploración de mundos desconocidos · intrigas entre corporaciones · expediciones arqueológicas · ciencia ficción y fantasía mezcladas · horror dimensional · supervivencia · el descubrimiento de secretos imposibles.</p>
+<blockquote>
+<p><em>Una puerta. Un mundo. Un misterio.</em><br />
+<em>Bienvenido a La Senda de los Errantes.</em></p>
+</blockquote>
+<hr />
+<blockquote>
+<p><strong>Versión ampliada de inicio.</strong> Este kit contiene todo lo necesario para sentarse a jugar y amplía la aventura para grupos nuevos con una chuleta de reglas, cinco personajes listos y apoyo adicional para dirigirla. El capítulo 14 del manual sigue siendo una versión completa y jugable por sí sola; el módulo independiente <strong>PREDATOR N-5.2</strong> reúne la aventura como referencia separada para el Narrador.</p>
+</blockquote>
+<p>Esto es una herramienta directa para el Director de Juego. Aquí no hay rodeos teóricos: la ambientación, las reglas machacadas para que la partida no se detenga, y el formato exacto para saber qué leer en voz alta y qué gestionar detrás de la pantalla.</p>
+<blockquote>
+<p><strong>CÓMO LEER ESTE MÓDULO</strong><br />
+- El texto en <strong>recuadro de cita</strong> y <em>en cursiva</em> es para <strong>leer en voz alta</strong> a los jugadores.<br />
+- El texto marcado <strong>[DJ]</strong> es información reservada para el Director de Juego: no se lee, se usa.</p>
+</blockquote>
+<hr />
+<h2 id="parte-1-chuleta-de-reglas-para-el-narrador">PARTE 1 — CHULETA DE REGLAS (PARA EL NARRADOR)</h2>
+<p>El sistema evita cálculos variables en mitad de la sesión. Toda resolución parte de la hoja de personaje, más un único modificador de dificultad fijo que pone el Narrador.</p>
+<h3 id="tirada-basica-y-exitos">Tirada básica y éxitos</h3>
+<p>Tira un d100 (2d10: un dado para las decenas, otro para las unidades). Si el resultado es igual o menor que tu Habilidad efectiva, la acción tiene éxito.</p>
+<p><strong>Habilidad efectiva = valor de la categoría (talento innato) + puntos de la habilidad concreta (lo aprendido).</strong> Ejemplo: un personaje con categoría Académicas 30 y 15 puntos en Investigación, cuando investiga tira con <strong>45</strong> (30 + 15).</p>
+<p>Toda tirada exitosa produce al menos 1 éxito. Obtienes un éxito adicional por cada 10 puntos completos de diferencia entre tu Habilidad y la tirada:</p>
+<p><code>Diferencia = Habilidad efectiva − Tirada</code><br />
+<code>Éxitos = suelo(Diferencia / 10) + 1</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Diferencia</th>
+<th style="text-align: right;">Éxitos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0-9</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: right;">10-19</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td style="text-align: right;">20-29</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td style="text-align: right;">30-39</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td style="text-align: right;">40-49</td>
+<td style="text-align: right;">5</td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplo: Habilidad 65 y tirada 34. La diferencia es 31, por lo que obtienes 4 éxitos.</p>
+<ul>
+<li><strong>Habilidad a 0:</strong> si no se tiene, se puede intentar con un penalizador de −20.</li>
+<li><strong>Habilidades combinadas:</strong> media de las dos habilidades + sinergia de +5 a +15 a criterio del DJ.</li>
+</ul>
+<h3 id="criticos-y-pifias">Críticos y pifias</h3>
+<p>Los resultados 00, 01 y 02 siempre son críticos:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Tirada</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">00</td>
+<td>Éxitos normales +3. En combate impacta automáticamente en la cabeza.</td>
+</tr>
+<tr>
+<td style="text-align: right;">01</td>
+<td>Éxitos normales +2.</td>
+</tr>
+<tr>
+<td style="text-align: right;">02</td>
+<td>Éxitos normales +1.</td>
+</tr>
+</tbody>
+</table>
+<p>Los resultados 97, 98 y 99 siempre son pifias, incluso cuando la Habilidad efectiva supera 100. Una pifia nunca cuenta como éxito.</p>
+<p>Si la tirada falla, calcula éxitos negativos:</p>
+<p><code>Éxitos negativos = −techo((Tirada − Habilidad efectiva) / 10)</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Habilidad</th>
+<th style="text-align: right;">Tirada</th>
+<th style="text-align: right;">Diferencia</th>
+<th style="text-align: right;">Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">−1</td>
+</tr>
+<tr>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">−1</td>
+</tr>
+<tr>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">−2</td>
+</tr>
+<tr>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">−2</td>
+</tr>
+</tbody>
+</table>
+<p>Si una pifia también supera la Habilidad efectiva, calcula el fallo normal y añade −1, −2 o −3. Si no la supera, parte de 0 y aplica únicamente −1, −2 o −3. Ejemplo: Habilidad 120 y tirada 99 = −3.</p>
+<h3 id="dificultad-un-solo-modificador-a-la-habilidad">Dificultad — UN solo modificador a la habilidad</h3>
+<p>El Narrador ajusta el porcentaje del personaje según lo fácil o difícil que vea la acción. <strong>Solo estos cinco escalones, y ningún otro modificador de este tipo:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Dificultad</th>
+<th>Modificador a la habilidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Muy fácil</td>
+<td>+20</td>
+</tr>
+<tr>
+<td>Fácil</td>
+<td>+10</td>
+</tr>
+<tr>
+<td>Normal</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Difícil</td>
+<td>−10</td>
+</tr>
+<tr>
+<td>Muy difícil</td>
+<td>−20</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ventajas-y-desventajas-de-equipo-o-entorno-modifican-los-exitos">Ventajas y desventajas de equipo o entorno — modifican los ÉXITOS</h3>
+<p>Si tras aplicar la dificultad <strong>superas la tirada</strong>, las circunstancias (mejor equipo, posición favorable, o lo contrario) suman o restan <strong>éxitos</strong> al resultado. <strong>Si fallas la tirada, no hay nada que sumar ni restar:</strong> primero hay que tener éxito, y luego se modula cuánto.</p>
+<h3 id="puntos-epicos">Puntos Épicos</h3>
+<p>Antes de tirar, el Narrador comunica la dificultad: Muy fácil <code>+20</code>, Fácil <code>+10</code>, Normal <code>0</code>, Difícil <code>−10</code> o Muy difícil <code>−20</code>. Después de conocerla, el jugador puede gastar 1 Punto Épico para sumar <code>+50</code> a su Habilidad efectiva.</p>
+<p>La Habilidad efectiva puede superar 100. Ese aumento también amplía el margen y los éxitos obtenidos. Sin embargo, 97, 98 y 99 siguen siendo pifias.</p>
+<p>El Punto Épico puede aplicarse a cualquier tirada, incluida Iniciativa o una tirada enfrentada. No se añade directamente al daño: al mejorar un ataque, genera más éxitos y esos éxitos pueden aumentar el daño.</p>
+<p>Ante un golpe mortal, también puede gastarse 1 Punto Épico para activar «Parecía que había muerto»: el personaje queda inconsciente y estabilizado en vez de morir.</p>
+<h3 id="combate">Combate</h3>
+<p><strong>Armas del módulo (referencia rápida):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Arma</th>
+<th style="text-align: right;">Daño</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cuchillo de bota</td>
+<td style="text-align: right;">4</td>
+<td>Cuerpo a cuerpo</td>
+</tr>
+<tr>
+<td>Machete</td>
+<td style="text-align: right;">4</td>
+<td>Cuerpo a cuerpo</td>
+</tr>
+<tr>
+<td>Pistola pequeña</td>
+<td style="text-align: right;">3</td>
+<td>Distancia corta</td>
+</tr>
+<tr>
+<td>Pistola</td>
+<td style="text-align: right;">3</td>
+<td>Distancia corta/media</td>
+</tr>
+<tr>
+<td>Subfusil</td>
+<td style="text-align: right;">5</td>
+<td>Distancia media</td>
+</tr>
+<tr>
+<td>Escopeta</td>
+<td style="text-align: right;">8</td>
+<td>Cadencia 2 (NPC)</td>
+</tr>
+<tr>
+<td>Pistola aturdidora</td>
+<td style="text-align: right;">10 (no letal)</td>
+<td>Alcance 25 m (NPC, variante Chafry)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iniciativa">Iniciativa</h3>
+<p>Tira d100 y suma tu valor de Iniciativa. Todos actúan de mayor a menor.</p>
+<p>Después de calcular la Iniciativa total, genera posiciones de actuación restando 100 sucesivamente mientras el resultado siga siendo positivo. Reúne todas las posiciones de todos los participantes y resuélvelas en orden descendente. Cada posición concede una actuación completa; no hay límite fijo de dos actuaciones.</p>
+<p>Ejemplos: Iniciativa 100 → 100; 101 → 101, 1; 200 → 200, 100; 201 → 201, 101, 1; 305 → 305, 205, 105, 5.</p>
+<h3 id="cadencia-de-fuego">Cadencia de fuego</h3>
+<table>
+<thead>
+<tr>
+<th>Modo</th>
+<th style="text-align: right;">Munición</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tiro a tiro</td>
+<td style="text-align: right;">1 bala</td>
+<td>Sin bonificación.</td>
+</tr>
+<tr>
+<td>Ráfaga</td>
+<td style="text-align: right;">3 balas</td>
+<td>+1 éxito si el ataque tiene éxito.</td>
+</tr>
+<tr>
+<td>Fuego sostenido</td>
+<td style="text-align: right;">9 balas</td>
+<td>+2 éxitos si el ataque tiene éxito.</td>
+</tr>
+</tbody>
+</table>
+<p>La bonificación de Cadencia se aplica después del Blindaje y solo si la tirada de ataque ha tenido éxito.</p>
+<h3 id="fuego-repartido">Fuego repartido</h3>
+<p>Para atacar a varios objetivos con un arma a distancia, divide por separado la habilidad de <strong>Distancia Media</strong> y los proyectiles disparados. Requiere Distancia Media 50 o más; cada objetivo debe recibir al menos 25 puntos de habilidad y al menos 1 proyectil. La suma de habilidad asignada no puede superar la Distancia Media original, y la suma de proyectiles no puede superar la cantidad disparada.</p>
+<p>Cada objetivo se resuelve con una tirada independiente usando su habilidad asignada tras aplicar modificadores situacionales. La cadencia se calcula por objetivo: 1–2 proyectiles no dan bonificación, 3–8 dan +1 éxito si impacta, y 9 dan +2 éxitos si impacta. Estos éxitos se añaden después del Blindaje, no convierten un fallo en impacto y no se comparten entre objetivos.</p>
+<p>Elige un objetivo principal. Los primeros 3 metros respecto al objetivo principal no penalizan. Por cada 3 metros adicionales o fracción, el ataque pierde −1 éxito.</p>
+<p>Ejemplos rápidos: Distancia Media 80 y 9 proyectiles puede repartirse como 30/25/25 con 3/3/3 proyectiles y +1/+1/+1 de Cadencia, o como 50/30 con 6/3 proyectiles y +1/+1. Contra un solo objetivo, 9 proyectiles mantienen Distancia Media 80 y conceden +2 de Cadencia.</p>
+<h3 id="penetracion-y-cobertura">Penetración y cobertura</h3>
+<p>Cada punto de Penetración anula un punto de Blindaje. La Penetración se aplica también al Blindaje proporcionado por cobertura: una bala adecuada puede atravesar el coche, la puerta o el muro tras el que se protege el objetivo.</p>
+<p>En las armas a distancia, la Penetración procede normalmente de la munición utilizada. Cambiar de munición puede ser tan importante como cambiar de arma.</p>
+<p>La PREDATOR es una excepción: incorpora su Penetración como parte del diseño del arma.</p>
+<p><strong>Orden de resolución:</strong><br />
+1. Realiza la tirada de ataque.<br />
+2. Si impacta, calcula los éxitos normales.<br />
+3. Resuelve la defensa activa según su regla; si cancela completamente el ataque, este no causa daño.<br />
+4. Calcula Penetración total.<br />
+5. Calcula Blindaje total y Blindaje efectivo.<br />
+6. Resta el Blindaje efectivo de los éxitos normales restantes.<br />
+7. Añade después del Blindaje los éxitos adicionales de crítico, Cadencia, arma inteligente y efectos que lo indiquen expresamente.<br />
+8. <code>Daño final = daño base modificado × éxitos netos finales</code>.</p>
+<p>Los éxitos adicionales solo se aplican si la tirada impactó. No convierten un fallo en impacto. Pueden causar daño si el Blindaje absorbió los éxitos normales, pero no reactivan un ataque completamente cancelado por una defensa activa exitosa.</p>
+<h3 id="defensa">Defensa</h3>
+<p>A 1-2 metros se considera cuerpo a cuerpo a efectos de defensa y resolución.</p>
+<p><strong>Cuerpo a cuerpo:</strong> antes de tirar, el personaje puede dividir su Habilidad de arma cuerpo a cuerpo entre ataque y defensa. Realiza una tirada con cada valor. Los éxitos de defensa restan éxitos al ataque cuerpo a cuerpo recibido. Si igualan o superan el ataque, no causa daño.</p>
+<p>También puede dedicar todo su turno a Esquivar. Si la tirada de Esquivar tiene éxito, evita el ataque cuerpo a cuerpo, pero no puede atacar durante ese turno.</p>
+<p><strong>Ataques a distancia:</strong> no se esquivan las balas mediante defensa activa dividida ni Esquiva total. Contra disparos, el personaje debe buscar cobertura o usar Movimiento evasivo.</p>
+<p><strong>Movimiento evasivo:</strong> consume toda la actuación. El personaje puede moverse hasta su movimiento normal y tira Esquivar una sola vez; el efecto dura hasta su siguiente actuación y afecta a todos los ataques a distancia recibidos.</p>
+<table>
+<thead>
+<tr>
+<th>Resultado</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fallo o pifia</td>
+<td>Sin penalizador para los atacantes; la pifia añade consecuencia narrativa.</td>
+</tr>
+<tr>
+<td>1 éxito</td>
+<td>−10 a la Habilidad efectiva de los atacantes.</td>
+</tr>
+<tr>
+<td>2+ éxitos o crítico</td>
+<td>−20 a la Habilidad efectiva de los atacantes; el crítico añade efecto favorable.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><em>Por qué importa en mesa:</em> en vez de plantarse a devolver fuego, el personaje cruza el patio a la carrera, se lanza rodando tras los contenedores y termina agazapado junto a la puerta — un solo Movimiento evasivo, y hasta su próximo turno cualquiera que le dispare tiene que superar antes su Esquivar.</p>
+</blockquote>
+<p>Si el atacante acierta pese al penalizador, resuelve el ataque normalmente. Movimiento evasivo puede combinarse con cobertura: la evasión modifica la Habilidad y la cobertura aporta Blindaje. Si recibe un ataque antes de actuar, puede declararlo sacrificando por completo su próxima actuación.</p>
+<p>La cobertura aporta Blindaje, pero puede ser atravesada mediante Penetración.</p>
+<ul>
+<li><strong>Localización:</strong> dado de unidades de la tirada de ataque. 0 = Cabeza (cualquier tirada terminada en 0; solo 00 es crítico máximo automático) · 9 Ojos · 8 Pecho · 7 Oídos · 6 Lengua/mandíbula · 5 Espalda · 4 Brazo D · 3 Brazo I · 2 Pierna D · 1 Pierna I.</li>
+</ul>
+<h3 id="vida-y-heridas-graves">Vida y heridas graves</h3>
+<ul>
+<li><strong>PV base y niveles:</strong> un personaje orgánico no lleva seis reservas de PV por zona. Tiene unos <strong>PV base</strong> = (A+C+F)÷6 y tres niveles sucesivos con esa misma capacidad cada uno — <strong>Sano</strong> (sin penalizador), <strong>Herido</strong> (−10 a todas las habilidades), <strong>Tullido</strong> (−20 a todas las habilidades). El daño se descuenta del nivel actual y el sobrante pasa al siguiente; agotar Tullido es muerte.</li>
+<li><strong>Desbordamiento:</strong> se calcula con el daño final de un único impacto (no acumulado). Cabeza y extremidades desbordan cuando ese impacto alcanza o supera los PV base. El torso tiene capacidad doble y desborda al alcanzar o superar <code>PV base × 2</code>. <strong>Cabeza o Torso → muerte</strong>; <strong>Extremidad → 1d6</strong> (1-2 inutilizada · 3-4 amputación baja · 5-6 amputación alta), el PJ sigue en pie. Ese mismo daño también se descuenta con normalidad del nivel de herida actual.</li>
+<li><strong>Sangrado:</strong> no es automático — solo sangra una localización desbordada, o un efecto que lo declare expresamente. Mientras sangra, al inicio de cada asalto tira <strong>Constitución</strong>; con éxito no empeora, con fallo desciende al siguiente nivel de herida (Sano→Herido→Tullido→agotado y muerte). Primeros Auxilios o un medikit apropiado detienen el sangrado. Droideum, robots y componentes mecánicos no sufren sangrado orgánico.</li>
+</ul>
+<h3 id="humanidad-y-alma">Humanidad y Alma</h3>
+<p>Un humano normal comienza con Humanidad 100 y Alma 8. Un Iniciado comienza con Humanidad 100 y Alma 10.</p>
+<p>La Humanidad mide cuánto conserva el personaje de su identidad humana frente a implantes, transformaciones y experiencias que lo alejan de ella. El Alma representa su anclaje metafísico.</p>
+<p>La Humanidad puede ser superior al Alma, pero el Alma nunca puede superar el límite marcado por la Humanidad:</p>
+<p><code>Alma accesible máxima = suelo(Humanidad / 10)</code></p>
+<p>Ejemplo: si la Humanidad desciende a 70, el Alma accesible máxima pasa a ser 7. Si tenía Alma total 8, puede usar 7 y conserva 1 punto bloqueado hasta recuperar Humanidad o aplicar una regla específica.</p>
+<p>Un Droideum anota Humanidad <strong>— / no aplicable</strong>, no 0, y tampoco posee Alma biológica.</p>
+<h3 id="nota-sobre-deriva">Nota sobre Deriva</h3>
+<p>La Deriva se acumula al viajar entre teselas (mundos). Cuanto más viajes, más cambia tu cuerpo y tu mente: al alcanzar o superar por primera vez cada múltiplo de 10, algo persistente ocurre. En este módulo los personajes empiezan con Deriva 0. Si cruzan un portal durante la aventura, el DJ decide cuánta acumulan (1d10+6 con pulsera inestable, 1d6 con un Maestro de Portales). El contador puede reducirse solo mediante reglas que lo indiquen expresamente, pero los umbrales ya alcanzados no se reactivan y sus consecuencias no desaparecen automáticamente.</p>
+<hr />
+<h2 id="parte-2-personajes-pregenerados">PARTE 2 — PERSONAJES PREGENERADOS</h2>
+<blockquote>
+<p>5 arquetipos humanos, <strong>Madera de Héroe</strong> (atributos 35/30, 280 pts, 3 Puntos Épicos). Madera de Héroe es el tipo intermedio del juego: mejor base que un novato (Predestinado), menos margen para lo extraordinario que un veterano (Héroe). En el manual completo hay tres tipos con distintos equilibrios entre potencia y suerte. Humanos para probar el motor de reglas limpio. El dinero de cada uno ya viene calculado en su ficha (sale de INT × 100 PC).<br />
+<strong>Cómo leer las habilidades:</strong> se muestran como <strong>Categoría (innato) + habilidad concreta = total para tirar</strong>. Ese total es con lo que se lanza el d100.<br />
+<strong>Sobre "Corta/Media/Larga":</strong> Arma CC y Distancia se dividen cada una en tres tramos según el tamaño del arma (Anexo de Habilidades). Las tres comparten fórmula y base — lo que cambia entre pregenerados es en cuál de las tres invirtieron sus bonos.<br />
+<strong>Sobre "ventaja humana":</strong> todos los pregenerados son humanos, y el bono racial humano ("ventaja humana", ya aplicado a sus habilidades) reparte +10% en una habilidad concreta o +5% en dos.</p>
+</blockquote>
+<h3 id="1-kova-ex-militar-combatiente">1) KOVA — Ex-militar (Combatiente)</h3>
+<p><picture><source srcset="img/kova.webp" type="image/webp"><img alt="Kova" src="img/kova.png" /></picture></p>
+<blockquote>
+<p><em>Veterana curtida, pocas palabras. Dejó el ejército corporativo de forma abrupta y no del todo voluntaria.</em></p>
+</blockquote>
+<ul>
+<li><strong>AGI</strong> 40 · <strong>CON</strong> 35 · <strong>FUE</strong> 40 · <strong>HAB</strong> 45 · <strong>CAR</strong> 25 · <strong>INT</strong> 30 · <strong>PER</strong> 35 · <strong>VOL</strong> 30</li>
+<li><strong>PV base 20</strong> — Sano/Herido/Tullido 20/20/20. Desbordamiento: cabeza/extremidad con impacto único ≥20 · torso ≥40.</li>
+<li><strong>Humanidad</strong> 100 · <strong>Salud Mental</strong> 100 (Referencia trauma 100) · <strong>Alma</strong> 8 (máxima 10) · <strong>Deriva</strong> 0</li>
+<li><strong>Carga libre</strong> ≤19 (−20% hasta 38) · <strong>Créditos</strong> 3.000 PC</li>
+</ul>
+<p><strong>Habilidades para tirar:</strong></p>
+<ul>
+<li>Arma CC Corta (42, machete y cuchillo de bota) + prof. (+10) + ventaja humana (+5) = <strong>57</strong></li>
+<li>Distancia Media (43, subfusil) + prof. (+5) = <strong>48</strong></li>
+<li>Arma CC Media <strong>42</strong> · Arma CC Larga <strong>42</strong> · Distancia Corta <strong>43</strong> · Distancia Larga <strong>43</strong></li>
+<li>Esquivar <strong>43</strong> · Sin Armas <strong>39</strong></li>
+<li>Atlética (40) + Proezas/Resistir (+5 cada una, bolsa 10) = <strong>45</strong></li>
+<li>Tecnológica (40) + Armería (+5) = <strong>45</strong></li>
+<li>Alerta (33) + ventaja humana (+5) = <strong>38</strong> · Iniciativa <strong>38</strong></li>
+<li>Académicas <strong>30</strong> · Social <strong>30</strong></li>
+</ul>
+<p><strong>Equipo:</strong> armadura ligera (Blindaje 2 torso+cabeza), subfusil (daño 5), machete (daño 4), cuchillo de bota (daño 4), mochila.<br />
+<strong>Rasgo opcional (Furia desbocada):</strong> ignora dolor, +1 daño CC, +5 combate/proezas; tira Voluntad si la ofenden.</p>
+<h3 id="2-bishop-tecnico-especialista-tecnico">2) BISHOP — Técnico (Especialista Técnico)</h3>
+<p><picture><source srcset="img/bishop.webp" type="image/webp"><img alt="Bishop" src="img/bishop.png" /></picture></p>
+<blockquote>
+<p><em>Arregla o revienta cualquier mecanismo con cinta y mal genio. Sabe de cerraduras y chips más de lo legal.</em></p>
+</blockquote>
+<ul>
+<li><strong>AGI</strong> 30 · <strong>CON</strong> 30 · <strong>FUE</strong> 30 · <strong>HAB</strong> 50 · <strong>CAR</strong> 30 · <strong>INT</strong> 45 · <strong>PER</strong> 40 · <strong>VOL</strong> 25</li>
+<li><strong>PV base 15</strong> — Sano/Herido/Tullido 15/15/15. Desbordamiento: cabeza/extremidad con impacto único ≥15 · torso ≥30.</li>
+<li><strong>Humanidad</strong> 100 · <strong>Salud Mental</strong> 100 (Referencia trauma 100) · <strong>Alma</strong> 8 (máxima 10) · <strong>Deriva</strong> 0</li>
+<li><strong>Carga libre</strong> ≤15 (−20% hasta 30) · <strong>Créditos</strong> 4.500 PC</li>
+</ul>
+<p><strong>Habilidades para tirar:</strong></p>
+<ul>
+<li>Tecnológica (45) + Electrónica/Ciber-Seguridad (+10) = <strong>55</strong></li>
+<li>Tecnológica (45) + Primeros Aux. (+5) = <strong>50</strong> (estabiliza heridas)</li>
+<li>Académicas (35) + Programación/Diseño Hardware (+5 prof.) = <strong>40</strong></li>
+<li>Social (35) + Persuasión (+5) = <strong>40</strong> · + Engaño (+5) = <strong>40</strong></li>
+<li>Distancia Corta (40, pistola pequeña) + ventaja humana (+5) = <strong>45</strong></li>
+<li>Iniciativa (35) + ventaja humana (+5) = <strong>40</strong> · Alerta <strong>43</strong></li>
+<li>Esquivar <strong>40</strong> · Distancia Media <strong>40</strong> · Distancia Larga <strong>40</strong> · Arma CC Corta/Media/Larga <strong>37</strong> · Sin Armas <strong>30</strong> · Atlética <strong>30</strong></li>
+</ul>
+<p><strong>Equipo:</strong> traje de especialista, escáner, kit de herramientas, pistola pequeña (daño 3), mochila.<br />
+<strong>Rasgo opcional (Gato curioso):</strong> sexto sentido al 75% antes de cruzar un límite; le tira la curiosidad.</p>
+<h3 id="3-salim-medico-cientifico">3) SALIM — Médico (Científico)</h3>
+<p><picture><source srcset="img/salim.webp" type="image/webp"><img alt="Salim" src="img/salim.png" /></picture></p>
+<blockquote>
+<p><em>Cose heridas sin preguntar de dónde salieron. Discreto, observador, caro.</em></p>
+</blockquote>
+<ul>
+<li><strong>AGI</strong> 30 · <strong>CON</strong> 35 · <strong>FUE</strong> 30 · <strong>HAB</strong> 35 · <strong>CAR</strong> 35 · <strong>INT</strong> 45 · <strong>PER</strong> 45 · <strong>VOL</strong> 25</li>
+<li><strong>PV base 16</strong> — Sano/Herido/Tullido 16/16/16. Desbordamiento: cabeza/extremidad con impacto único ≥16 · torso ≥32.</li>
+<li><strong>Humanidad</strong> 100 · <strong>Salud Mental</strong> 100 (Referencia trauma 100) · <strong>Alma</strong> 8 (máxima 10) · <strong>Deriva</strong> 0</li>
+<li><strong>Carga libre</strong> ≤17 (−20% hasta 34) · <strong>Créditos</strong> 4.500 PC</li>
+</ul>
+<p><strong>Habilidades para tirar:</strong></p>
+<ul>
+<li>Académicas (35) + Diagnóstico (+10) = <strong>45</strong> (evaluar heridas/enfermedad)</li>
+<li>Académicas (35) + Biotecnología/Ciencias (+5) = <strong>40</strong></li>
+<li>Tecnológica (40) + Primeros Aux. (+5) = <strong>45</strong> (estabilizar, curar)</li>
+<li>Tecnológica (40) + Instrumental médico (+5) = <strong>45</strong></li>
+<li>Social (40) + Empatía (+5) = <strong>45</strong></li>
+<li>Distancia Corta (33, pistola pequeña) + ventaja humana (+5) = <strong>38</strong></li>
+<li>Alerta (45) + ventaja humana (+5) = <strong>50</strong> · Iniciativa <strong>38</strong></li>
+<li>Esquivar <strong>33</strong> · Distancia Media <strong>33</strong> · Distancia Larga <strong>33</strong> · Arma CC Corta/Media/Larga <strong>32</strong> · Sin Armas <strong>32</strong> · Atlética <strong>30</strong></li>
+</ul>
+<p><strong>Equipo:</strong> mono de especialista, <strong>Medikit</strong> (clave en este sistema letal), escáner médico, pistola pequeña (daño 3), mochila médica.</p>
+<h3 id="4-reyes-informador-fixer-civil">4) REYES — Informador / Fixer (Civil)</h3>
+<p><picture><source srcset="img/reyes.webp" type="image/webp"><img alt="Reyes" src="img/reyes.png" /></picture></p>
+<blockquote>
+<p><em>Conoce a todo el mundo y el precio de cada secreto. Sonríe mientras calcula beneficios.</em></p>
+</blockquote>
+<ul>
+<li><strong>AGI</strong> 35 · <strong>CON</strong> 30 · <strong>FUE</strong> 30 · <strong>HAB</strong> 30 · <strong>CAR</strong> 50 · <strong>INT</strong> 40 · <strong>PER</strong> 40 · <strong>VOL</strong> 25</li>
+<li><strong>PV base 16</strong> — Sano/Herido/Tullido 16/16/16. Desbordamiento: cabeza/extremidad con impacto único ≥16 · torso ≥32.</li>
+<li><strong>Humanidad</strong> 100 · <strong>Salud Mental</strong> 100 (Referencia trauma 100) · <strong>Alma</strong> 8 (máxima 10) · <strong>Deriva</strong> 0</li>
+<li><strong>Carga libre</strong> ≤15 (−20% hasta 30) · <strong>Créditos</strong> 4.000 PC (+ tarjeta con 940 PC)</li>
+</ul>
+<p><strong>Habilidades para tirar:</strong></p>
+<ul>
+<li>Académicas (33) + Investigación/Buscar información (+10) = <strong>43</strong></li>
+<li>Académicas (33) + Leyes y Trámites (+5) = <strong>38</strong></li>
+<li>Social (45) + Persuasión (+5) = <strong>50</strong> · + Bajos Fondos (+5) = <strong>50</strong> (la voz del grupo)</li>
+<li>Atlética (33) + Proezas (+5) = <strong>38</strong></li>
+<li>Iniciativa (38) + ventaja humana (+5) = <strong>43</strong> · Alerta (40) + ventaja humana (+5) = <strong>45</strong></li>
+<li>Esquivar <strong>33</strong> · Distancia Corta (33, pistola pequeña) · Distancia Media/Larga <strong>33</strong> · Arma CC Corta/Media/Larga <strong>32</strong> · Sin Armas <strong>32</strong></li>
+<li><strong>Contactos</strong> (Mérito): red en los bajos fondos.</li>
+</ul>
+<p><strong>Equipo:</strong> ropa civil de calidad, vehículo utilitario urbano, comunicador, pistola pequeña (daño 3).<br />
+<strong>Rasgo opcional (Belleza peligrosa):</strong> +10 a Sociales cuando la otra persona sienta atracción o quede favorablemente impresionada por su presencia; −10 si lo considera rival, amenaza, competencia o fuente de inseguridad. La atracción no se presume, ambos efectos nunca coinciden y el rasgo no funciona como control mental.</p>
+<h3 id="5-drago-mercenario-combatiente">5) DRAGO — Mercenario (Combatiente)</h3>
+<p><picture><source srcset="img/drago.webp" type="image/webp"><img alt="Drago" src="img/drago.png" /></picture></p>
+<blockquote>
+<p><em>Su lealtad se cobra por adelantado. Es el músculo. No hace preguntas mientras el crédito entre.</em></p>
+</blockquote>
+<ul>
+<li><strong>AGI</strong> 45 · <strong>CON</strong> 30 · <strong>FUE</strong> 45 · <strong>HAB</strong> 40 · <strong>CAR</strong> 25 · <strong>INT</strong> 25 · <strong>PER</strong> 35 · <strong>VOL</strong> 35</li>
+<li><strong>PV base 20</strong> — Sano/Herido/Tullido 20/20/20. Desbordamiento: cabeza/extremidad con impacto único ≥20 · torso ≥40.</li>
+<li><strong>Humanidad</strong> 100 · <strong>Salud Mental</strong> 100 (Referencia trauma 100) · <strong>Alma</strong> 8 (máxima 10) · <strong>Deriva</strong> 0</li>
+<li><strong>Carga libre</strong> ≤19 (−20% hasta 38) · <strong>Créditos</strong> 2.500 PC</li>
+</ul>
+<p><strong>Habilidades para tirar:</strong></p>
+<ul>
+<li>Arma CC Corta (44, machete) + prof. (+10) + ventaja humana (+5) = <strong>59</strong></li>
+<li>Distancia Media (43, subfusil) + prof. (+5) = <strong>48</strong></li>
+<li>Arma CC Media <strong>44</strong> · Arma CC Larga <strong>44</strong> · Distancia Corta (43, pistola) · Distancia Larga <strong>43</strong></li>
+<li>Atlética (45) + Proezas/Resistir (+5 cada una, bolsa 10) = <strong>50</strong></li>
+<li>Tecnológica (38) + Armería (+5) = <strong>43</strong></li>
+<li>Iniciativa (40) + ventaja humana (+5) = <strong>45</strong></li>
+<li>Esquivar <strong>43</strong> · Sin Armas <strong>40</strong></li>
+<li>Alerta <strong>30</strong> · Académicas <strong>30</strong> · Social <strong>30</strong></li>
+</ul>
+<p><strong>Equipo:</strong> armadura media (Blindaje 3 torso+cabeza, 2 extremidades), subfusil (daño 5), pistola (daño 3), machete (daño 4), mochila.<br />
+<strong>Rasgo opcional (Ola de adrenalina):</strong> +2 daño CC, +10 atléticas/combate; tras 5 turnos pierde nivel Sano.</p>
+<blockquote>
+<p><strong>MÍNIMO RECOMENDADO: 2 jugadores</strong> — uno de combate y uno social o técnico. Por ejemplo, Drago (músculo) + Reyes (la voz), o Kova + Bishop. Con 3-5 se reparten mejor las escenas.</p>
+</blockquote>
+<hr />
+<h3 id="antes-del-callejon-la-noche-del-club">Antes del callejón — La noche del club</h3>
+<p>Los personajes no son todavía aventureros ni agentes corporativos. Son miembros del mismo club de juegos de mesa. Se conocen desde hace tiempo, han compartido partidas, discusiones sobre reglas, cenas tardías y suficientes derrotas como para saber aproximadamente cómo piensa cada uno.</p>
+<p>Esa tarde salen juntos del club. Quizá acaban de terminar una partida; quizá el local ha cerrado antes; quizá van a buscar algo para cenar. Entonces oyen los disparos.</p>
+<p>Sus habilidades no proceden de una vida heroica. Cada uno ha aprendido cosas útiles dentro de una vida normal:<br />
+- Kova trabaja como transportista, hizo el servicio militar y practica artes marciales.<br />
+- Bishop se dedica al mantenimiento técnico y repara aparatos por afición.<br />
+- Salim trabaja en el ámbito sanitario y colabora como voluntario en emergencias.<br />
+- Reyes se mueve en comercio, gestión o logística y conoce gente en toda la ciudad.<br />
+- Drago trabaja en seguridad y practica deportes de combate.</p>
+<p>No empiezan siendo héroes. La aventura les obligará a descubrir de qué son capaces.</p>
+<hr />
+<h2 id="parte-3-modulo-0-5-predator-n-5-2">PARTE 3 — MÓDULO 0.5: PREDATOR N-5.2</h2>
+<blockquote>
+<p><strong>[DJ] Estructura:</strong> 3-5 jugadores (mínimo 2) · 1-2 sesiones · nivel inicial · thriller de calle.</p>
+</blockquote>
+<h3 id="antes-de-empezar-referencia-rapida">Antes de empezar — referencia rápida</h3>
+<div class="nota-dj"><p><strong>[DJ] REFERENCIA PRIVADA — NO EXPLICAR A LOS JUGADORES</strong></p>
+<p>El artefacto es la brújula. El nodo es el mojón. El activo es el destino.</p>
+<p><strong>Vocabulario:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Término</th>
+<th>Qué es</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Chip</strong></td>
+<td>Datos. Los planos del prototipo PREDATOR N-5.2. Se vende, se copia, se pierde.</td>
+</tr>
+<tr>
+<td><strong>Artefacto</strong></td>
+<td>Objeto portátil que responde a los nodos. Se lleva encima. Se puede combinar con otros.</td>
+</tr>
+<tr>
+<td><strong>Nodo</strong></td>
+<td>Punto de anclaje fijo. No es una máquina: es un sitio donde la Urdimbre está sujeta. No se puede mover.</td>
+</tr>
+<tr>
+<td><strong>Activo</strong></td>
+<td>Lo que la red señala. Todavía no se sabe qué es — la Escena 1 ya lo deja caer sin explicarlo.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Corporaciones que vas a encontrar:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Corp</th>
+<th>De un vistazo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Chafry</strong> (verde botella)</td>
+<td>La más grande y poderosa del mosaico. Casi una religión: disciplina de colmena, estructura eclesiástica.</td>
+</tr>
+<tr>
+<td><strong>Mort</strong> (fucsia y negro)</td>
+<td>El mercado negro con reglas propias. Metódicos, neutrales, cumplen lo pactado — con quien pague.</td>
+</tr>
+<tr>
+<td><strong>TecnoStealer</strong> (negro y plata)</td>
+<td>Técnicos independientes de espíritu libre. Los llaman "los Cuervos": recuperan lo que otros desechan.</td>
+</tr>
+<tr>
+<td><strong>Primus</strong> (negro y azul oscuro)</td>
+<td>Pequeña pero temida. Se declaran neutrales y actúan como jueces, jurados y ejecutores.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="el-mundo-no-se-adapta-a-los-personajes">El mundo no se adapta a los personajes</h3>
+<p><em>La Senda de los Errantes</em> no construye todos sus encuentros para que los personajes puedan vencer mediante la fuerza. El mundo es coherente consigo mismo: una instalación importante estará bien protegida y seis agentes con armadura seguirán siendo seis agentes con armadura.</p>
+<p>Tu responsabilidad como Narrador no es convertir cada peligro en un combate justo. Es transmitir suficiente información para que los jugadores puedan tomar decisiones conscientes.</p>
+<p>Antes de una situación peligrosa, permite que puedan descubrir:<br />
+- cuántos adversarios hay y cómo están equipados;<br />
+- qué protección, armas o munición podrían necesitar;<br />
+- qué rutas de entrada, negociación, engaño o retirada existen;<br />
+- qué consecuencias tendría un enfrentamiento directo.</p>
+<p>Si no pueden vencer por fuerza, pueden investigar, preparar una emboscada, obtener munición de Penetración, sabotear el entorno, negociar, dividir al enemigo, escapar o regresar mejor preparados.</p>
+<p><strong>Los encuentros no están equilibrados; están informados.</strong></p>
+<h3 id="ajustar-ejecutores-por-tamano-del-grupo">Ajustar ejecutores por tamaño del grupo</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Personajes</th>
+<th style="text-align: right;">Ejecutores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">4-5</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<p>No reducir su equipo ni competencia. Este ajuste compensa la economía de acciones de mesas pequeñas, no convierte la escena en un combate obligatorio.</p>
+<blockquote>
+<p><strong>[DJ] Premisa:</strong> la acción arranca en un <strong>mundo no despertado</strong> — una ciudad cualquiera de finales del siglo XX o principios del XXI, podría ser Madrid, Londres o cualquier metrópoli real. Gente normal, calles normales. Por debajo, las corporaciones cósmicas mueven los hilos sin que nadie lo sepa. Tienen prohibido por contrato actuar abiertamente en mundos recién adscritos a El Mosaico... y ninguna cumple el acuerdo. El contraste —lo cotidiano frente a lo que se oculta— es el alma de la aventura. Lo verdaderamente extraño no llega hasta la Escena 5.</p>
+</blockquote>
+<p><picture><source srcset="img/callejon.webp" type="image/webp"><img alt="El Callejon" src="img/callejon.jpg" /></picture></p>
+<h3 id="escena-1-el-callejon">ESCENA 1 — EL CALLEJÓN</h3>
+<blockquote>
+<p><em>Es una tarde gris de entre semana. Caminas por una calle cualquiera cuando los oyes: disparos secos, cerca. La gente echa a correr; no hay sirenas. Te metes en un callejón estrecho entre cubos de basura y cajas, esperando a que pase. Los disparos suenan cada vez más cerca. Algo cae pesadamente sobre unas bolsas junto a la entrada del callejón. Luego, pasos metálicos, rápidos, que pasan de largo y se alejan. Cuando te asomas, ves a un hombre de mediana edad tirado entre la basura, sangrando de la cabeza y el pecho. No se mueve. Tiene el puño apretado, y entre los dedos asoma algo de color rojo oscuro.</em></p>
+<p><strong>[DJ]</strong> El muerto es Arthur Dicking, científico. Lo han ejecutado por la espalda. Objetivo de la escena: que los PJs investiguen el cuerpo antes de que alguien limpie la escena.</p>
+</blockquote>
+<p><strong>Qué puedes intentar:</strong> examinar el cuerpo, registrar sus pertenencias, ocultarte antes de que alguien vuelva, huir con lo que ya tienes.</p>
+<ul>
+<li><strong>[DJ] Examinar el cuerpo:</strong> tirada de <strong>Diagnóstico</strong> (Difícil, <strong>−10</strong>) por la confusión y la sangre. Revela que la muerte fue por un disparo limpio y profesional, no un atraco. <blockquote>
+<p><em>Si tiene éxito, lee:</em> "<em>No es un robo que salió mal. El disparo es limpio, colocado. A este hombre lo han ejecutado. En el puño aprieta un chip pequeño, de un tipo que no reconoces — no encaja en ninguna ranura común.</em>"</p>
+</blockquote>
+</li>
+<li><strong>Lo que lleva encima:</strong> el <strong>chip</strong> (con el logo de <strong>CHAFRY CORP</strong> grabado), su cartera con documentación a nombre de <strong>Arthur Dicking</strong>, una tarjeta con <strong>860 PC</strong> y una <strong>tarjeta-llave</strong> de cerradura electrónica.</li>
+<li><strong>[DJ] El chip</strong> contiene los secretos de diseño de un <strong>prototipo de arma propio de Chafry, la PREDATOR N-5.2</strong> (ver al final). No son "datos para fabricarla desde cero": es el prototipo y sus especificaciones, algo que la competencia mataría por tener.</li>
+</ul>
+<p><strong>Si intentan acceder al chip.</strong> Si algún personaje intenta conectar el chip a un terminal, leer sus registros o acceder a su contenido, lee lo siguiente:</p>
+<blockquote>
+<p><em>La pantalla parpadea. Durante una fracción de segundo aparecen líneas de texto que no parecen destinadas a usuarios normales. No son menús. No son archivos. Son mensajes internos del sistema:</em></p>
+<p><code>ACCESO NO AUTORIZADO</code><br />
+<code>ACTIVO INTERDIMENSIONAL CLASE III</code><br />
+<code>PROTOCOLO PREDATOR INICIADO</code><br />
+<code>INTENTANDO NOTIFICAR A CHAFRY CORP... ERROR // ENLACE NO DISPONIBLE</code></p>
+<p><em>La pantalla se oscurece. Cuando vuelve a encenderse, el mensaje ha desaparecido. No queda ningún registro aparente de que haya existido.</em></p>
+<p><strong>[DJ] Semilla de campaña.</strong> Los personajes no tienen forma de comprender todavía qué significa "Activo Interdimensional Clase III". No expliques nada: el objetivo es sembrar preguntas, no dar respuestas. El "ERROR // ENLACE NO DISPONIBLE" implica que la alerta no ha llegado necesariamente a Chafry; más adelante puedes decidir libremente si la transmisión falló por completo, llegó parcialmente o fue interceptada por otra organización. No reveles más durante esta aventura, salvo que quieras aumentar la presión corporativa sobre los personajes. En diez segundos de juego has plantado tres ideas sin explicar ninguna: hay activos interdimensionales, existen protocolos para gestionarlos, y las corporaciones llevan tiempo lidiando con ellos.<br />
+- <strong>[DJ] Identificar de dónde es la tarjeta-llave:</strong> tirada combinada <strong>Electrónica + Seguridad</strong> (Difícil, <strong>−10</strong>) — apunta a un bloque de pisos baratos del extrarradio.</p>
+</blockquote>
+<h3 id="escena-2-la-casa-de-arthur-dicking">ESCENA 2 — LA CASA DE ARTHUR DICKING</h3>
+<blockquote>
+<p><em>El edificio es un bloque de diez plantas, gris y cansado, con un solo ascensor que cruje en cada piso. El portal conserva un papel pintado amarillento de hace décadas, agrietado por la humedad; de doce lámparas, solo siete funcionan. La tarjeta abre la cerradura del tercer piso con un chasquido. El apartamento es pequeño, asfixiante, desordenado — pero no hay señales de pelea.</em></p>
+<p><strong>[DJ]</strong> Arthur era físico cuántico, trabajaba bajo contrato secreto para Chafry. Lo que pueden encontrar registrando:</p>
+</blockquote>
+<p><strong>Qué puedes intentar:</strong> registrar el piso, escuchar antes de entrar, preguntar a los vecinos, marcharte antes de que alguien pregunte quién eres.</p>
+<table>
+<thead>
+<tr>
+<th>Hallazgo</th>
+<th>Mecánica</th>
+<th>Información</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pistola pequeña</td>
+<td>Automático (en el armario)</td>
+<td>Defensa personal (daño 3)</td>
+</tr>
+<tr>
+<td>Documentos laborales</td>
+<td><strong>Investigación</strong>, sin penalizar</td>
+<td>Diplomas y contrato que confirman su empleo en Chafry</td>
+</tr>
+<tr>
+<td>Bloque de notas</td>
+<td>Automático (en el escritorio)</td>
+<td>Hojas arrancadas; al pasar el lápiz por encima salen marcas</td>
+</tr>
+<tr>
+<td>Marcas del bloque</td>
+<td><strong>Investigación</strong> (Difícil, <strong>−10</strong>)</td>
+<td>"Drake Street Nº34, puerta trasera. Sábado 23:00. Llevar la mercancía. Código: Índigo es Azul. 5.000 PC"</td>
+</tr>
+<tr>
+<td>Extracto bancario</td>
+<td><strong>Alerta</strong> o <strong>Buscar información</strong> (Difícil, <strong>−10</strong>)</td>
+<td>2.500 PC/mes + dos ingresos extra recientes de 3.000 PC: le pagaban por espiar a Chafry</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>[DJ] Fallo en Investigación por 1 éxito</strong> (es decir, te quedas a menos de 10 de la habilidad): el texto sale fragmentario: <em>"Drake Street Nº34. ---- a las 23:00. ---- Índigo es Azul"</em>.</li>
+<li><strong>[DJ] Fallo por 2 o más éxitos</strong> (te quedas a 20 o más): casi ilegible: <em>"Drake----- 23:00 ----- Índigo es Azul"</em>.</li>
+<li><strong>[DJ] Notas secundarias:</strong> "PREDATOR N-5.2: 4 días", un teléfono ("555 6666 321 — Cinthia Mollis") y una cita ("Cardamomo Street 84 bajo, 13:00"). Pistas de relleno para que investiguen; la de Cinthia lleva a la Escena 3A.</li>
+</ul>
+<div class="nota-dj"><p><strong>RELOJ DE CHAFRY</strong></p>
+<p>Entrada en el apartamento → quedan grabados en el pasillo.<br />
+<strong>+16 h</strong> → Chafry cruza las cintas y obtiene sus identidades.<br />
+<strong>+20 h</strong> → llega un grupo de exterminio a su domicilio.</p>
+<p>A partir de aquí, cada escena de investigación (Cinthia, Pitágoras, Drake Street) consume tiempo del margen: la pregunta para los PJs no es solo "¿qué averiguamos?", sino <strong>¿cuánto investigamos antes de que nos encuentren?</strong></p></div>
+<h3 id="escena-3-hilos-de-investigacion">ESCENA 3 — HILOS DE INVESTIGACIÓN</h3>
+<p><strong>Qué puedes intentar:</strong> investigar (Cinthia, Pitágoras), negociar con Chafry, acudir a la cita de Drake Street — o combinar varias antes de decidir.</p>
+<h4>3A) Cinthia Mollis</h4>
+<blockquote>
+<p><strong>[DJ]</strong> Solo sabe que Arthur trabajaba para Chafry y cobraba bien. Si le dicen que ha muerto, entra en shock. Sacarle algo coherente exige <strong>Persuasión</strong> (Difícil, <strong>−10</strong>) por su estado. Con éxito: cuenta que Arthur estaba muy nervioso en su último almuerzo y se marchó a toda prisa tras una llamada.</p>
+</blockquote>
+<h4>3B) Pitágoras (descifrador clandestino)</h4>
+<blockquote>
+<p><strong>[DJ]</strong> Localizarlo exige <strong>Bajos Fondos</strong> (Difícil, <strong>−10</strong>). Opera de forma remota tras una puerta blindada (detrás hay un subcontratado; si liberan al verdadero Pitágoras más adelante, gran contacto). Tarifa fija sin regateo: <strong>1.000 PC por adelantado + 1.000 al terminar</strong>, en 24 h. Saca del chip:<br />
+- Son los secretos de diseño del prototipo PREDATOR N-5.2 de Chafry.<br />
+- El robo lo hizo Arthur hace 3 días, con una brecha financiada en secreto por <strong>MORT CORP</strong>.<br />
+- MORT u otras redes del mercado negro pagarían unos <strong>15.000 PC</strong> por los planos.</p>
+</blockquote>
+<h4>3C) Trato con Chafry</h4>
+<blockquote>
+<p><strong>[DJ]</strong> Suicida. Los reconocerán por biometría e intentarán matarlos y recuperar el chip sin pagar. Si mandan un asesino, llevará pruebas falsas incriminando a <strong>TecnoStealer</strong> (ajena a todo esto). Si tratan a ciegas, ofrecen 10.000-20.000 PC solo para tender una emboscada (tienen otra copia; solo quieren destruir esta).</p>
+</blockquote>
+<h4>3D) La cita en Drake Street (sábado 23:00)</h4>
+<blockquote>
+<p><em>El punto de encuentro es un callejón trasero, sucio, lleno de ratas y desperdicios, lejos de las rondas de policía. La puerta del número 34 es una plancha de acero blindado con una mirilla a la altura de los ojos. Al golpear, la mirilla se abre de golpe: unos ojos fríos te estudian desde dentro.</em></p>
+<p><strong>[DJ]</strong> Son agentes encubiertos de MORT CORP. La conversación depende de cuántos PJs se expongan:<br />
+- <strong>Si va uno solo:</strong> "¿Código?" → "Índigo es Azul" → "¿Dónde está Arthur Dicking?" → justificar su ausencia con <strong>Persuasión</strong> (Difícil, <strong>−10</strong>).<br />
+- <strong>Si van varios:</strong> "¿Quiénes sois y qué hacéis aquí?" → misma tirada de <strong>Persuasión</strong> (Difícil, <strong>−10</strong>), bajo amenaza de fuego.</p>
+<p>Con éxito, aceptan el trato: <strong>5.000 PC</strong> por el chip. Si los PJs mencionan que necesitan salir del sector (huyen de Chafry), les ofrecen pasaje clandestino en un envío de contenedores a otros sectores de El Mosaico → Escena 4.</p>
+<p><strong>[DJ] Alerta de combate:</strong> en la sala trasera esperan <strong>6 ejecutores de MORT</strong> armados. Cualquier paso en falso desata un tiroteo a quemarropa.</p>
+</blockquote>
+<h5>[DJ] Ejecutores MORT CORP (Drake Street / asalto)</h5>
+<ul>
+<li>Categorías secundarias 35 · <strong>Combate 45</strong> · <strong>Blindaje 3</strong> (servoasistida integral)</li>
+<li>Subfusil (daño 5), pistola (daño 3), machete (daño 4)</li>
+<li>Cibernética: ópticas antideslumbrante, amplificador de imagen, sensores</li>
+<li>Alerta 40 · Distancia (subfusil/armas cortas) 35 · Sigilo 40 · Arma CC 35</li>
+<li><strong>Variante Chafry (interceptación):</strong> igual pero Blindaje 2 (torso+cabeza) + pistola aturdidora (daño no letal 10, alcance 25 m)</li>
+</ul>
+<h3 id="tres-rutas-hacia-los-almacenes">Tres rutas hacia los almacenes</h3>
+<blockquote>
+<p><strong>[DJ]</strong> Las investigaciones y decisiones de las escenas anteriores convergen en los almacenes de MORT. Hay tres formas de llegar, y cada una tiene consecuencias distintas:</p>
+</blockquote>
+<p><strong>Ruta A — Acuerdo con Mort.</strong> Los personajes entregan o negocian el chip. Mort ofrece sacarlos del sector mediante sus contenedores. Es la ruta más directa, pero los coloca voluntariamente dentro de una operación que no comprenden.</p>
+<p><strong>Ruta B — Captura o persecución.</strong> Mort o Chafry localizan al grupo. Durante la persecución, los personajes descubren que los almacenes son el centro logístico desde el que salen los contenedores. Pueden infiltrarse para escapar, ser introducidos como prisioneros o aprovechar el caos de un ataque entre corporaciones.</p>
+<p><strong>Ruta C — Investigación.</strong> Los datos de Arthur, Pitágoras, las cámaras o los movimientos bancarios conducen a la empresa logística utilizada por Mort. Los personajes comprenden que los almacenes ofrecen una ruta clandestina fuera de la ciudad y deciden infiltrarse por iniciativa propia.</p>
+<p>Las tres rutas convergen en los almacenes, pero conservan una consecuencia diferente:<br />
+- <strong>Acuerdo:</strong> Mort conoce su identidad y espera una deuda.<br />
+- <strong>Persecución:</strong> una corporación los considera fugitivos o activos capturados.<br />
+- <strong>Investigación:</strong> entran sin permiso y conservan mayor autonomía, pero carecen de apoyo.</p>
+<h3 id="escena-4-los-almacenes-tapadera-de-mort">ESCENA 4 — LOS ALMACENES (tapadera de MORT)</h3>
+<blockquote>
+<p><em>Los muelles de carga son un hervidero. Sobre todo destaca una grúa industrial amarilla, altísima, de seis plantas, moviendo contenedores en una danza automática e hipnótica. Vías de tren rodean el complejo como un circuito de juguete y se meten en un túnel hacia el este, todo cercado por vallas de alta tensión. En el centro, dos edificios administrativos con el rótulo de una empresa de logística de nombre corriente. Todo — las grúas, los monos de trabajo, las señales— está pintado en el mismo fucsia y negro, una combinación que, si uno se fija, resulta vagamente familiar.</em></p>
+<p><strong>[DJ]</strong> El complejo es una <strong>tapadera de MORT</strong> en este mundo no despertado: opera como una empresa de transporte local de nombre corriente (ponle el que encaje con la ciudad — "Transportes [X]", "Logística [Y]"), sin logo corporativo cósmico explícito. Pero el guiño está ahí para quien sepa verlo: los <strong>colores corporativos de MORT</strong> (fucsia y negro) lo impregnan todo, y el logotipo de la empresa de fachada, mirado de cierta forma, recuerda al de MORT. Un PJ que conozca a MORT puede atar cabos con una tirada de <strong>Alerta</strong> o conocimiento de corporaciones. Muy vigilado. De noche: 12 operarios, 12 guardias y un vehículo de patrulla.</p>
+</blockquote>
+<p><strong>Qué puedes intentar:</strong> colarte sin ser visto, sobornar a un guardia, sabotear la grúa o la valla, esperar a un descuido en la vigilancia.</p>
+<ul>
+<li><strong>[DJ] La grúa:</strong> <strong>Alerta</strong> (Difícil, <strong>−10</strong>) revela que es autónoma (un robot que ocupa toda la instalación con sus sensores); burlarla o hackearla exige <strong>Seguridad</strong> o <strong>Programación</strong> (Muy difícil, <strong>−20</strong>).</li>
+<li><strong>[DJ] Acceso a pie:</strong> sabotear los controles (<strong>Seguridad</strong>, Difícil <strong>−10</strong>) o entrar por la garita (<strong>Persuasión</strong> Difícil <strong>−10</strong> + 500 PC).</li>
+<li><strong>[DJ] Pasaje por contactos:</strong> 1.000 PC/persona, máximo 3 por contenedor; incluye traje estanco (Blindaje 1, pero <strong>−20 a Proezas/Acrobacias y Combate</strong> por su rigidez).</li>
+<li><strong>[DJ] El saboteador:</strong> un ratero pincha trajes; detectarlo a tiempo exige <strong>Alerta</strong> (Difícil, <strong>−10</strong>). El bote de sellador (2 usos) cuesta 200 PC.</li>
+</ul>
+<blockquote>
+<p><em>Sellados dentro del contenedor, el calor aprieta y el aire se vicia enseguida. Un paquete grande, de aspecto militar, ocupa casi todo el espacio.</em></p>
+</blockquote>
+<h3 id="escena-5-el-giro-el-satelite-y-tierra-12">ESCENA 5 — EL GIRO: EL SATÉLITE Y TIERRA 12</h3>
+<blockquote>
+<p><strong>[DJ] Contexto — Tierra 12:</strong> una tesela análoga a la Tierra donde el nazismo ganó la guerra y se expandió al espacio. Estética retrofuturista años 50, tecnología militar avanzada, conflicto activo permanente. Los PJs han aterrizado en medio de una guerra que no es suya, en un mundo que no saben que existe. No des más contexto del necesario — que lo descubran ellos.</p>
+<p><strong>[DJ]</strong> Aquí cambia el tono: de lo cotidiano a lo imposible. Los contenedores son descargados en un satélite minero sin atmósfera.</p>
+<p><em>Tu terminal se llena de interferencias y gritos. Al asomarte por la esclusa, ves avanzar sobre la superficie del asteroide a un grupo de soldados con uniformes impecables y anacrónicos —idénticos a las SS alemanas—, con máscaras de gas de cuero y cascos cerrados. Aparecen de entre los riscos y abren fuego sin mediar palabra, ejecutando al civil más cercano.</em></p>
+<p><strong>[DJ]</strong> Recuerda a los jugadores que una brecha en su traje sin presión = muerte por asfixia si se quedan quietos. Deben alcanzar la lanzadera.</p>
+</blockquote>
+<p><strong>Qué puedes intentar:</strong> correr hacia la lanzadera, buscar cobertura entre los riscos, ayudar a algún superviviente cercano, devolver fuego para ganar tiempo.</p>
+<ul>
+<li><strong>[DJ] Lanzadera:</strong> los lleva al planeta cercano (la Tierra), pero no pueden quitarse los cascos (el aire interno tarda una hora en recargar, no la tuvieron). Solo había combustible de maniobra, ya agotado (Helio-3, rarísimo fuera de un mundo despertado).</li>
+<li><strong>[DJ] Aterrizaje forzoso:</strong> caen en una plantación ilegal de marihuana; tres vigilantes muy colocados disparan con escopetas al grito de "¡malditos alienígenas!" (Combate 40, daño 8, cadencia 2).</li>
+<li><strong>[DJ] El terraplén:</strong> la huida es por una pendiente hasta un río con una barcaza. Bajar limpio: <strong>Proezas</strong> (Muy difícil, <strong>−20</strong>). Deslizarse aceptando el golpe: tirada Normal con <strong>−10</strong> para mitigar; 3/50 de daño si se falla.</li>
+</ul>
+<blockquote>
+<p><strong>[DJ]</strong> Están en <strong>Tierra 12</strong>, finales del siglo XX. Con <strong>Ciencias</strong> (Difícil, <strong>−10</strong>) notan que la candidata con más opciones a presidir usa discursos calcados de la retórica de los años cuarenta. Días después estalla una ofensiva: las fuerzas invasoras (ovnis clásicos con iconografía militar alemana) ofrecen Helio-3 a cambio de luchar a su lado (trajes Blindaje 1, <strong>−10</strong> a Tecnológica/Proezas/Combate). Tras un combate, los aliados lanzan un ataque nuclear sobre la base alemana y, poco después, las naves aliadas se vuelven unas contra otras por el control del recurso.</p>
+</blockquote>
+<h3 id="escena-6-desenlace-y-enlace">ESCENA 6 — DESENLACE Y ENLACE</h3>
+<blockquote>
+<p><strong>[DJ]</strong> Llega una transmisión de un <strong>Maestro de Portales de PRIMUS</strong> que ha perdido a su escolta en el bombardeo. Ofrece abrir un nexo de evacuación a un sector autorizado a cambio de protección. Advierte que, si se quedan ilegalmente en un mundo no despertado, los denunciará. Solo se vuelve hostil si intentan someterlo por la fuerza (<strong>Interrogatorio/Liderazgo</strong> agresivos). Canaliza el portal y los lleva a un planeta despertado donde las máquinas lo controlan todo.</p>
+<p><strong>¿Qué hace aquí un Maestro de Portales?</strong> Primus vigila los enclaves no despertados con equipos pequeños de reconocimiento. Este Maestro estaba en misión de supervisión cuando el bombardeo aliado destruyó su campamento y mató a su escolta. No ha venido a rescatar a nadie — ha encontrado a los PJs porque necesita protección para salir vivo. Un Maestro sin escolta en una zona de guerra es un objetivo prioritario para cualquier facción que quiera un portal gratis.</p>
+</blockquote>
+<p><strong>Qué puedes intentar:</strong> escuchar lo que ofrece, exigir condiciones antes de aceptar, desconfiar y buscar otra salida, aceptar sin más preguntas.</p>
+<blockquote>
+<p><strong>CONTINUACIÓN DIRECTA:</strong> <strong>Módulo 2 — De Ratones y Hombres</strong>. Su mundo, facciones y material de campaña se desarrollan en el <strong>DLC Mundo Máquina</strong>.</p>
+</blockquote>
+<h3 id="deriva-al-cruzar">Deriva al cruzar</h3>
+<p>Cuando el Maestro de Portales abre el cruce final, cada personaje obtiene <code>1d6</code> puntos de Deriva. Es su primer contacto mecánico con el precio de viajar por el Mosaico.</p>
+<p>Si un personaje alcanza 10 o más puntos, aplica inmediatamente el efecto correspondiente de Deriva. El umbral queda registrado; reducir después el contador no borra el cambio ni permite volver a activar ese mismo umbral.</p>
+<hr />
+<h2 id="apendice-datos-de-referencia">APÉNDICE — DATOS DE REFERENCIA</h2>
+<h3 id="predator-n-5-2-prototipo-chafry-arma-media">PREDATOR N-5.2 (prototipo Chafry) — arma media</h3>
+<p>Daño 7 · Cadencia 5 · Cargador 25 (5 ráfagas) · Penetración intrínseca 5 · <strong>FUE mínima 35 a una mano / 30 a dos manos</strong>.<br />
+Su Pen 5 se suma a la munición elegida y a modificaciones compatibles.<br />
+Munición artesanal de sección variable para no necesitar refrigeración; la última bala enfría el cargador (sustituible por una normal para +1 daño).</p>
+<blockquote>
+<p><em>La PREDATOR es una línea de armas propia de Chafry. La N-5.2 es el prototipo de este módulo: rinde como una PREDATOR estándar pero exige menos fuerza, lo que la hace mucho más versátil — y por eso la competencia la quiere.</em></p>
+</blockquote>
+<h3 id="ejemplo-de-parecia-que-habia-muerto-para-narrar-la-regla-en-mesa">Ejemplo de "parecía que había muerto" (para narrar la regla en mesa)</h3>
+<blockquote>
+<p><em>El disparo te da de lleno en el pecho. El blindaje cruje, saltan chispas. Caes de espaldas, el mundo se vuelve negro de golpe. Los matones se acercan con calma, te dan por muerto, escupen al suelo y se largan. Estás destrozado, te queda un hilo de vida... pero tus ojos vuelven a abrirse en la oscuridad. Sigues en el juego.</em></p>
+</blockquote>
+<hr />
+<h1>ESTO ERA SOLO UNA TESELA</h1>
+<p>La aventura que acabas de jugar transcurre en un mundo que aún no sabe que forma parte de algo más grande. Pero el entramado conecta <strong>incontables dimensiones</strong>, y cada una es una realidad con sus propias leyes.</p>
+<p>Y aquí está lo que hace a <em>La Senda</em> distinta: <strong>las mismas reglas sirven para todas.</strong> El nivel tecnológico de tu personaje es un dial que puedes girar a cualquier época, a cualquier género:</p>
+<ul>
+<li>Un <strong>guerrero medieval</strong> arrancado de su siglo, espada en mano entre naves y neón.</li>
+<li>Un <strong>soldado de las trincheras</strong> de una guerra que en tu mundo terminó de otro modo.</li>
+<li>Un <strong>hechicero</strong> que canaliza fuerzas imposibles en una dimensión de pura fantasía.</li>
+<li>Un <strong>superviviente</strong> de un mundo donde las máquinas despertaron y ganaron.</li>
+<li>O un errante ya curtido, que ha cruzado una docena de realidades y no parpadea ante la decimoprimera.</li>
+</ul>
+<p>Las mismas reglas. Dimensiones sin fin.</p>
+<h2 id="pero-la-senda-no-es-solo-ancha-es-honda">Pero la Senda no es solo ancha. Es honda.</h2>
+<p>En un lugar donde toda realidad es posible, <strong>todo cabe</strong> —y todo puede tomarse en serio—. Aquí la conspiración corporativa convive con el ocultismo antiguo; la filosofía con el plomo; el mito griego, los dioses de Babilonia y los terrores que ninguna civilización se atrevió a nombrar, con el frío cálculo de una sala de juntas. Puedes jugar una tragedia, un atraco, una guerra, un misterio que da miedo de verdad, o las cinco cosas en la misma campaña.</p>
+<p>Las reglas que acabas de probar son la punta. Debajo hay un sistema que te da las herramientas para sostener cualquiera de esas historias: tramas que se ramifican, equipo para cada mundo, personajes con cicatrices y secretos, y la profundidad necesaria para que importe.</p>
+<h2 id="lo-que-te-espera-en-el-manual-completo">Lo que te espera en el manual completo</h2>
+<ul>
+<li><strong>Seis corporaciones</strong>, cada una con su rostro público y sus secretos enterrados: Chafry, Serpent, Mort, TecnoStealer, Workhouse y Primus.</li>
+<li><strong>Razas jugables</strong> más allá de lo humano —porque en un universo que fabrica vida a medida, "humano" es solo una opción.</li>
+<li><strong>La Distorsión:</strong> hechicería, runas, Maestros de Portales, y el precio exacto que cobra cada gramo de poder.</li>
+<li><strong>Creación de personajes a fondo:</strong> profesiones, méritos y defectos, implantes, cibernética, todo lo que te hace tú.</li>
+<li><strong>Bestiario, arsenal, vehículos, naves</strong> y las reglas para viajar entre teselas sin perderte —o perdiéndote, que también es una aventura.</li>
+</ul>
+<blockquote>
+<p><em>El mundo ya se está desplegando. Síguelo.</em><br />
+<em><picture><source srcset="img/qr_blog.webp" type="image/webp"><img alt="QR Blog" src="img/qr_blog.png" /></picture></em></p>
+</blockquote>
+<hr />
+<p><em>Edición ampliada de inicio. El capítulo 14 del manual permite jugar PREDATOR N-5.2 sin este kit; aquí se añaden reglas rápidas, personajes pregenerados y apoyo para la primera partida. Después, la campaña continúa con el Módulo 2 — De Ratones y Hombres y el DLC Mundo Máquina.</em></p>
+<hr />
+<h2 id="ficha-de-personaje-en-blanco">FICHA DE PERSONAJE EN BLANCO</h2>
+<p><picture><source srcset="img/ficha_en_blanco_v2.webp" type="image/webp"><img alt="Ficha de Personaje" src="img/ficha_en_blanco_v2.png" /></picture></p>
+<ul>
+<li><a href="ficha.html">Ficha de Personaje (autocalculada)</a> — con cálculos automáticos, para jugar en pantalla.</li>
+<li><a href="ficha_simplificada.html">Ficha de Personaje (simplificada)</a> — sin cálculos, para imprimir o rellenar a mano.</li>
+<li><a href="ficha_vertical.html">Ficha de Personaje (vertical)</a> — con cálculos automáticos, en una sola página pensada para imprimir. Para cuando el grupo termina esta aventura y sigue jugando.</li>
+</ul>
+</main>
+</body>
+</html>
