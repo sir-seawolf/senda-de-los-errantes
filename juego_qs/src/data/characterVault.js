@@ -57,6 +57,33 @@ export function eliminarPersonajeImportado(id, storage = globalThis.localStorage
   }
 }
 
+export function renombrarPersonajeImportado(id, nombre, storage = globalThis.localStorage) {
+  if (!storageDisponible(storage) || typeof id !== "string" || typeof nombre !== "string") return false;
+  try {
+    const personajes = listarPersonajesImportados(storage);
+    const indice = personajes.findIndex(personaje => personaje.id === id);
+    if (indice < 0) return false;
+    // El id es la identidad estable usada por partidas guardadas. Renombrar
+    // solo cambia la etiqueta visible para no dejar referencias huérfanas.
+    personajes[indice] = normalizeCharacter({ ...personajes[indice], nombre: nombre.trim() });
+    escribirPersonajes(personajes, storage);
+    return true;
+  } catch (_error) {
+    return false;
+  }
+}
+
+export function serializarPersonajeImportado(id, storage = globalThis.localStorage) {
+  if (typeof id !== "string") return null;
+  const personaje = listarPersonajesImportados(storage).find(candidato => candidato.id === id);
+  if (!personaje) return null;
+  return JSON.stringify({
+    ...personaje,
+    schemaVersion: SCHEMA_VERSION,
+    exportedAt: new Date().toISOString()
+  }, null, 2);
+}
+
 export function sincronizarRuntimeImportado(miembroRuntime, storage = globalThis.localStorage) {
   if (miembroRuntime?.base?.origen !== "importado") return false;
   return guardarPersonajeImportado({

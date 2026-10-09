@@ -1,13 +1,40 @@
 // Renderer genérico de exploración 2.5D. El mapa (muros, metas, puntos
 // interactivos) sale de paths.maps del módulo activo — este archivo no
 // conoce "callejon_entorno" por nombre, solo el campo `map` de la escena.
-import { state, cambiarEscena } from "../../gameState.js";
+import { state, cambiarEscena, obtenerRuntimeEscena, guardarRuntimeEscena, limpiarRuntimeEscena } from "../../gameState.js";
 import { Raycaster } from "../../renderer/raycaster.js";
+import { resolverCamaraTrasera } from "../../renderer/thirdPersonCamera.js";
 import { cargarEscena, aplicarConsecuencias, ejecutarInteraccion } from "../sceneEngine.js";
 import { rutaDeManifiesto, rutaAsset } from "../moduleLoader.js";
 import { config } from "../../config.js";
 
 const cacheMapas = new Map();
+
+export function restaurarRuntimePersecucion(runtime, mapa) {
+  const puntoValido = punto => {
+    if (!Number.isFinite(punto?.x) || !Number.isFinite(punto?.y)) return false;
+    const celda = mapa.grid[Math.floor(punto.y)]?.[Math.floor(punto.x)];
+    return celda === 0 || !!mapa.goals?.[celda];
+  };
+  const jugadorBase = { x: mapa.start.x, y: mapa.start.y, angulo: mapa.start.angle ?? 0 };
+  const perseguidorBase = { ...mapa.pursuer, pausaTicks: 0, boostTicks: 0 };
+  if (!runtime || !puntoValido(runtime.jugador) || !puntoValido(runtime.perseguidor)) {
+    return { jugador: jugadorBase, perseguidor: perseguidorBase, puntosUsados: [] };
+  }
+  const idsValidos = new Set((mapa.interactionPoints || []).map(punto => punto.id));
+  return {
+    jugador: { x: runtime.jugador.x, y: runtime.jugador.y, angulo: Number.isFinite(runtime.jugador.angulo) ? runtime.jugador.angulo : jugadorBase.angulo },
+    perseguidor: {
+      ...perseguidorBase,
+      x: runtime.perseguidor.x,
+      y: runtime.perseguidor.y,
+      pausaTicks: Math.max(0, Number(runtime.perseguidor.pausaTicks) || 0),
+      boostTicks: Math.max(0, Number(runtime.perseguidor.boostTicks) || 0)
+    },
+    puntosUsados: Array.isArray(runtime.puntosUsados) ? runtime.puntosUsados.filter(id => idsValidos.has(id)) : []
+  };
+}
+
 async function cargarMapa(id) {
   const clave = `${rutaDeManifiesto("maps")}${id}`;
   if (cacheMapas.has(clave)) return cacheMapas.get(clave);
@@ -88,7 +115,6 @@ export async function montarPersecucion(container, escenaId) {
           </div>
         </div>
         <div class="chase-velocidad" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-        <img class="chase-avatar" src="${rutaAsset(`assets/generated/${presentacion.playerAvatar}`)}" alt="Personaje huyendo, visto desde atrás">
         <div class="chase-direccion" aria-hidden="true"><i></i><span>RUTA</span></div>
       ` : ""}
       ${config.visualEffects.vignette ? '<div class="raycast-vignette"></div>' : ""}
@@ -125,8 +151,6 @@ export async function montarPersecucion(container, escenaId) {
     resolverAsset: rutaAsset,
     renderStyle: esTerceraPersona ? "thirdPerson" : "classic"
   });
-  wrap.querySelector(".chase-avatar")?.addEventListener("error", event => event.currentTarget.remove(), { once: true });
-
   // Skyline (punto 9 del encargo 0.2 visual): opcional en el mapa
   // (`mapa.skyline`), motor-genérico — cualquier módulo puede declararlo o
   // no. Cada capa se carga en paralelo; setSkyline() se llama solo cuando
@@ -156,18 +180,35 @@ export async function montarPersecucion(container, escenaId) {
   // resto del esquema JSON); el motor usa `angulo` internamente en español —
   // se traduce aquí, en el único punto de entrada, para no tener que acordarse
   // en cada sitio que lo lee.
-  const jugador = { x: mapa.start.x, y: mapa.start.y, angulo: mapa.start.angle ?? 0 };
-  const perseguidor = { ...mapa.pursuer, pausaTicks: 0, boostTicks: 0 };
-  const puntosUsados = new Set();
+  const restaurado = restaurarRuntimePersecucion(obtenerRuntimeEscena(escenaId, "raycast"), mapa);
+  const jugador = restaurado.jugador;
+  const perseguidor = restaurado.perseguidor;
+  const puntosUsados = new Set(restaurado.puntosUsados);
   const teclas = {};
   let activo = true;
   let bobFase = 0;
+  let ultimoGuardadoRuntime = 0;
+
+  function persistirRuntime(forzar = false) {
+    const ahora = Date.now();
+    if (!forzar && ahora - ultimoGuardadoRuntime < 1000) return;
+    ultimoGuardadoRuntime = ahora;
+    guardarRuntimeEscena(escenaId, "raycast", {
+      jugador: { ...jugador },
+      perseguidor: { ...perseguidor },
+      puntosUsados: [...puntosUsados]
+    });
+  }
 
   // Precarga de sprites billboard: perseguidor + cualquier punto interactivo
   // que declare un asset visual (contenedor, verja...). Los que no cargan
   // (o no tienen "sprite" en el JSON) simplemente no se dibujan.
   const spritePerseguidor = { image: null };
   cargarSprite("executor_front").then(img => { spritePerseguidor.image = img; });
+  const spriteJugador = { image: null };
+  if (esTerceraPersona && presentacion.playerAvatar) {
+    cargarImagenDirecta(presentacion.playerAvatar).then(img => { spriteJugador.image = img; });
+  }
   const spritesPuntos = new Map();
   (mapa.interactionPoints || []).forEach(p => {
     if (!p.sprite) return;
@@ -218,6 +259,7 @@ export async function montarPersecucion(container, escenaId) {
     if (!punto) return;
     activo = false; // pausa el movimiento mientras se resuelve
     puntosUsados.add(punto.id);
+    persistirRuntime(true);
 
     ejecutarInteraccion({
       escenaId,
@@ -263,11 +305,10 @@ export async function montarPersecucion(container, escenaId) {
 
     wrap.classList.toggle("is-moving", moviendo);
     wrap.classList.toggle("is-running", moviendo && corriendo);
+    let desplazamientoCorredor = 0;
     if (esTerceraPersona) {
-      const giroActivo = (teclas["arrowright"] ? 1 : 0) - ((teclas["arrowleft"] || teclas["q"]) ? 1 : 0) + entradaTactil.turn;
-      wrap.style.setProperty("--runner-lean", `${Math.max(-1, Math.min(1, giroActivo)) * 5}deg`);
-      wrap.style.setProperty("--runner-bob", moviendo ? `${Math.sin(bobFase) * (corriendo ? 5 : 3)}px` : "0px");
       if (moviendo) bobFase += corriendo ? 0.32 : 0.23;
+      desplazamientoCorredor = moviendo ? Math.sin(bobFase) * (corriendo ? 4 : 2.5) : 0;
     } else if (config.visualEffects.headBob && moviendo) {
       bobFase += 0.25;
       canvas.style.transform = `translateY(${Math.sin(bobFase) * 3}px)`;
@@ -307,11 +348,13 @@ export async function montarPersecucion(container, escenaId) {
       ? "PERSEGUIDOR DESPISTADO"
       : (corriendo ? "CORRIENDO" : "EN MOVIMIENTO");
     state.estadoPersecucion = { distanciaActual: distTotal, objetivo: "Refugio o vehículo" };
+    persistirRuntime();
 
     if (distTotal < (mapa.pursuer?.catchDistance ?? 0.7)) {
       activo = false;
       if (config.visualEffects.screenShake) wrap.classList.add("screen-shake");
       limpiar();
+      limpiarRuntimeEscena(escenaId, "raycast");
       aplicarConsecuencias(escena.onCatch, "player", { onTexto: () => {} });
       return;
     }
@@ -321,6 +364,7 @@ export async function montarPersecucion(container, escenaId) {
     if (meta) {
       activo = false;
       limpiar();
+      limpiarRuntimeEscena(escenaId, "raycast");
       resolverMeta(meta);
       return;
     }
@@ -329,7 +373,14 @@ export async function montarPersecucion(container, escenaId) {
     promptEl.hidden = !punto;
     if (punto) promptEl.textContent = `Pulsa E para ${punto.label}`;
 
-    raycaster.render(jugador.x, jugador.y, jugador.angulo);
+    const camara = esTerceraPersona
+      ? resolverCamaraTrasera(jugador, esMuro, {
+          distance: presentacion.cameraDistance ?? 1.05,
+          minDistance: presentacion.cameraMinDistance ?? 0.55
+        })
+      : { ...jugador, mode: "firstPerson", distance: 0 };
+    wrap.classList.toggle("camera-first-person", esTerceraPersona && camara.mode === "firstPerson");
+    raycaster.render(camara.x, camara.y, camara.angulo);
 
     // anchor:"ground" (punto 6 del encargo 0.2 visual): el perseguidor y los
     // objetos de puntos interactivos son figuras/objetos apoyados en el
@@ -339,13 +390,24 @@ export async function montarPersecucion(container, escenaId) {
     // (`spriteWorldHeight`); si no se declara, 0.5 (aprox. una persona) es
     // un valor razonable por defecto para objetos de calle de tamaño medio.
     const billboards = [{ x: perseguidor.x, y: perseguidor.y, image: spritePerseguidor.image, anchor: "ground", worldHeight: 0.5 }];
+    if (camara.mode === "thirdPerson" && spriteJugador.image) {
+      billboards.push({
+        x: jugador.x,
+        y: jugador.y,
+        image: spriteJugador.image,
+        anchor: "ground",
+        worldHeight: presentacion.playerWorldHeight ?? 0.62,
+        screenOffsetY: desplazamientoCorredor,
+        ignoreDistanceShade: true
+      });
+    }
     (mapa.interactionPoints || []).forEach(p => {
       if (puntosUsados.has(p.id)) return; // ya resuelto: el objeto "se consumió" narrativamente
       const img = spritesPuntos.get(p.id);
       if (img) billboards.push({ x: p.x, y: p.y, image: img, anchor: "ground", worldHeight: p.spriteWorldHeight ?? 0.5 });
     });
     billboards.push(...decorativeSprites);
-    raycaster.renderSprites(jugador.x, jugador.y, jugador.angulo, billboards);
+    raycaster.renderSprites(camara.x, camara.y, camara.angulo, billboards);
 
     dibujarMinimapa(wrap, mapa, jugador, perseguidor);
     requestAnimationFrame(tick);

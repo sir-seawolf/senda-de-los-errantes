@@ -26,7 +26,12 @@ import { moduloIdActivo } from "../engine/moduleLoader.js";
 import { validateEncounterDefinition } from "./contracts/TacticalEncounterDefinition.js";
 import { resolverTacticalDefinition, TacticalDefinitionNotFoundError } from "./tacticalDefinitionResolver.js";
 import { resolverOutcomeTactico } from "./tacticalOutcomeResolver.js";
-import { actualizarRecursosEquipo, cambiarEscena, cargar as cargarUltimoPuntoGuardado, hayPartidaGuardada, obtenerJugador } from "../gameState.js";
+import {
+  actualizarRecursosEquipo, cambiarEscena, cargar as cargarUltimoPuntoGuardado,
+  guardarRuntimeEscena, hayPartidaGuardada, limpiarRuntimeEscena,
+  obtenerJugador, obtenerRuntimeEscena, obtenerMiembro
+} from "../gameState.js";
+import { aplicarProgreso } from "../rules/progression.js";
 import { cargarCadencia } from "../combat/combat.js";
 import { cargarCatalogoEquipoActivo, hidratarPartyDesdeEquipo } from "./bridge/equipmentLoadoutAdapter.js";
 import { integrarJugadorEnDefinicion } from "./bridge/playerCharacterAdapter.js";
@@ -194,7 +199,12 @@ export function crearTacticalRuntime() {
         disparar();
       });
 
-      let resultado = await esperarResultado(() => game.scene.start(sceneKey, { definition: ctx.definition, cadenciaData }));
+      let resultado = await esperarResultado(() => game.scene.start(sceneKey, {
+        definition: ctx.definition,
+        cadenciaData,
+        sessionSnapshot: ctx.sessionSnapshot,
+        onSessionSnapshot: ctx.onSessionSnapshot
+      }));
       while (!resultado.outcome) {
         const decision = await mostrarPausaCombateSinResolver(container);
         if (decision === "checkpoint") return { ...resultado, __volverCheckpoint: true };
@@ -407,6 +417,21 @@ export async function montarCombateTactico(container, escenaId, opts = {}) {
   }
   opts.onPayloadResolved?.(payload); // solo para tests -- introspección, nunca en producción
 
+  // El sobre pertenece al motor y los datos a TacticalSession. Una sesión
+  // guardada solo se ofrece al renderer si corresponde al mismo encounter;
+  // TacticalScene hará además una restauración defensiva de su contenido.
+  if (payload) {
+    const runtimeGuardado = obtenerRuntimeEscena(escenaId, "tactical-phaser");
+    payload.sessionSnapshot = runtimeGuardado?.encounterId === payload.definition.id
+      ? runtimeGuardado.session
+      : null;
+    payload.onSessionSnapshot = (session) => guardarRuntimeEscena(escenaId, "tactical-phaser", {
+      encounterId: payload.definition.id,
+      definitionId: payload.definitionId,
+      session
+    });
+  }
+
   const motor = payload ? (opts.crearRuntime?.() ?? crearTacticalRuntime()) : crearTacticalStub();
   try {
     const ctx = await motor.prepare(escenaId, payload);
@@ -439,6 +464,10 @@ export async function montarCombateTactico(container, escenaId, opts = {}) {
     for (const recurso of final.actorResources ?? []) {
       if (recurso.primaryInstanceId && recurso.municionPrimaria) actualizarRecursosEquipo(recurso.actorId, recurso.primaryInstanceId, { municion: recurso.municionPrimaria });
     }
+    for (const progreso of final.progresion ?? []) {
+      const miembro = obtenerMiembro(progreso.actorId);
+      if (miembro) aplicarProgreso(miembro, progreso.skillId, progreso);
+    }
 
     // Fase 5, punto 36/37: TacticalResult -> module resolver ->
     // aplicarConsecuencias. Solo se intenta si el combate terminó de
@@ -452,6 +481,7 @@ export async function montarCombateTactico(container, escenaId, opts = {}) {
       const resuelto = await resolverOutcomeTactico(payload.moduleId, final, {
         actorId: opts.actorId, onTexto: opts.onTexto, importarResolverModulo: opts.importarResolverModulo
       });
+      limpiarRuntimeEscena(escenaId, "tactical-phaser");
       opts.onOutcomeResuelto?.(resuelto); // solo para tests
     } else {
       mostrarContinuaraPendiente(container, opts);

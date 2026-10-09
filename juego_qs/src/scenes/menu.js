@@ -1,7 +1,7 @@
 import { state, iniciarPartida, cambiarEscena, cargar, hayPartidaGuardada, borrarGuardado } from "../gameState.js";
 import { manifiestoActivo, rutaDeManifiesto, rutaAsset } from "../engine/moduleLoader.js";
 import { normalizeCharacter, desdeExportFichaAutocalculada } from "../data/adapters/characterImport.js";
-import { listarPersonajesImportados, guardarPersonajeImportado, eliminarPersonajeImportado } from "../data/characterVault.js";
+import { listarPersonajesImportados, guardarPersonajeImportado, eliminarPersonajeImportado, renombrarPersonajeImportado, serializarPersonajeImportado } from "../data/characterVault.js";
 
 const personajesCachePorModulo = new Map();
 
@@ -119,7 +119,15 @@ async function montarSeleccion(container) {
           <span class="cp-rol">${escaparHtml(p.rol)}</span>
           ${p.fortaleza ? `<span class="cp-fortaleza">${escaparHtml(p.fortaleza)}</span>` : ""}
         </button>
-        ${p.origen === "importado" ? `<button class="btn-eliminar-pj" type="button" data-delete-id="${escaparHtml(p.id)}" data-delete-name="${escaparHtml(p.nombre)}" aria-label="Eliminar a ${escaparHtml(p.nombre)} de la biblioteca">Eliminar de la biblioteca</button>` : ""}
+        ${p.origen === "importado" ? `<div class="acciones-pj">
+          <button type="button" data-export-id="${escaparHtml(p.id)}">Exportar</button>
+          <button type="button" data-rename-id="${escaparHtml(p.id)}">Renombrar</button>
+          <button class="btn-eliminar-pj" type="button" data-delete-id="${escaparHtml(p.id)}" data-delete-name="${escaparHtml(p.nombre)}" aria-label="Eliminar a ${escaparHtml(p.nombre)} de la biblioteca">Eliminar</button>
+        </div>
+        <form class="renombrar-pj" data-rename-form="${escaparHtml(p.id)}" hidden>
+          <label>Nombre nuevo<input name="nombre" value="${escaparHtml(p.nombre)}" maxlength="80" required></label>
+          <button type="submit">Guardar</button><button type="button" data-cancel-rename>Cancelar</button>
+        </form>` : ""}
         </article>`).join("")}
     </div>
     <button class="btn-menu" id="btn-volver" style="width:320px;margin-top:10px">Volver</button>
@@ -145,6 +153,41 @@ async function montarSeleccion(container) {
       if (!globalThis.confirm(`¿Eliminar a ${nombre} de la biblioteca? Esta acción no borra una partida ya guardada.`)) return;
       if (!eliminarPersonajeImportado(btn.dataset.deleteId)) {
         estadoImportacion.textContent = "No se pudo eliminar el personaje. Revisa el almacenamiento local.";
+        return;
+      }
+      montarSeleccion(container);
+    });
+  });
+  wrap.querySelectorAll("[data-export-id]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const contenido = serializarPersonajeImportado(btn.dataset.exportId);
+      if (!contenido) {
+        estadoImportacion.textContent = "No se pudo preparar la exportación.";
+        return;
+      }
+      const enlace = document.createElement("a");
+      enlace.href = URL.createObjectURL(new Blob([contenido], { type: "application/json" }));
+      enlace.download = `${btn.dataset.exportId}.json`;
+      enlace.click();
+      URL.revokeObjectURL(enlace.href);
+      estadoImportacion.textContent = "Ficha exportada con sus mejoras actuales.";
+    });
+  });
+  wrap.querySelectorAll("[data-rename-id]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const formulario = wrap.querySelector(`[data-rename-form="${CSS.escape(btn.dataset.renameId)}"]`);
+      formulario.hidden = false;
+      formulario.elements.nombre.focus();
+      formulario.elements.nombre.select();
+    });
+  });
+  wrap.querySelectorAll(".renombrar-pj").forEach(formulario => {
+    formulario.querySelector("[data-cancel-rename]").addEventListener("click", () => { formulario.hidden = true; });
+    formulario.addEventListener("submit", event => {
+      event.preventDefault();
+      const nombre = String(new FormData(formulario).get("nombre") ?? "").trim();
+      if (!renombrarPersonajeImportado(formulario.dataset.renameForm, nombre)) {
+        estadoImportacion.textContent = "No se pudo renombrar. Usa un nombre de hasta 80 caracteres.";
         return;
       }
       montarSeleccion(container);

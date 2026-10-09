@@ -14,7 +14,8 @@ function armaTactica(definicion) {
     danioBase: definicion.danio,
     penetracion: definicion.penetracion ?? 0,
     tamano: definicion.tamano,
-    cadenciaMax: definicion.cadenciaMax ?? "tiroATiro"
+    cadenciaMax: definicion.cadenciaMax ?? "tiroATiro",
+    sistemaPunteria: definicion.sistemaPunteria === true
   };
 }
 
@@ -69,6 +70,8 @@ export function hidratarPartyDesdeEquipo(definition, catalogo) {
           ...actor,
           habilidadDisparo: seleccionDistancia?.definicion.habilidad ? (miembro.habilidades?.[seleccionDistancia.definicion.habilidad] ?? actor.habilidadDisparo) : actor.habilidadDisparo,
           habilidadCC: seleccionCC?.definicion.habilidad ? (miembro.habilidades?.[seleccionCC.definicion.habilidad] ?? actor.habilidadCC) : actor.habilidadCC,
+          habilidadDisparoId: seleccionDistancia?.definicion.habilidad ?? actor.habilidadDisparoId,
+          habilidadCCId: seleccionCC?.definicion.habilidad ?? actor.habilidadCCId,
           blindaje: blindajeActivo(actor.id, catalogo, actor),
           armaPrimaria,
           armaCC,

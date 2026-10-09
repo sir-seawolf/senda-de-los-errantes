@@ -8,15 +8,10 @@
 // tiene forma de FORMULARIO — `{ version, state, form, exportedAt }`, donde
 // `form` son pares `idDeCampoDelDOM -> valor` (p.ej. inputs de Méritos/Defectos,
 // checkboxes de runas...), no una ficha semántica de atributos/habilidades.
-// Traducir ese formulario 1:1 exige conocer cada id de campo del HTML — trabajo
-// deliberadamente fuera de esta iteración (ver instrucción 8 del encargo).
-//
-// Por eso `normalizeCharacter` aquí NO parsea `form` directamente. Asume una
-// forma "semántica" intermedia (`ExternalCharacterJSON`, documentada abajo y en
-// el spec) que sí es razonable pedirle a un exportador futuro, y siempre
-// devuelve el mismo formato interno que ya usa src/data/characters.json — así
-// characters.json y cualquier personaje importado son intercambiables para el
-// resto del motor sin que este tenga que saber de dónde vino cada uno.
+// `desdeExportFichaAutocalculada` traduce ese formulario mediante sus ids
+// estables; `normalizeCharacter` valida después la forma semántica común. Ambos
+// caminos devuelven el mismo formato interno que usa src/data/characters.json,
+// de modo que el resto del motor no necesita saber de dónde vino la ficha.
 
 /**
  * Forma esperada de entrada (ExternalCharacterJSON) — ver CHARACTER_IMPORT_SPEC.md:
@@ -144,13 +139,109 @@ export class CharacterImportError extends Error {
   }
 }
 
-// Punto de enganche futuro: dado un export CRUDO de la ficha autocalculada
-// (`{version, state, form, exportedAt}`), traducirlo a ExternalCharacterJSON.
-// Deliberadamente no implementado — requiere el mapa completo de ids de campo
-// del formulario HTML. Lanza siempre para no fingir un resultado inventado.
-export function desdeExportFichaAutocalculada(_exportCrudo) {
-  throw new CharacterImportError(
-    "Traducción directa desde el export de la ficha autocalculada (formato {version, state, form}) " +
-    "todavía no está implementada — ver docs/CHARACTER_IMPORT_SPEC.md, sección 'Trabajo futuro'."
-  );
+const ATRIBUTOS_V4 = {
+  A: "AGI", C: "CON", F: "FUE", H: "HAB",
+  Ca: "CAR", I: "INT", P: "PER", V: "VOL"
+};
+
+// Orden canónico declarado por la ficha v4. Sus campos calculados tienen ids
+// estables `sktot-${rama}-${indice}`; no dependemos de la posición del input
+// dentro del DOM ni replicamos aquí sus fórmulas.
+const HABILIDADES_V4 = {
+  academicas: ["Ciencias", "Biotecnología", "Navegación", "Burocracia", "Buscar información", "Programación", "Diagnóstico", "Investigación", "Juego", "Diseño Hardware", "Sentido del Negocio", "Supervivencia", "Vigilar/Rastrear"],
+  tecnologicas: ["Armería", "Artesanía", "Ciber-tecnología", "Demoliciones", "Disfraz", "Electrónica", "Falsificación", "Química", "Mecánica", "Manos ágiles", "Seguridad", "Primeros Auxilios", "Conducir", "Pilotar", "Trajes Servoasistidos", "Sigilo"],
+  atleticas: ["Acrobacias", "Resistir", "Proezas", "Conducir", "Pilotar", "Sigilo"],
+  sociales: ["Absorción", "Autocontrol", "Bajos Fondos", "Empatía", "Interrogatorio", "Liderazgo", "Manejo de Animales", "Persuasión", "Seducción", "Estilo"],
+  combate: ["Iniciativa", "Alerta", "Esquivar", "Distancia Corta", "Distancia Media", "Distancia Larga", "Sin Armas", "Arma CC Corta", "Arma CC Media", "Arma CC Larga"],
+  distorsion: ["Detección de Distorsión", "Manipulación de Distorsión", "Camino de los Portales", "Tatuador Rúnico", "Herrero Rúnico", "Proyección de Energía", "Protección de Energía", "Invocación de Energía"]
+};
+
+const PUNTOS_EPICOS_V4 = { "Héroe": 1, "Madera de Héroe": 3, "Predestinado": 9 };
+
+function numeroDeFormulario(form, clave) {
+  if (!(clave in form) || form[clave] === "" || form[clave] === null) return null;
+  const valor = Number(form[clave]);
+  return Number.isFinite(valor) ? valor : null;
+}
+
+function idDesdeNombre(nombre) {
+  return String(nombre)
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+    .slice(0, 48);
+}
+
+// Traduce el export real `{version:4,state,form}` sin ejecutar código de la
+// ficha externa. Consume únicamente campos calculados que el propio export ya
+// guarda, de modo que méritos, implantes y demás modificadores llegan incluidos
+// en los totales finales.
+export function desdeExportFichaAutocalculada(exportCrudo) {
+  if (!exportCrudo || exportCrudo.version !== 4 || !exportCrudo.form || typeof exportCrudo.form !== "object" || Array.isArray(exportCrudo.form)) {
+    throw new CharacterImportError("El archivo no es un export compatible de la ficha autocalculada v4.");
+  }
+
+  const { form } = exportCrudo;
+  const state = exportCrudo.state && typeof exportCrudo.state === "object" ? exportCrudo.state : {};
+  const nombre = typeof form.personaje === "string" ? form.personaje.trim() : "";
+  const atributos = {};
+  const ausentes = [];
+  Object.entries(ATRIBUTOS_V4).forEach(([codigoV4, codigoMotor]) => {
+    const valor = numeroDeFormulario(form, `at-${codigoV4}`);
+    if (valor === null) ausentes.push(`at-${codigoV4}`);
+    else atributos[codigoMotor] = valor;
+  });
+
+  const habilidades = {};
+  Object.entries(HABILIDADES_V4).forEach(([rama, nombres]) => {
+    nombres.forEach((skill, indice) => {
+      const campo = `sktot-${rama}-${indice}`;
+      const valor = numeroDeFormulario(form, campo);
+      if (valor === null) {
+        ausentes.push(campo);
+        return;
+      }
+      // Conducir, Pilotar y Sigilo existen en dos ramas de la ficha. El motor
+      // usa una clave única, así que conserva el total más favorable ya
+      // calculado por la fuente.
+      habilidades[skill] = Math.max(habilidades[skill] ?? -Infinity, valor);
+    });
+  });
+
+  if (!nombre) ausentes.push("personaje");
+  if (ausentes.length) {
+    throw new CharacterImportError("El export v4 está incompleto o fue creado antes de calcular la ficha.", ausentes.map(campo => `Falta el campo calculado "${campo}".`));
+  }
+
+  const A = atributos.AGI, C = atributos.CON, F = atributos.FUE;
+  const pvBase = Math.ceil((A + C + F) / 6);
+  const compras = Array.isArray(state.compras) ? state.compras : [];
+  const humanidad = Math.max(0, 100 - compras.reduce((total, compra) => total + (Number(compra?.hum) || 0), 0));
+  const profesiones = Array.isArray(state.effectiveProfs) ? state.effectiveProfs.filter(p => typeof p === "string" && p.trim()) : [];
+  const iniciado = profesiones.includes("Iniciado");
+  const almaMaxima = iniciado ? 10 : 8;
+  const equipo = typeof form.equipoInicial === "string" ? form.equipoInicial.split(/\r?\n/).map(linea => linea.trim()).filter(Boolean) : [];
+  const armaduraFuente = state.armadura && typeof state.armadura === "object" ? state.armadura : null;
+  const creditos = typeof form.dineroFinal === "string" || typeof form.dineroFinal === "number"
+    ? Number.parseInt(String(form.dineroFinal).replace(/[^\d-]/g, ""), 10) || 0
+    : 0;
+
+  return {
+    id: idDesdeNombre(nombre),
+    nombre,
+    rol: profesiones.join(" / ") || String(form.tipoPersonaje || "Errante"),
+    cita: typeof state.historia === "string" ? state.historia : "",
+    atributos,
+    pvBase,
+    niveles: { sano: pvBase, herido: pvBase, tullido: pvBase },
+    humanidad,
+    saludMental: 100,
+    alma: { actual: Math.min(almaMaxima, Math.floor(humanidad / 10)), maxima: almaMaxima },
+    deriva: 0,
+    cargaLibre: Math.ceil((F + C) / 4),
+    creditos,
+    puntosEpicos: PUNTOS_EPICOS_V4[form.tipoPersonaje] ?? 1,
+    habilidades,
+    armadura: armaduraFuente ? { nombre: String(armaduraFuente.n || "Armadura"), blindaje: Number(armaduraFuente.bld) || 0, zonas: [] } : null,
+    equipo
+  };
 }

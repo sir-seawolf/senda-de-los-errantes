@@ -28,7 +28,8 @@ import {
   validarDivisionDefensiva,
   resolverDefensaDividida,
   resolverEsquivaTotal,
-  resolverMovimientoEvasivo
+  resolverMovimientoEvasivo,
+  resolverConsecuenciaPifiaAtaque, estadoArmaInicial
 } from "../../combat/rulesEngine.js";
 import { valorCobertura } from "../../rules/cover.js";
 import { penalizadorPorNivel } from "../../rules/woundPenalty.js";
@@ -54,6 +55,7 @@ export {
   createActivation, movementRemaining, actuacionAgotada, applyResourceCost,
   COSTO_MUNICION, TAMANO_ACCIONES, costeAccionesPorTamano, avanzarProgreso, cambiarArma,
   validarDivisionDefensiva, resolverDefensaDividida, resolverEsquivaTotal, resolverMovimientoEvasivo,
+  resolverConsecuenciaPifiaAtaque, estadoArmaInicial,
   penalizadorPorNivel, nivelHeridaDe,
   tirarIniciativa, ordenDeActuacion, modificadorCadencia
 };

@@ -139,8 +139,8 @@ export const predatorTacticalEncounter = {
         // Machete real (characters.json.armaCC). Blindaje: armadura
         // ligera real (2).
         id: "kova", nombre: "Kova", x: 3, y: 9, esPJ: false,
-        habilidadDisparo: 48, habilidadCC: 57, habilidadEsquivar: 43, blindaje: 2,
-        armaPrimaria: { nombre: "Subfusil", danioBase: 5, penetracion: 0, tamano: "mediana", cadenciaMax: "fuegoSostenido" },
+        habilidadDisparo: 48, habilidadDisparoId: "Distancia Media", habilidadCC: 57, habilidadCCId: "Arma CC Corta", habilidadEsquivar: 43, blindaje: 2,
+        armaPrimaria: { nombre: "Subfusil", danioBase: 5, penetracion: 0, tamano: "mediana", cadenciaMax: "fuegoSostenido", sistemaPunteria: true },
         armaCC: { nombre: "Machete", danioBase: 4, fuerzaMinima: 40, tamano: "pequena" },
         municion: { primaria: MUNICION(30, 60) },
         ...VIDA_PARTY(20)
@@ -152,8 +152,8 @@ export const predatorTacticalEncounter = {
         // copia igual, no se inventa una. Blindaje 0 (traje de
         // especialista, sin zonas).
         id: "bishop", nombre: "Bishop", x: 3, y: 6, esPJ: false,
-        habilidadDisparo: 45, habilidadCC: 37, habilidadEsquivar: 40, blindaje: 0,
-        armaPrimaria: { nombre: "Pistola pequeña", danioBase: 3, penetracion: 0, tamano: "pequena", cadenciaMax: "tiroATiro" },
+        habilidadDisparo: 45, habilidadDisparoId: "Distancia Corta", habilidadCC: 37, habilidadCCId: "Sin Armas", habilidadEsquivar: 40, blindaje: 0,
+        armaPrimaria: { nombre: "Pistola pequeña", danioBase: 3, penetracion: 0, tamano: "pequena", cadenciaMax: "tiroATiro", sistemaPunteria: true },
         armaCC: { nombre: "Sin arma CC", danioBase: 0, fuerzaMinima: 0, tamano: "pequena" },
         municion: { primaria: MUNICION(12, 24) },
         ...VIDA_PARTY(15)
@@ -163,8 +163,8 @@ export const predatorTacticalEncounter = {
         // (Pistola pequeña, sin arma CC real). Blindaje 0 (mono de
         // especialista).
         id: "salim", nombre: "Salim", x: 3, y: 3, esPJ: false,
-        habilidadDisparo: 38, habilidadCC: 32, habilidadEsquivar: 33, blindaje: 0,
-        armaPrimaria: { nombre: "Pistola pequeña", danioBase: 3, penetracion: 0, tamano: "pequena", cadenciaMax: "tiroATiro" },
+        habilidadDisparo: 38, habilidadDisparoId: "Distancia Corta", habilidadCC: 32, habilidadCCId: "Sin Armas", habilidadEsquivar: 33, blindaje: 0,
+        armaPrimaria: { nombre: "Pistola pequeña", danioBase: 3, penetracion: 0, tamano: "pequena", cadenciaMax: "tiroATiro", sistemaPunteria: true },
         armaCC: { nombre: "Sin arma CC", danioBase: 0, fuerzaMinima: 0, tamano: "pequena" },
         municion: { primaria: MUNICION(12, 24) },
         ...VIDA_PARTY(16)

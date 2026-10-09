@@ -20,6 +20,7 @@ function validarArma(arma, ruta, errores, { requierePenetracion = true } = {}) {
   if (typeof arma.nombre !== "string" || !arma.nombre) errores.push(`${ruta}.nombre: falta`);
   if (!esNumero(arma.danioBase)) errores.push(`${ruta}.danioBase: falta o no es número`);
   if (requierePenetracion && !esNumero(arma.penetracion)) errores.push(`${ruta}.penetracion: falta o no es número`);
+  if (arma.sistemaPunteria !== undefined && typeof arma.sistemaPunteria !== "boolean") errores.push(`${ruta}.sistemaPunteria: si se declara, debe ser boolean`);
 }
 
 function validarActor(actor, ruta, errores) {
@@ -29,6 +30,8 @@ function validarActor(actor, ruta, errores) {
   if (!esNumero(actor.x) || !esNumero(actor.y)) errores.push(`${ruta}.position: falta o no es numérica (x/y)`);
   if (!esNumero(actor.habilidadDisparo)) errores.push(`${ruta}.habilidadDisparo: falta o no es número`);
   if (!esNumero(actor.habilidadCC)) errores.push(`${ruta}.habilidadCC: falta o no es número`);
+  if (actor.habilidadDisparoId !== undefined && typeof actor.habilidadDisparoId !== "string") errores.push(`${ruta}.habilidadDisparoId: si se declara, debe ser string`);
+  if (actor.habilidadCCId !== undefined && typeof actor.habilidadCCId !== "string") errores.push(`${ruta}.habilidadCCId: si se declara, debe ser string`);
   // habilidadEsquivar es OPCIONAL a propósito (Production Integration
   // Phase 3.5, docs/TACTICAL_PRODUCTION_PHASE35.md): no todo actor tiene
   // un dato canónico de esquiva/dodge (p.ej. un NPC genérico cuya ficha

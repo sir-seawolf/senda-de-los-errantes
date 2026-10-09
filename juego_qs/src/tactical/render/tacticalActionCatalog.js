@@ -35,6 +35,10 @@ function evaluarObjetivoAtaque(atacanteConfig, objetivoConfig, activation, adapt
   const qsActor = toQsActor(atacanteConfig);
   const spatialContext = cc ? null : adapter.getCover(actorId, targetId);
   const intentBase = toQsAttackIntent(atacanteConfig, objetivoConfig, { cc });
+  const claveEstado = cc ? "cc" : (atacanteConfig.armaActiva ?? "primaria");
+  const estadoArma = atacanteConfig.armaEstado?.[claveEstado] ?? { jammed: false, broken: false };
+  intentBase.armaJammed = estadoArma.jammed;
+  intentBase.armaBroken = estadoArma.broken;
   if (cc && objetivoConfig.exitosDefensaPendiente) intentBase.exitosDefensa = objetivoConfig.exitosDefensaPendiente;
   const validacion = validateIntent(qsActor, intentBase, activation, spatialContext);
   return {
@@ -92,13 +96,24 @@ export function construirCatalogoAcciones({ session, adapter, actorId = session.
     ? { legal: false, reasons: ["NO_RANGED_WEAPON"], objetivosValidos: [], objetivos: [] }
     : evaluarAtaque(session, adapter, actorId, actor, activation, objetivosVivos, false, bonusRafaga);
   const permiteRafaga = ["rafaga", "fuegoSostenido"].includes(armaActiva.cadenciaMax);
+  const razonesApuntar = armaActiva.sistemaPunteria !== true ? ["NO_SIGHT_SYSTEM"]
+    : activation.movementSpent > 0 ? ["AIM_REQUIRES_NO_PRIOR_MOVEMENT"]
+      : !activation.mainActionAvailable ? ["MAIN_ACTION_SPENT"] : [];
+  const razonesTiroCertero = actor.habilidadDisparoId !== "Distancia Media" || actor.habilidadDisparo < 75
+    ? ["PRECISE_SHOT_BELOW_MINIMUM_SKILL"] : razonesApuntar;
   acciones.push({
     id: "disparar", label: "Disparar", familia: FAMILIA.OFENSIVAS, legal: disparar.legal,
     reasons: disparar.reasons, objetivosValidos: disparar.objetivosValidos, objetivos: disparar.objetivos,
     modosFuego: [
       { id: "tiroATiro", label: "Tiro", municion: 1, legal: municionActiva.cargador >= 1 },
       { id: "rafaga", label: "Ráfaga", municion: 3, legal: permiteRafaga && municionActiva.cargador >= 3, bonusExitos: bonusRafaga }
-    ]
+    ],
+    modosPunteria: [
+      { id: "normal", label: "Sin apuntar", legal: true, bonusDanio: 0 },
+      { id: "apuntar", label: "Apuntar", legal: razonesApuntar.length === 0, bonusDanio: 1, reasons: razonesApuntar },
+      { id: "tiroCertero", label: "Tiro certero", legal: razonesTiroCertero.length === 0, bonusDanio: 2, reasons: razonesTiroCertero }
+    ],
+    localizaciones: ["Cabeza", "Ojos", "Pecho", "Oídos", "Lengua/mandíbula", "Espalda", "Brazo derecho", "Brazo izquierdo", "Pierna derecha", "Pierna izquierda"]
   });
 
   const cc = actor.armaCC?.noDisponible
@@ -112,6 +127,13 @@ export function construirCatalogoAcciones({ session, adapter, actorId = session.
 
   const recargar = validateIntent(qsActor, { type: "RELOAD" }, activation);
   acciones.push({ id: "recargar", label: "Recargar", familia: FAMILIA.TACTICAS, legal: recargar.valid, reasons: recargar.reasons });
+
+  const claveArmaActiva = actor.armaActiva ?? "primaria";
+  const estadoArmaActiva = actor.armaEstado?.[claveArmaActiva] ?? { jammed: false, broken: false };
+  if (estadoArmaActiva.jammed && !estadoArmaActiva.broken) {
+    const desencasquillar = validateIntent(qsActor, { type: "CLEAR_JAM", armaJammed: true }, activation);
+    acciones.push({ id: "desencasquillar", label: "Desencasquillar", familia: FAMILIA.TACTICAS, legal: desencasquillar.valid, reasons: desencasquillar.reasons });
+  }
 
   const puedeCambiarArma = accionCambiarArmaLegal(activation.minorActionAvailable) && !!actor.armaSecundaria;
   acciones.push({

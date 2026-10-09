@@ -60,6 +60,7 @@ export function construirTacticalResult(session, transitionsDef = {}) {
     rounds: session.round,
     survivingActors,
     defeatedActors,
-    actorResources
+    actorResources,
+    progresion: structuredClone(session.progresion ?? [])
   };
 }

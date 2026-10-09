@@ -1,5 +1,6 @@
 import { moduloIdActivo, manifiestoActivo, MODULE_ID_MIGRACION_GUARDADO_ANTIGUO } from "./engine/moduleLoader.js";
 import { sincronizarRuntimeImportado } from "./data/characterVault.js";
+import { crearRuntimeEscena, leerRuntimeEscena, esRuntimeEscena } from "./engine/sceneRuntime.js";
 
 // Estado central del motor. Un único objeto mutable + suscriptores simples.
 //
@@ -327,7 +328,10 @@ export function tieneFlag(nombre) {
 }
 
 export function obtenerProgresoEscena(escenaId) {
-  return state.progresoEscenas?.[escenaId] ?? null;
+  const entrada = state.progresoEscenas?.[escenaId] ?? null;
+  // Compatibilidad con el contrato antiguo usado por dialogue: los sobres
+  // nuevos exponen sus datos y los guardados previos conservan su forma.
+  return esRuntimeEscena(entrada) ? structuredClone(entrada.data) : entrada;
 }
 
 export function guardarProgresoEscena(escenaId, progreso) {
@@ -340,6 +344,30 @@ export function limpiarProgresoEscena(escenaId) {
   if (!state.progresoEscenas?.[escenaId]) return;
   delete state.progresoEscenas[escenaId];
   guardar();
+}
+
+export function obtenerRuntimeEscena(escenaId, renderer) {
+  return leerRuntimeEscena(state.progresoEscenas?.[escenaId], renderer);
+}
+
+export function guardarRuntimeEscena(escenaId, renderer, datos) {
+  if (typeof escenaId !== "string" || !escenaId) return false;
+  try {
+    state.progresoEscenas ||= {};
+    state.progresoEscenas[escenaId] = crearRuntimeEscena(renderer, datos);
+    guardar();
+    return true;
+  } catch (_error) {
+    return false;
+  }
+}
+
+export function limpiarRuntimeEscena(escenaId, renderer = null) {
+  const entrada = state.progresoEscenas?.[escenaId];
+  if (!entrada || (renderer && esRuntimeEscena(entrada) && entrada.renderer !== renderer)) return false;
+  delete state.progresoEscenas[escenaId];
+  guardar();
+  return true;
 }
 
 // Munición (Combat UX & Resources 0.2) — mutaciones centralizadas aquí,

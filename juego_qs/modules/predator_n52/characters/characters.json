@@ -36,7 +36,7 @@
         "Diagnóstico": 30,
         "Investigación": 30
       },
-      "arma": { "equipoId": "weapon:subfusil", "nombre": "Subfusil", "danio": 5, "cadenciaMax": "Fuego sostenido", "ammoPerShot": 1, "ammoPerBurst": 3, "magazineSize": 30, "ammoReserve": 60, "magazineSizeCanon": "CANON_PENDING — QS/manual no especifican capacidad de cargador para armas personales estándar (solo la PREDATOR N-5.2: Cargador 25, y armas VEHICULARES en CAP05b). 30+60 es un valor provisional razonable (SMG real-world-ish, y ≥9 para poder completar un 'cargador'/fuego sostenido de la tabla de cadencia QS L.166-168 sin quedarse corto a media ráfaga).", "penetracion": 0, "tamano": "mediana" },
+      "arma": { "equipoId": "weapon:subfusil", "nombre": "Subfusil", "danio": 5, "cadenciaMax": "Fuego sostenido", "ammoPerShot": 1, "ammoPerBurst": 3, "magazineSize": 30, "ammoReserve": 60, "magazineSizeCanon": "CANON_PENDING — QS/manual no especifican capacidad de cargador para armas personales estándar (solo la PREDATOR N-5.2: Cargador 25, y armas VEHICULARES en CAP05b). 30+60 es un valor provisional razonable (SMG real-world-ish, y ≥9 para poder completar un 'cargador'/fuego sostenido de la tabla de cadencia QS L.166-168 sin quedarse corto a media ráfaga).", "penetracion": 0, "tamano": "mediana", "sistemaPunteria": true },
       "armaCC": { "equipoId": "weapon:machete", "nombre": "Machete", "danio": 4, "fuerzaMinima": 40, "tamano": "pequena" },
       "armadura": { "equipoId": "armor:ligera", "nombre": "Armadura ligera", "blindaje": 2, "zonas": ["torso", "cabeza"] },
       "equipo": ["armadura ligera (Blindaje 2 torso+cabeza)", "subfusil (daño 5)", "machete (daño 4)", "cuchillo de bota (daño 4)", "mochila"],
@@ -83,7 +83,7 @@
         "Diagnóstico": 40,
         "Investigación": 40
       },
-      "arma": { "equipoId": "weapon:pistolaPequena", "nombre": "Pistola pequeña", "danio": 3, "cadenciaMax": "Tiro a tiro", "ammoPerShot": 1, "ammoPerBurst": null, "magazineSize": 12, "ammoReserve": 24, "magazineSizeCanon": "CANON_PENDING — mismo motivo que el subfusil, ver nota ahí. 12+24 es un valor provisional de pistola compacta.", "penetracion": 0, "tamano": "pequena" },
+      "arma": { "equipoId": "weapon:pistolaPequena", "nombre": "Pistola pequeña", "danio": 3, "cadenciaMax": "Tiro a tiro", "ammoPerShot": 1, "ammoPerBurst": null, "magazineSize": 12, "ammoReserve": 24, "magazineSizeCanon": "CANON_PENDING — mismo motivo que el subfusil, ver nota ahí. 12+24 es un valor provisional de pistola compacta.", "penetracion": 0, "tamano": "pequena", "sistemaPunteria": true },
       "armaCC": { "nombre": "Sin arma CC", "danio": 0, "fuerzaMinima": 0, "tamano": "pequena" },
       "armadura": { "equipoId": "armor:trajeEspecialista", "nombre": "Traje de especialista", "blindaje": 0, "zonas": [] },
       "equipo": ["traje de especialista", "escáner", "kit de herramientas", "pistola pequeña (daño 3)", "mochila"],
@@ -129,7 +129,7 @@
         "Sigilo": 30,
         "Investigación": 40
       },
-      "arma": { "equipoId": "weapon:pistolaPequena", "nombre": "Pistola pequeña", "danio": 3, "cadenciaMax": "Tiro a tiro", "ammoPerShot": 1, "ammoPerBurst": null, "magazineSize": 12, "ammoReserve": 24, "magazineSizeCanon": "CANON_PENDING — mismo motivo que el subfusil, ver nota ahí. 12+24 es un valor provisional de pistola compacta.", "penetracion": 0, "tamano": "pequena" },
+      "arma": { "equipoId": "weapon:pistolaPequena", "nombre": "Pistola pequeña", "danio": 3, "cadenciaMax": "Tiro a tiro", "ammoPerShot": 1, "ammoPerBurst": null, "magazineSize": 12, "ammoReserve": 24, "magazineSizeCanon": "CANON_PENDING — mismo motivo que el subfusil, ver nota ahí. 12+24 es un valor provisional de pistola compacta.", "penetracion": 0, "tamano": "pequena", "sistemaPunteria": true },
       "armaCC": { "nombre": "Sin arma CC", "danio": 0, "fuerzaMinima": 0, "tamano": "pequena" },
       "armadura": { "equipoId": "armor:monoEspecialista", "nombre": "Mono de especialista", "blindaje": 0, "zonas": [] },
       "equipo": ["mono de especialista", "Medikit", "escáner médico", "pistola pequeña (daño 3)", "mochila médica"],
@@ -174,7 +174,7 @@
         "Diagnóstico": 25,
         "Social": 50
       },
-      "arma": { "equipoId": "weapon:pistolaPequena", "nombre": "Pistola pequeña", "danio": 3, "cadenciaMax": "Tiro a tiro", "ammoPerShot": 1, "ammoPerBurst": null, "magazineSize": 12, "ammoReserve": 24, "magazineSizeCanon": "CANON_PENDING — mismo motivo que el subfusil, ver nota ahí. 12+24 es un valor provisional de pistola compacta.", "penetracion": 0, "tamano": "pequena" },
+      "arma": { "equipoId": "weapon:pistolaPequena", "nombre": "Pistola pequeña", "danio": 3, "cadenciaMax": "Tiro a tiro", "ammoPerShot": 1, "ammoPerBurst": null, "magazineSize": 12, "ammoReserve": 24, "magazineSizeCanon": "CANON_PENDING — mismo motivo que el subfusil, ver nota ahí. 12+24 es un valor provisional de pistola compacta.", "penetracion": 0, "tamano": "pequena", "sistemaPunteria": true },
       "armaCC": { "nombre": "Sin arma CC", "danio": 0, "fuerzaMinima": 0, "tamano": "pequena" },
       "armadura": { "equipoId": "armor:ropaCivilCalidad", "nombre": "Ropa civil de calidad", "blindaje": 0, "zonas": [] },
       "equipo": ["ropa civil de calidad", "vehículo utilitario urbano", "comunicador", "pistola pequeña (daño 3)"],
@@ -219,7 +219,7 @@
         "Diagnóstico": 20,
         "Investigación": 25
       },
-      "arma": { "equipoId": "weapon:subfusil", "nombre": "Subfusil", "danio": 5, "cadenciaMax": "Fuego sostenido", "ammoPerShot": 1, "ammoPerBurst": 3, "magazineSize": 30, "ammoReserve": 60, "magazineSizeCanon": "CANON_PENDING — QS/manual no especifican capacidad de cargador para armas personales estándar (solo la PREDATOR N-5.2: Cargador 25, y armas VEHICULARES en CAP05b). 30+60 es un valor provisional razonable (SMG real-world-ish, y ≥9 para poder completar un 'cargador'/fuego sostenido de la tabla de cadencia QS L.166-168 sin quedarse corto a media ráfaga).", "penetracion": 0, "tamano": "mediana" },
+      "arma": { "equipoId": "weapon:subfusil", "nombre": "Subfusil", "danio": 5, "cadenciaMax": "Fuego sostenido", "ammoPerShot": 1, "ammoPerBurst": 3, "magazineSize": 30, "ammoReserve": 60, "magazineSizeCanon": "CANON_PENDING — QS/manual no especifican capacidad de cargador para armas personales estándar (solo la PREDATOR N-5.2: Cargador 25, y armas VEHICULARES en CAP05b). 30+60 es un valor provisional razonable (SMG real-world-ish, y ≥9 para poder completar un 'cargador'/fuego sostenido de la tabla de cadencia QS L.166-168 sin quedarse corto a media ráfaga).", "penetracion": 0, "tamano": "mediana", "sistemaPunteria": true },
       "armaCC": { "equipoId": "weapon:machete", "nombre": "Machete", "danio": 4, "fuerzaMinima": 40, "tamano": "pequena" },
       "armadura": { "equipoId": "armor:media", "nombre": "Armadura media", "blindaje": 3, "zonas": ["torso", "cabeza"], "blindajeExtremidades": 2 },
       "equipo": ["armadura media (Blindaje 3 torso+cabeza, 2 extremidades)", "subfusil (daño 5)", "pistola (daño 3)", "machete (daño 4)", "mochila"],

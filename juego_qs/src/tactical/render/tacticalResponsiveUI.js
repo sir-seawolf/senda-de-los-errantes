@@ -245,7 +245,9 @@ const MOTIVO_LEGIBLE = {
   NO_SECONDARY_WEAPON: "sin arma secundaria", NO_DODGE_CAPABILITY: "sin capacidad de esquiva",
   NO_RANGED_WEAPON: "sin arma a distancia equipada", NO_MELEE_WEAPON: "sin arma cuerpo a cuerpo equipada",
   NO_TARGETS_AVAILABLE: "sin objetivos", WEAPON_ALREADY_READY: "arma ya lista",
-  POSITION_OCCUPIED: "posición ocupada por otro actor"
+  POSITION_OCCUPIED: "posición ocupada por otro actor",
+  NO_SIGHT_SYSTEM: "arma sin sistema de puntería", AIM_REQUIRES_NO_PRIOR_MOVEMENT: "no puedes apuntar después de moverte",
+  PRECISE_SHOT_BELOW_MINIMUM_SKILL: "requiere Distancia Media 75"
 };
 function motivoLegible(reasons) {
   if (!reasons?.length) return "";
@@ -260,7 +262,7 @@ function motivoLegible(reasons) {
 export function montarInterfazResponsive(rootEl, scene) {
   asegurarEstilos();
 
-  const estado = { fichaAbierta: false, familiaAbierta: null, accionPreparada: null, modoFuego: "tiroATiro", hoverTimer: null };
+  const estado = { fichaAbierta: false, familiaAbierta: null, accionPreparada: null, modoFuego: "tiroATiro", modoPunteria: "normal", localizacion: "Pecho", hoverTimer: null };
 
   const root = document.createElement("div");
   root.className = "tui-root";
@@ -366,6 +368,7 @@ export function montarInterfazResponsive(rootEl, scene) {
     const c = scene.controlador;
     if (id === "mover") { scene.alternarModoMover(); cerrarTray(); return; }
     if (id === "recargar") c.recargar();
+    else if (id === "desencasquillar") c.desencasquillar();
     else if (id === "cambiarArma") c.cambiarArma();
     else if (id === "defender") c.defender();
     else if (id === "esquivar") c.evadir();
@@ -375,6 +378,8 @@ export function montarInterfazResponsive(rootEl, scene) {
   function prepararAccionConObjetivo(accion) {
     estado.accionPreparada = accion;
     estado.modoFuego = "tiroATiro";
+    estado.modoPunteria = "normal";
+    estado.localizacion = "Pecho";
     cerrarTray();
     renderFlow();
     ajustarSobreBarra(flow);
@@ -411,11 +416,12 @@ export function montarInterfazResponsive(rootEl, scene) {
     const necesitaObjetivo = a.id === "disparar" || a.id === "cc";
     const objetivoListo = !necesitaObjetivo || !!ultimoSnapshot.targetActorId;
     const modos = a.id === "disparar" ? (a.modosFuego ?? []) : [];
+    const punterias = a.id === "disparar" ? (a.modosPunteria ?? []) : [];
     const objetivos = a.objetivos ?? [];
     const modoElegido = modos.find(m => m.id === estado.modoFuego) ?? modos[0];
     scene.actualizarIntencionVisual?.({ tipo: "ataque", accionId: a.id, modoFuego: estado.modoFuego, objetivos });
     flow.innerHTML = `
-      <div class="tui-fire-head"><strong>${a.id === "disparar" ? "Consola de tiro" : a.label}</strong>${modos.length ? `<div class="tui-fire-modes">${modos.map(m => `<button type="button" class="tui-fire-mode" data-fire-mode="${m.id}" aria-pressed="${m.id === estado.modoFuego}" ${m.legal ? "" : "disabled"}>${m.label} · ${m.municion} ${m.municion === 1 ? "bala" : "balas"}${m.bonusExitos ? ` · +${m.bonusExitos}` : ""}</button>`).join("")}</div>` : ""}</div>
+      <div class="tui-fire-head"><strong>${a.id === "disparar" ? "Consola de tiro" : a.label}</strong>${modos.length ? `<div class="tui-fire-modes">${modos.map(m => `<button type="button" class="tui-fire-mode" data-fire-mode="${m.id}" aria-pressed="${m.id === estado.modoFuego}" ${m.legal ? "" : "disabled"}>${m.label} · ${m.municion} ${m.municion === 1 ? "bala" : "balas"}${m.bonusExitos ? ` · +${m.bonusExitos}` : ""}</button>`).join("")}</div>` : ""}${punterias.length ? `<div class="tui-fire-modes">${punterias.map(m => `<button type="button" class="tui-fire-mode" data-aim-mode="${m.id}" aria-pressed="${m.id === estado.modoPunteria}" ${m.legal ? "" : "disabled"} title="${motivoLegible(m.reasons)}">${m.label}${m.bonusDanio ? ` · +${m.bonusDanio} daño base` : ""}</button>`).join("")}</div>` : ""}${estado.modoPunteria !== "normal" ? `<label>Localización <select class="tui-aim-location">${(a.localizaciones ?? []).map(l => `<option ${l === estado.localizacion ? "selected" : ""}>${l}</option>`).join("")}</select></label>` : ""}</div>
       <div class="tui-targets" aria-label="Objetivos posibles">${objetivos.map(o => {
         const lectura = probabilidadObjetivo(o, estado.modoFuego);
         const cobertura = etiquetaCobertura(o.cover, o.canAttack);
@@ -428,8 +434,10 @@ export function montarInterfazResponsive(rootEl, scene) {
       </div>`;
     flow.querySelectorAll("[data-target-id]").forEach(btn => btn.addEventListener("click", () => scene.seleccionarObjetivo(btn.dataset.targetId)));
     flow.querySelectorAll("[data-fire-mode]").forEach(btn => btn.addEventListener("click", () => { estado.modoFuego = btn.dataset.fireMode; renderFlow(); }));
+    flow.querySelectorAll("[data-aim-mode]").forEach(btn => btn.addEventListener("click", () => { estado.modoPunteria = btn.dataset.aimMode; renderFlow(); }));
+    flow.querySelector(".tui-aim-location")?.addEventListener("change", event => { estado.localizacion = event.target.value; });
     flow.querySelector(".tui-flow-confirmar").addEventListener("click", () => {
-      if (a.id === "disparar") scene._accionAtacar(ultimoSnapshot.targetActorId, { cc: false, modoFuego: estado.modoFuego });
+      if (a.id === "disparar") scene._accionAtacar(ultimoSnapshot.targetActorId, { cc: false, modoFuego: estado.modoFuego, apuntando: estado.modoPunteria !== "normal", tiroCertero: estado.modoPunteria === "tiroCertero", localizacionElegida: estado.localizacion });
       else if (a.id === "cc") scene._accionAtacar(ultimoSnapshot.targetActorId, { cc: true });
       cerrarFlow();
     });

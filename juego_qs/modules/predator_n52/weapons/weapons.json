@@ -7,10 +7,10 @@
   },
   "_tamanoArma": "DIGITAL_ADAPTATION (Fase 4, 2026-08-20): CAP03/QS no nombran una clase de tamaño pequeña/mediana/grande por modelo de arma de fuego -- ese tri-nivel solo existe para el coste de recarga/preparar (AUTHOR_CLARIFICATION, docs/COMBAT_CANON_MATRIX.md). 'tamano' aquí es una asignación razonable por tipo de arma real, no un dato extraído del manual. 'fuerzaMinima' en armas CC SÍ es literal: aplica la tabla ya publicada de CAP03:913-919 (Fuerza y arma) según el daño base publicado de cada arma (danio 4 = clase 'Corta', FUE mínima 40) -- no es una regla nueva, es la tabla existente aplicada a un arma con nombre propio.",
   "armas": {
-    "subfusil": { "nombre": "Subfusil", "danio": 5, "tipo": "distancia", "cadenciaMax": "fuegoSostenido", "penetracion": 0, "habilidad": "Distancia Media", "tamano": "mediana", "magazineSize": 30, "ammoReserve": 60 },
-    "pistola": { "nombre": "Pistola", "danio": 3, "tipo": "distancia", "cadenciaMax": "tiroATiro", "penetracion": 0, "habilidad": "Distancia Corta", "tamano": "pequena", "magazineSize": 12, "ammoReserve": 24 },
-    "pistolaPequena": { "nombre": "Pistola pequeña", "danio": 3, "tipo": "distancia", "cadenciaMax": "tiroATiro", "penetracion": 0, "habilidad": "Distancia Corta", "tamano": "pequena", "magazineSize": 12, "ammoReserve": 24 },
-    "pistolaAturdidora": { "nombre": "Pistola aturdidora", "danio": 10, "danioNoLetal": true, "tipo": "distancia", "cadenciaMax": "tiroATiro", "penetracion": 0, "habilidad": "Distancia Media", "alcanceMetros": 25, "tamano": "pequena" },
+    "subfusil": { "nombre": "Subfusil", "danio": 5, "tipo": "distancia", "cadenciaMax": "fuegoSostenido", "penetracion": 0, "habilidad": "Distancia Media", "tamano": "mediana", "sistemaPunteria": true, "magazineSize": 30, "ammoReserve": 60 },
+    "pistola": { "nombre": "Pistola", "danio": 3, "tipo": "distancia", "cadenciaMax": "tiroATiro", "penetracion": 0, "habilidad": "Distancia Corta", "tamano": "pequena", "sistemaPunteria": true, "magazineSize": 12, "ammoReserve": 24 },
+    "pistolaPequena": { "nombre": "Pistola pequeña", "danio": 3, "tipo": "distancia", "cadenciaMax": "tiroATiro", "penetracion": 0, "habilidad": "Distancia Corta", "tamano": "pequena", "sistemaPunteria": true, "magazineSize": 12, "ammoReserve": 24 },
+    "pistolaAturdidora": { "nombre": "Pistola aturdidora", "danio": 10, "danioNoLetal": true, "tipo": "distancia", "cadenciaMax": "tiroATiro", "penetracion": 0, "habilidad": "Distancia Media", "alcanceMetros": 25, "tamano": "pequena", "sistemaPunteria": true },
     "machete": { "nombre": "Machete", "danio": 4, "tipo": "cc", "habilidad": "Arma CC Corta", "tamano": "pequena", "fuerzaMinima": 40 },
     "cuchilloBota": { "nombre": "Cuchillo de bota", "danio": 4, "tipo": "cc", "habilidad": "Arma CC Corta", "tamano": "pequena", "fuerzaMinima": 40 },
     "predatorN52": {

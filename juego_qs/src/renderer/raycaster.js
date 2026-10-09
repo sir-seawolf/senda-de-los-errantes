@@ -314,7 +314,7 @@ export class Raycaster {
         alturaSprite = (altoInterno / s.dist) * worldHeight;
         const alturaParedLlena = altoInterno / s.dist;
         const sueloAparente = altoInterno / 2 + alturaParedLlena / 2;
-        yTop = sueloAparente - alturaSprite;
+        yTop = sueloAparente - alturaSprite + (s.screenOffsetY ?? 0);
       } else {
         const escala = s.escala ?? 1;
         alturaSprite = Math.min(altoInterno * 1.6, (altoInterno / s.dist) * escala);
@@ -329,7 +329,7 @@ export class Raycaster {
       const colFin = Math.min(anchoInterno, Math.ceil(xIzq + anchoSprite));
       if (colFin <= colIni) continue;
 
-      const sombra = Math.max(0.25, 1 - s.dist / 14);
+      const sombra = s.ignoreDistanceShade ? 1 : Math.max(0.25, 1 - s.dist / 14);
       ctx.save();
       ctx.filter = sombra < 1 ? `brightness(${sombra})` : "none";
       // Opacidad propia del sprite (además del oscurecimiento por

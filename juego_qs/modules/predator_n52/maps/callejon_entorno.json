@@ -21,13 +21,16 @@
     "3": { "id": "refugio", "final": "refugio" },
     "4": { "id": "vehiculo", "requiresRoll": { "skill": "Tecnológica", "difficulty": -10, "difficultyLabel": "Difícil", "label": "Puentear el vehículo", "executors": "party", "allowsHelp": true }, "onSuccessFinal": "vehiculo", "onFailureTransition": "combate_inicial" }
   },
-  "start": { "x": 1.5, "y": 1.5, "angle": 0 },
+  "start": { "x": 4.5, "y": 2.5, "angle": 1.5708 },
   "pursuer": { "x": 8.5, "y": 1.5, "speed": 0.028, "catchDistance": 0.7 },
   "player": { "speed": 0.045, "turnSpeed": 0.035 },
   "presentation": {
     "camera": "thirdPerson",
     "internalResolution": { "width": 640, "height": 360 },
     "playerAvatar": "raycast/actors/runner_back_v1.png",
+    "playerWorldHeight": 0.62,
+    "cameraDistance": 1.05,
+    "cameraMinDistance": 0.55,
     "objectiveLabel": "REFUGIO / VEHÍCULO"
   },
   "availableParty": ["player", "bishop", "salim"],

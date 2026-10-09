@@ -24,6 +24,11 @@ function clonarActorRuntime(actorDef) {
     efectoEvasivo: null,
     exitosDefensaPendiente: 0,
     esquivaTotalActiva: false,
+    armaEstado: {
+      primaria: { jammed: false, broken: false },
+      secundaria: { jammed: false, broken: false },
+      cc: { jammed: false, broken: false }
+    },
     _posicionado: false
   };
 }
@@ -58,6 +63,7 @@ export function crearTacticalSession(definicion) {
     controlMode: null,
     currentActorId: null,
     targetActorId: null,
+    progresion: [],
 
     configDe(actorId) { return [...this.party, ...this.enemies].find(a => a.id === actorId); },
     esParty(actorId) { return this.party.some(p => p.id === actorId); },
@@ -169,6 +175,12 @@ export function deserializeTacticalSession(datos) {
   });
   session.party = structuredClone(datos.party);
   session.enemies = structuredClone(datos.enemies);
+  for (const actor of [...session.party, ...session.enemies]) {
+    actor.armaEstado ||= {};
+    actor.armaEstado.primaria ||= { jammed: false, broken: false };
+    actor.armaEstado.secundaria ||= { jammed: false, broken: false };
+    actor.armaEstado.cc ||= { jammed: false, broken: false };
+  }
   session.positions = structuredClone(datos.positions);
   session.activations = new Map(Object.entries(datos.activations));
   session.round = datos.round;
@@ -177,5 +189,6 @@ export function deserializeTacticalSession(datos) {
   session.controlMode = datos.controlMode;
   session.currentActorId = datos.currentActorId;
   session.targetActorId = datos.targetActorId;
+  session.progresion = structuredClone(datos.progresion ?? []);
   return session;
 }

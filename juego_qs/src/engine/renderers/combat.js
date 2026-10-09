@@ -8,7 +8,8 @@
 import {
   state, obtenerMiembro, esJugador, miembrosDisponibles, aplicarDanio,
   nivelHeridaDe, gastarPuntoEpico, registrarDecision, cambiarEscena, establecerDisponibilidad,
-  consumirMunicion, recargarArma, establecerCobertura, tieneFlag
+  consumirMunicion, recargarArma, establecerCobertura, tieneFlag,
+  obtenerRuntimeEscena, guardarRuntimeEscena, limpiarRuntimeEscena
 } from "../../gameState.js";
 import { ordenDeActuacion, modificadorCadencia, cargarCadencia, modificadorMovimientoEvasivo } from "../../combat/combat.js";
 import {
@@ -16,13 +17,14 @@ import {
   applyResourceCost, MOVIMIENTO_BASE_METROS,
   costeAccionesPorTamano, avanzarProgreso, effectiveBaseDamage,
   isFlanking, FLANQUEO_BONUS, penalizadorMultiplesAdversarios, limitarModificadorSituacional,
-  aplicarSorpresaSiDisponible
+  aplicarSorpresaSiDisponible, estadoArmaInicial, resolverConsecuenciaPifiaAtaque
 } from "../../combat/rulesEngine.js";
 import { valorCobertura, etiquetaCoberturaVisible, NIVELES_COBERTURA } from "../../rules/cover.js";
 import { mostrarTirada } from "../../ui/rollDisplay.js";
 import { cargarEscena, aplicarConsecuencias } from "../sceneEngine.js";
 import { rutaDeManifiesto, rutaAsset } from "../moduleLoader.js";
 import { config } from "../../config.js";
+import { crearSnapshotCombate, restaurarSnapshotCombate } from "../../combat/combatRuntime.js";
 
 let enemiesCache = null;
 async function cargarEnemigos() {
@@ -116,7 +118,8 @@ export function construirEnemigos(escena, catalogo, numPresentes) {
       // y ni siquiera hace falta: los enemigos no persisten entre partidas).
       municion: copia.arma?.magazineSize !== undefined
         ? { cargador: copia.arma.magazineSize, reserva: copia.arma.ammoReserve ?? 0 }
-        : null
+        : null,
+      armaEstado: estadoArmaInicial()
     };
   });
 }
@@ -158,10 +161,12 @@ export async function montarCombate(container, escenaId) {
   party.forEach(m => {
     m.armaActiva = m.base.arma ? "distancia" : "cc";
     m.recarga = null;
+    m.armaEstado = { distancia: estadoArmaInicial(), cc: estadoArmaInicial() };
     m.sorpresaDisponible = escena.sorpresa?.lado === "party";
   });
   enemigos.forEach(e => {
     e.recarga = null;
+    e.armaEstado ||= estadoArmaInicial();
     e.sorpresaDisponible = escena.sorpresa?.lado === "enemigos";
   });
 
@@ -194,6 +199,13 @@ export async function montarCombate(container, escenaId) {
     contextoCC: { atacantesCC: {}, facingTargetId: {} },
     efectosDefensivos: {}
   };
+  const combateRestaurado = restaurarSnapshotCombate(
+    obtenerRuntimeEscena(escenaId, "combat"), combateState, enemigos, party
+  );
+
+  function persistirLimiteTurno() {
+    guardarRuntimeEscena(escenaId, "combat", crearSnapshotCombate(combateState, enemigos, party));
+  }
 
   // CORRECCIÓN (encargo de auditoría de brechas, 2026-08-22): sin fondo
   // declarado -- caso real ahora que existen combates de tipo "combat"
@@ -267,7 +279,12 @@ export async function montarCombate(container, escenaId) {
     tacticoEl.innerHTML = filas;
   }
 
-  log(escena.introText);
+  if (combateRestaurado) {
+    logEl.innerHTML = combateState.log.slice(-6).map(m => `<div>${m}</div>`).join("");
+    logEl.scrollTop = logEl.scrollHeight;
+  } else {
+    log(escena.introText);
+  }
 
   // Cada llamada representa un asalto (round) nuevo -- la primera, al
   // montar el combate, ya cuenta como el asalto 1. No se rediseña la
@@ -287,7 +304,7 @@ export async function montarCombate(container, escenaId) {
     ];
     combateState.orden = ordenDeActuacion(combatientes);
   }
-  generarOrden();
+  if (!combateRestaurado) generarOrden();
 
   function enemigosVivos() { return enemigos.filter(e => e.pv > 0); }
   function partyVivo() { return party.filter(m => m.vidaActual.sano + m.vidaActual.herido + m.vidaActual.tullido > 0); }
@@ -355,12 +372,16 @@ export async function montarCombate(container, escenaId) {
     if (enemigosVivos().length === 0) {
       accionesEl.innerHTML = "";
       turnoEl.textContent = "Victoria";
+      limpiarRuntimeEscena(escenaId, "combat");
       aplicarConsecuencias(escena.onVictory, party[0].baseId, { onTexto: () => {} });
       return;
     }
     if (partyVivo().length === 0) return; // gestionado en el momento de la muerte
 
     if (combateState.orden.length === 0) generarOrden();
+    // Punto estable: la acción anterior ya terminó y la siguiente aún no se
+    // ha asignado. Recargar aquí nunca repite daño, gasto ni una tirada.
+    persistirLimiteTurno();
     const evento = combateState.orden.shift();
     renderOrden();
 
@@ -430,6 +451,21 @@ export async function montarCombate(container, escenaId) {
         onElegido(vivos.find(e => e.id === btn.dataset.id));
       });
     });
+  }
+
+  const LOCALIZACIONES_APUNTAR = ["Cabeza", "Ojos", "Pecho", "Oídos", "Lengua/mandíbula", "Espalda", "Brazo derecho", "Brazo izquierdo", "Pierna derecha", "Pierna izquierda"];
+
+  function elegirLocalizacion(onElegida) {
+    const overlay = document.createElement("div");
+    overlay.className = "roll-overlay";
+    overlay.innerHTML = `<div class="roll-card"><div class="roll-header">Elegir localización</div><div class="delegar-lista">
+      ${LOCALIZACIONES_APUNTAR.map(localizacion => `<button class="delegar-opcion" data-localizacion="${localizacion}"><span>${localizacion}</span></button>`).join("")}
+    </div></div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelectorAll(".delegar-opcion").forEach(btn => btn.addEventListener("click", () => {
+      overlay.remove();
+      onElegida(btn.dataset.localizacion);
+    }));
   }
 
   // Cobertura variable (docs/DESIGN.md, "próxima iteración" #2): la escena
@@ -546,7 +582,10 @@ export async function montarCombate(container, escenaId) {
     const tieneArmaCC = !!base.armaCC && base.armaCC.danio > 0;
     const puedeCambiarArma = tieneArmaDistancia && tieneArmaCC;
     const armaActivaEsDistancia = miembro.armaActiva === "distancia";
+    const armaDistanciaEstado = miembro.armaEstado?.distancia ?? estadoArmaInicial();
     const menorDisponible = activation ? activation.minorActionAvailable : true;
+    const puedeApuntar = base.arma?.sistemaPunteria === true && principalDisponible && (activation?.movementSpent ?? 0) === 0;
+    const puedeTiroCertero = puedeApuntar && armaInfo.nombre === "Distancia Media" && (miembro.habilidades["Distancia Media"] ?? 0) >= 75;
 
     const acciones = [
       // "principal" es la primera acción ofensiva disponible (disparar si
@@ -556,8 +595,11 @@ export async function montarCombate(container, escenaId) {
       // por si la acción principal de la actuación ya se gastó (Fase 3), y
       // por armaActiva (Fase 4: no se puede disparar con el arma CC en
       // mano, ni golpear con el arma a distancia en mano).
-      { id: "disparar", etiqueta: "Disparo", tag: "[1]", visible: tieneArmaDistancia && armaActivaEsDistancia && principalDisponible, disabled: cargador < COSTO_MUNICION.disparar, rol: "principal" },
-      { id: "rafaga", etiqueta: "Ráfaga", tag: "[3]", visible: tieneArmaDistancia && armaActivaEsDistancia && principalDisponible && base.arma?.cadenciaMax && base.arma.cadenciaMax !== "Tiro a tiro", disabled: cargador < COSTO_MUNICION.rafaga, rol: "secundaria" },
+      { id: "disparar", etiqueta: "Disparo", tag: "[1]", visible: tieneArmaDistancia && armaActivaEsDistancia && principalDisponible, disabled: cargador < COSTO_MUNICION.disparar || armaDistanciaEstado.jammed || armaDistanciaEstado.broken, rol: "principal" },
+      { id: "rafaga", etiqueta: "Ráfaga", tag: "[3]", visible: tieneArmaDistancia && armaActivaEsDistancia && principalDisponible && base.arma?.cadenciaMax && base.arma.cadenciaMax !== "Tiro a tiro", disabled: cargador < COSTO_MUNICION.rafaga || armaDistanciaEstado.jammed || armaDistanciaEstado.broken, rol: "secundaria" },
+      { id: "apuntar", etiqueta: "Apuntar (+1 daño base)", visible: tieneArmaDistancia && armaActivaEsDistancia && puedeApuntar, disabled: cargador < 1 || armaDistanciaEstado.jammed || armaDistanciaEstado.broken, rol: "secundaria" },
+      { id: "tiro_certero", etiqueta: "Tiro certero (+2 daño base)", visible: tieneArmaDistancia && armaActivaEsDistancia && puedeTiroCertero, disabled: cargador < 1 || armaDistanciaEstado.jammed || armaDistanciaEstado.broken, rol: "secundaria" },
+      { id: "desencasquillar", etiqueta: "Desencasquillar", visible: armaActivaEsDistancia && armaDistanciaEstado.jammed && !armaDistanciaEstado.broken && principalDisponible, rol: "principal" },
       { id: "recargar", etiqueta: reglaMuestraRecarga(miembro), visible: tieneArmaDistancia && armaActivaEsDistancia && (cargador < magSize || miembro.recarga), disabled: reserva <= 0 && !miembro.recarga, rol: "secundaria" },
       { id: "cc", etiqueta: "Cuerpo a cuerpo", visible: tieneArmaCC && (!tieneArmaDistancia || !armaActivaEsDistancia) && principalDisponible, rol: tieneArmaDistancia ? "secundaria" : "principal" },
       { id: "cambiar_arma", etiqueta: armaActivaEsDistancia ? `Cambiar a ${base.armaCC.nombre}` : `Cambiar a ${base.arma.nombre}`, visible: puedeCambiarArma && menorDisponible, rol: "secundaria" },
@@ -574,10 +616,10 @@ export async function montarCombate(container, escenaId) {
       const btn = document.createElement("button");
       btn.className = `btn-accion btn-accion-${a.rol}`;
       btn.disabled = !!a.disabled;
-      if (a.id === "disparar" || a.id === "rafaga") {
+      if (["disparar", "rafaga", "apuntar", "tiro_certero"].includes(a.id)) {
         const prob = Math.min(100, armaInfo.valor);
-        btn.innerHTML = `${a.etiqueta} <span class="combate-tag">${a.tag}</span> <span class="combate-prob">(${prob}%${a.id === "rafaga" ? " +cadencia" : ""})</span>`;
-        if (a.disabled) btn.title = "Sin munición suficiente en el cargador";
+        btn.innerHTML = `${a.etiqueta}${a.tag ? ` <span class="combate-tag">${a.tag}</span>` : ""} <span class="combate-prob">(${prob}%${a.id === "rafaga" ? " +cadencia" : ""})</span>`;
+        if (a.disabled) btn.title = armaDistanciaEstado.broken ? "Arma inutilizada" : armaDistanciaEstado.jammed ? "Arma encasquillada" : "Sin munición suficiente en el cargador";
       } else if (a.id === "recargar") {
         btn.textContent = a.etiqueta;
         if (a.disabled) btn.title = "Sin munición de reserva";
@@ -614,6 +656,7 @@ export async function montarCombate(container, escenaId) {
     const tieneArmaCC = !!base.armaCC && base.armaCC.danio > 0;
     const puedeCambiarArma = !!(base.arma && miembro.municion) && tieneArmaCC;
     const armaActivaEsDistancia = miembro.armaActiva === "distancia";
+    const armaDistanciaEstado = miembro.armaEstado?.distancia ?? estadoArmaInicial();
 
     // Menú reducido (punto 36 del encargo: "adaptar únicamente lo
     // necesario", sin card soup) -- un compañero controlado a mano recibe
@@ -621,7 +664,8 @@ export async function montarCombate(container, escenaId) {
     // frecuentes), pero no el menú completo de defensa activa CC que sí
     // tiene el jugador; en modo Automático ninguna de estas dos se usa.
     const acciones = [
-      { id: "disparar", etiqueta: "Disparar", visible: !!(base.arma && miembro.municion) && armaActivaEsDistancia && principalDisponible, disabled: cargador < COSTO_MUNICION.disparar },
+      { id: "disparar", etiqueta: "Disparar", visible: !!(base.arma && miembro.municion) && armaActivaEsDistancia && principalDisponible, disabled: cargador < COSTO_MUNICION.disparar || armaDistanciaEstado.jammed || armaDistanciaEstado.broken },
+      { id: "desencasquillar", etiqueta: "Desencasquillar", visible: armaActivaEsDistancia && armaDistanciaEstado.jammed && !armaDistanciaEstado.broken && principalDisponible },
       { id: "cc", etiqueta: "Cuerpo a cuerpo", visible: tieneArmaCC && !armaActivaEsDistancia && principalDisponible },
       { id: "cambiar_arma", etiqueta: armaActivaEsDistancia ? `Cambiar a ${base.armaCC?.nombre}` : `Cambiar a ${base.arma?.nombre}`, visible: puedeCambiarArma && menorDisponible },
       { id: "recargar", etiqueta: reglaMuestraRecarga(miembro), visible: !!(base.arma && miembro.municion) && armaActivaEsDistancia && (cargador < magSize || miembro.recarga), disabled: (miembro.municion?.reserva ?? 0) <= 0 && !miembro.recarga },
@@ -659,6 +703,14 @@ export async function montarCombate(container, escenaId) {
     const base = miembro.base;
     const cargador = miembro.municion?.cargador ?? 0;
     const magSize = base.arma?.magazineSize ?? cargador;
+
+    if (miembro.armaEstado?.distancia?.jammed && !miembro.armaEstado.distancia.broken) {
+      const { activation } = applyResourceCost(combateState.activation, { type: "CLEAR_JAM" });
+      combateState.activation = activation;
+      miembro.armaEstado.distancia.jammed = false;
+      log(`${base.nombre} (automático) desencasquilla su arma.`);
+      return siguienteTurno();
+    }
 
     if (miembro.municion && cargador < COSTO_MUNICION.disparar && miembro.municion.reserva > 0) {
       // Fase 4A: mismo progreso 1/2/3 que el modo manual -- ver
@@ -708,6 +760,16 @@ export async function montarCombate(container, escenaId) {
   // interacciones de la persecución (ver docs/QS_RULE_MAP.md, fila "Ayudar").
   function ejecutarAccionJugador(miembro, id, armaInfo) {
     const base = miembro.base;
+
+    if (id === "desencasquillar") {
+      const estado = miembro.armaEstado?.distancia;
+      if (!estado?.jammed || estado.broken) return continuarOFinalizarActuacion(miembro);
+      const { activation: nuevaActivation } = applyResourceCost(combateState.activation, { type: "CLEAR_JAM" });
+      combateState.activation = nuevaActivation;
+      estado.jammed = false;
+      log(`${base.nombre} desencasquilla su arma.`);
+      return continuarOFinalizarActuacion(miembro);
+    }
 
     if (id === "cubrirse") {
       return elegirCobertura(opcion => {
@@ -765,6 +827,11 @@ export async function montarCombate(container, escenaId) {
     if (id === "movimiento_evasivo") return declararMovimientoEvasivo(miembro);
     if (id === "huir") return intentarHuir(miembro);
 
+    if (id === "apuntar" || id === "tiro_certero") {
+      return elegirObjetivo(objetivo => elegirLocalizacion(localizacionElegida => dispararA(miembro, "disparar", armaInfo, objetivo, {
+        apuntando: true, tiroCertero: id === "tiro_certero", localizacionElegida
+      })));
+    }
     elegirObjetivo(objetivo => dispararA(miembro, id, armaInfo, objetivo));
   }
 
@@ -865,6 +932,14 @@ export async function montarCombate(container, escenaId) {
     if (!objetivo) return siguienteTurno();
 
     let habilidadBase, skillId, danioBase, cadenciaBonus = 0, etiqueta, dificultadSituacional = 0;
+    const claveArmaEstado = id === "cc" ? "cc" : "distancia";
+    const armaEstado = miembro.armaEstado?.[claveArmaEstado] ?? estadoArmaInicial();
+    miembro.armaEstado ||= {};
+    miembro.armaEstado[claveArmaEstado] = armaEstado;
+    if (armaEstado.broken || (id !== "cc" && armaEstado.jammed)) {
+      log(`${base.nombre} no puede usar ${id === "cc" ? "su arma cuerpo a cuerpo" : "su arma a distancia"}: ${armaEstado.broken ? "está inutilizada" : "está encasquillada"}.`);
+      return opts.automatico ? siguienteTurno() : continuarOFinalizarActuacion(miembro);
+    }
     if (id === "cc") {
       skillId = "Arma CC Corta";
       habilidadBase = miembro.habilidades[skillId] ?? miembro.habilidades["Sin Armas"];
@@ -903,6 +978,7 @@ export async function montarCombate(container, escenaId) {
       habilidadBase = miembro.habilidades[skillId] ?? armaInfo.valor;
       danioBase = base.arma.danio;
       etiqueta = `${base.arma.nombre} — ${armaInfo.nombre}`;
+      if (opts.apuntando) etiqueta += ` (apunta a ${opts.localizacionElegida}${opts.tiroCertero ? ", tiro certero" : ""})`;
       if (id === "rafaga") {
         cadenciaBonus = modificadorCadencia("rafaga", cadenciaData);
         etiqueta += " (Ráfaga)";
@@ -934,7 +1010,7 @@ export async function montarCombate(container, escenaId) {
         // Sorpresa se consume tras aplicarse UNA vez, independientemente del
         // resultado (AUTHOR_RULE_CURRENT, COMBAT_CANON_MATRIX.md punto 6).
         miembro.sorpresaDisponible = false;
-        aplicarResultadoAtaqueJugador(miembro, objetivo, tiradaResultado, danioBase, cadenciaBonus, base.nombre, opts.automatico, id === "cc");
+        aplicarResultadoAtaqueJugador(miembro, objetivo, tiradaResultado, danioBase, cadenciaBonus, base.nombre, opts.automatico, id === "cc", opts);
       }
     });
   }
@@ -954,7 +1030,13 @@ export async function montarCombate(container, escenaId) {
   // encargo): sin IA de movimiento, termina la actuación de inmediato en
   // vez de ofrecer mover/finalizar. Un jugador manual, si le queda
   // movimiento, sigue teniendo el control (continuarOFinalizarActuacion).
-  function aplicarResultadoAtaqueJugador(actorRuntime, objetivo, tirada, danioBase, cadenciaBonus, nombreAtacante, automatico, esCC) {
+  function aplicarResultadoAtaqueJugador(actorRuntime, objetivo, tirada, danioBase, cadenciaBonus, nombreAtacante, automatico, esCC, opcionesAtaque = {}) {
+    const intentAtaque = {
+      type: cadenciaBonus > 0 ? "BURST" : "ATTACK", tiradaYaResuelta: tirada,
+      penetracion: 0, blindajeObjetivo: objetivo.blindaje, coberturaObjetivo: objetivo.cobertura || 0,
+      cadenciaBonus, danioBase, apuntando: opcionesAtaque.apuntando === true,
+      tiroCertero: opcionesAtaque.tiroCertero === true, localizacionElegida: opcionesAtaque.localizacionElegida
+    };
     // Fase 4A: si el objetivo (un enemigo) declaró defensa activa CC, se
     // aplica aquí -- Esquiva total cancela el daño por completo, defensa
     // dividida resta sus éxitos ANTES del blindaje (resolverImpacto,
@@ -965,7 +1047,7 @@ export async function montarCombate(container, escenaId) {
     const efectoObjetivo = esCC ? combateState.efectosDefensivos[objetivo.id ?? objetivo.baseId] : null;
     if (esCC && efectoObjetivo?.tipo === "DODGE_TOTAL" && efectoObjetivo.cancelaDanioCC) {
       log(`${objetivo.nombre} esquiva por completo el ataque de ${nombreAtacante}.`);
-      const { activation: nuevaActivation } = applyResourceCost(combateState.activation, { type: cadenciaBonus > 0 ? "BURST" : "ATTACK" });
+      const { activation: nuevaActivation } = applyResourceCost(combateState.activation, intentAtaque);
       combateState.activation = nuevaActivation;
       return automatico ? siguienteTurno() : continuarOFinalizarActuacion(actorRuntime);
     }
@@ -974,10 +1056,20 @@ export async function montarCombate(container, escenaId) {
     const { result } = resolveIntent(
       { id: actorRuntime.baseId },
       { id: objetivo.id },
-      { type: cadenciaBonus > 0 ? "BURST" : "ATTACK", tiradaYaResuelta: tirada, penetracion: 0, blindajeObjetivo: objetivo.blindaje, coberturaObjetivo: objetivo.cobertura || 0, cadenciaBonus, danioBase, exitosDefensa }
+      { ...intentAtaque, exitosDefensa }
     );
-    const { activation: nuevaActivation } = applyResourceCost(combateState.activation, { type: cadenciaBonus > 0 ? "BURST" : "ATTACK" });
+    const { activation: nuevaActivation } = applyResourceCost(combateState.activation, intentAtaque);
     combateState.activation = nuevaActivation;
+
+    if (tirada.esPifia) {
+      const clave = esCC ? "cc" : "distancia";
+      const resuelta = resolverConsecuenciaPifiaAtaque({
+        tirada: tirada.tirada, cc: esCC, estadoArma: actorRuntime.armaEstado[clave],
+        materialArma: esCC ? actorRuntime.base.armaCC?.material : actorRuntime.base.arma?.material
+      });
+      actorRuntime.armaEstado[clave] = resuelta.estadoArma;
+      log(`¡PIFIA! ${nombreAtacante}: ${resuelta.consecuencia}.`);
+    }
 
     function continuar() {
       if (automatico) return siguienteTurno();
@@ -1011,6 +1103,7 @@ export async function montarCombate(container, escenaId) {
       escenaId,
       onResuelto: (resultado) => {
         if (resultado.exito) {
+          limpiarRuntimeEscena(escenaId, "combat");
           aplicarConsecuencias(escena.onFlee, miembro.baseId, {
             onTexto: () => log(`${miembro.base.nombre} rompe el contacto y corre calle abajo.`)
           });
@@ -1026,6 +1119,18 @@ export async function montarCombate(container, escenaId) {
     const objetivos = partyVivo();
     if (objetivos.length === 0) return;
     const objetivo = objetivos[Math.floor(Math.random() * objetivos.length)];
+    const esCC = enemigo.arma?.tipo === "cc";
+
+    if (enemigo.armaEstado?.broken) {
+      log(`${enemigo.nombre} no puede usar su arma: está inutilizada, y pierde la acción.`);
+      return siguienteTurno();
+    }
+    if (!esCC && enemigo.armaEstado?.jammed) {
+      ({ activation: combateState.activation } = applyResourceCost(combateState.activation, { type: "CLEAR_JAM" }));
+      enemigo.armaEstado.jammed = false;
+      log(`${enemigo.nombre} gasta su acción en desencasquillar el arma.`);
+      return siguienteTurno();
+    }
 
     // Munición del enemigo (si su arma la declara): sin cargador suficiente
     // para ráfaga, cae a tiro simple; sin nada de cargador, no dispara ese
@@ -1053,7 +1158,6 @@ export async function montarCombate(container, escenaId) {
     // Verbo genérico según el tipo de arma del enemigo (dato, no lógica
     // específica de ningún módulo) — evita que una criatura cuerpo a cuerpo
     // (arma.tipo:"cc") "dispare" en el registro de combate.
-    const esCC = enemigo.arma?.tipo === "cc";
     const verboAccion = esCC ? "ataca a" : "dispara a";
     const verboImpacto = esCC ? "el golpe" : "el disparo";
 
@@ -1108,6 +1212,15 @@ export async function montarCombate(container, escenaId) {
         exitosDefensa
       }
     );
+
+    if (resultado.esPifia) {
+      const resuelta = resolverConsecuenciaPifiaAtaque({
+        tirada: resultado.tirada, cc: esCC, estadoArma: enemigo.armaEstado,
+        materialArma: enemigo.arma?.material
+      });
+      enemigo.armaEstado = resuelta.estadoArma;
+      log(`¡PIFIA! ${enemigo.nombre}: ${resuelta.consecuencia}.`);
+    }
 
     if (!resultado.exito) {
       log(`${enemigo.nombre} ${verboAccion} ${objetivo.base.nombre} (tirada ${resultado.tiradaTexto} vs ${enemigo.distancia}) y falla.`);

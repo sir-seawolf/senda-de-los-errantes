@@ -877,6 +877,23 @@ export function resolverRoturaArmaCC(materialArma = "estandar") {
   return { rota: true, consecuencia: "ROTURA_ESTRUCTURAL" };
 }
 
+// Traduce la tabla canónica a un cambio de estado serializable. Es pura:
+// los renderers deciden dónde guardar el estado del arma, pero ninguno
+// vuelve a interpretar 97/98/99 por su cuenta.
+export function resolverConsecuenciaPifiaAtaque({ tirada, cc = false, estadoArma = estadoArmaInicial(), materialArma = "estandar" }) {
+  const siguiente = { ...estadoArma };
+  if (![97, 98, 99].includes(tirada)) return { consecuencia: null, estadoArma: siguiente };
+  if (!cc) {
+    const consecuencia = consecuenciaPifiaFuego(tirada);
+    if (tirada === 99) siguiente.broken = true;
+    else siguiente.jammed = true;
+    return { consecuencia, estadoArma: siguiente };
+  }
+  const consecuencia = consecuenciaPifiaCC(tirada);
+  if (tirada === 99) siguiente.broken = resolverRoturaArmaCC(materialArma).rota;
+  return { consecuencia, estadoArma: siguiente };
+}
+
 // CAP03:1152 -- "Si el personaje tiene Armería >= 50, puede intentar
 // repararla (1 acción completa, tirada). Con Armería < 50, inutilizada
 // hasta taller."

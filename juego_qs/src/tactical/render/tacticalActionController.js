@@ -17,10 +17,12 @@ import {
   createActivation, movementRemaining, applyResourceCost,
   validateIntent, resolveIntent, avanzarProgreso, costeAccionesPorTamano, cambiarArma,
   resolverEsquivaTotal, resolverMovimientoEvasivo, penalizadorPorNivel, nivelHeridaDe,
-  COSTO_MUNICION, modificadorCadencia
+  COSTO_MUNICION, modificadorCadencia,
+  resolverConsecuenciaPifiaAtaque, estadoArmaInicial
 } from "../bridge/qsRulesBridge.js";
 import { toQsActor, toQsAttackIntent, armaActivaDe, municionArmaActivaDe } from "../bridge/qsDataAdapter.js";
 import { puntoAlcanzable } from "../spatial/terrainZones.js";
+import { evaluarProgreso } from "../../rules/progression.js";
 
 /**
  * @param {object} opts
@@ -76,6 +78,13 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
   const onRechazo = callbacks.onRechazo ?? (() => {});
   const onEstadoCambiado = callbacks.onEstadoCambiado ?? (() => {});
 
+  function estadoArmaDe(actor, cc = false) {
+    actor.armaEstado ||= {};
+    const clave = cc ? "cc" : (actor.armaActiva ?? "primaria");
+    actor.armaEstado[clave] ||= estadoArmaInicial();
+    return { clave, estado: actor.armaEstado[clave] };
+  }
+
   function moverA(xMetros, yMetros) {
     const actorId = s.currentActorId;
     let activation = s.activations.get(actorId);
@@ -113,7 +122,7 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
     return { ok: true, x: nuevoX, y: nuevoY, distance: distanciaReal, movementCost: costeMovimiento };
   }
 
-  function atacar(targetId, { cc = false, modoFuego = "tiroATiro" } = {}) {
+  function atacar(targetId, { cc = false, modoFuego = "tiroATiro", apuntando = false, tiroCertero = false, localizacionElegida } = {}) {
     const actorId = s.currentActorId;
     const atacanteConfig = s.configDe(actorId), objetivoConfig = s.configDe(targetId);
     if ((!cc && armaActivaDe(atacanteConfig).noDisponible) || (cc && atacanteConfig.armaCC?.noDisponible)) {
@@ -127,6 +136,16 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
     const modoReal = cc ? "tiroATiro" : modoFuego;
     const cadenciaBonus = cc ? 0 : modificadorCadencia(modoReal, cadenciaData);
     const intentBase = toQsAttackIntent(atacanteConfig, objetivoConfig, { cc, modoFuego: modoReal, cadenciaBonus });
+    if (!cc && apuntando) {
+      intentBase.apuntando = true;
+      intentBase.tiroCertero = tiroCertero;
+      intentBase.localizacionElegida = localizacionElegida;
+      intentBase.tieneSistemaPunteria = armaActivaDe(atacanteConfig).sistemaPunteria === true;
+      intentBase.distanciaMediaActor = atacanteConfig.habilidadDisparoId === "Distancia Media" ? atacanteConfig.habilidadDisparo : 0;
+    }
+    const armaRuntime = estadoArmaDe(atacanteConfig, cc);
+    intentBase.armaJammed = armaRuntime.estado.jammed;
+    intentBase.armaBroken = armaRuntime.estado.broken;
     if (cc && objetivoConfig.exitosDefensaPendiente) intentBase.exitosDefensa = objetivoConfig.exitosDefensaPendiente;
 
     const validacion = validateIntent(qsActor, intentBase, activation, spatialContext);
@@ -136,11 +155,37 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
       return { ok: false, reasons: validacion.reasons };
     }
 
-    ({ activation } = applyResourceCost(activation, { type: intentBase.type }));
+    ({ activation } = applyResourceCost(activation, intentBase));
     s.activations.set(actorId, activation);
     if (!cc) municionArmaActivaDe(atacanteConfig).cargador -= COSTO_MUNICION[intentBase.type];
 
     const { result, events } = resolveIntent(qsActor, { id: targetId }, intentBase, { rng }, spatialContext);
+
+    let consecuenciaPifia = null;
+    if (result.esPifia) {
+      const resuelta = resolverConsecuenciaPifiaAtaque({
+        tirada: result.tirada, cc, estadoArma: armaRuntime.estado,
+        materialArma: cc ? atacanteConfig.armaCC?.material : armaActivaDe(atacanteConfig)?.material
+      });
+      atacanteConfig.armaEstado[armaRuntime.clave] = resuelta.estadoArma;
+      consecuenciaPifia = resuelta.consecuencia;
+      events.push({ type: "WEAPON_FUMBLE_APPLIED", actorId, consecuencia: consecuenciaPifia });
+    }
+
+    let progreso = null;
+    if (s.esParty(actorId)) {
+      const skillId = cc ? atacanteConfig.habilidadCCId : atacanteConfig.habilidadDisparoId;
+      const evaluado = skillId ? evaluarProgreso(result) : null;
+      if (evaluado) {
+        const campo = cc ? "habilidadCC" : "habilidadDisparo";
+        const anterior = atacanteConfig[campo];
+        atacanteConfig[campo] += evaluado.incremento;
+        progreso = { actorId, skillId, anterior, nuevo: atacanteConfig[campo], tirada: result.tirada, esCritico: result.esCritico, esPifia: result.esPifia, ...evaluado };
+        s.progresion ||= [];
+        s.progresion.push(progreso);
+        events.push({ type: "SKILL_PROGRESSED", ...progreso });
+      }
+    }
 
     let danioFinal = result.danioFinal, impacto = result.impacto;
     if (cc && objetivoConfig.esquivaTotalActiva) {
@@ -157,7 +202,10 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
       attacker: actorId, target: targetId, rechazado: false,
       tirada: result.tiradaTexto, exito: result.exito, esCritico: result.esCritico, esPifia: result.esPifia,
       impacto, danioFinal, localizacion: result.localizacion, downOcurrido, cobertura: spatialContext?.level ?? null,
-      modoFuego: modoReal, municionConsumida: cc ? 0 : COSTO_MUNICION[intentBase.type]
+      modoFuego: modoReal, municionConsumida: cc ? 0 : COSTO_MUNICION[intentBase.type],
+      apuntando, tiroCertero, localizacionElegida: apuntando ? localizacionElegida : null,
+      consecuenciaPifia,
+      progreso
     };
     log(`ATTACK${cc ? " CC" : ""} (${actorId} -> ${targetId}${spatialContext ? `, cobertura=${spatialContext.level}` : ""}): tirada=${result.tiradaTexto} ${result.exito ? "éxito" : "fallo"}${result.esCritico ? " CRIT" : ""}${result.esPifia ? " PIFIA" : ""} · ${impacto ? `impacto en ${result.localizacion}, daño=${danioFinal}${downOcurrido ? " -- ¡ABAJO!" : ""}` : "sin impacto"}. Eventos: ${events.map(e => e.type).join(", ")}.`);
     onAtaqueResuelto(detalle);
@@ -197,6 +245,21 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
     }
     onEstadoCambiado();
     return { ok: true, ...resultado };
+  }
+
+  function desencasquillar() {
+    const actorId = s.currentActorId;
+    const actor = s.configDe(actorId);
+    const armaRuntime = estadoArmaDe(actor, false);
+    let activation = s.activations.get(actorId);
+    const validacion = validateIntent(toQsActor(actor), { type: "CLEAR_JAM", armaJammed: armaRuntime.estado.jammed }, activation);
+    if (!validacion.valid) return { ok: false, reasons: validacion.reasons };
+    ({ activation } = applyResourceCost(activation, { type: "CLEAR_JAM" }));
+    s.activations.set(actorId, activation);
+    armaRuntime.estado.jammed = false;
+    log(`${actorId}: arma desencasquillada.`);
+    onEstadoCambiado();
+    return { ok: true };
   }
 
   function cambiarArmaActiva() {
@@ -260,7 +323,7 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
     return { ok: true };
   }
 
-  return { moverA, atacar, recargar, cambiarArma: cambiarArmaActiva, evadir, defender, terminarActuacion };
+  return { moverA, atacar, recargar, desencasquillar, cambiarArma: cambiarArmaActiva, evadir, defender, terminarActuacion };
 }
 
 export { createActivation };

@@ -9,7 +9,7 @@
 // diálogo gigante"): sin árboles infinitos. El nodo actual sí se guarda para
 // que recargar la página no reinicie una conversación ni reaplique su efecto.
 import { cargarEscena, ejecutarInteraccion, aplicarConsecuencias, cumpleRequisitos } from "../sceneEngine.js";
-import { obtenerJugador, obtenerProgresoEscena, guardarProgresoEscena, limpiarProgresoEscena } from "../../gameState.js";
+import { obtenerJugador, obtenerProgresoEscena, obtenerRuntimeEscena, guardarRuntimeEscena, limpiarRuntimeEscena } from "../../gameState.js";
 import { rutaAsset } from "../moduleLoader.js";
 
 function nombreDeHablante(speaker) {
@@ -39,7 +39,7 @@ export async function montarDialogo(container, escenaId) {
 
   function renderNodo(nodoId, nodo, { reanudando = false } = {}) {
     if (nodo.consequence && !reanudando) aplicarConsecuencias(nodo.consequence, "player", { onTexto: () => {} });
-    guardarProgresoEscena(escenaId, { nodeId: nodoId });
+    guardarRuntimeEscena(escenaId, "dialogue", { nodeId: nodoId });
     caja.innerHTML = `
       <div class="dialogo-hablante">${nombreDeHablante(nodo.speaker)}</div>
       <div class="dialogo-texto">${nodo.text}</div>
@@ -66,7 +66,7 @@ export async function montarDialogo(container, escenaId) {
           onTexto: (t) => { caja.querySelector(".dialogo-texto").innerHTML += `<br><em>${t}</em>`; },
           onCustom: (consecuencia) => {
             if (consecuencia._next) setTimeout(() => irANodo(consecuencia._next), consecuencia.text ? 900 : 0);
-            else if (consecuencia.transition) limpiarProgresoEscena(escenaId);
+            else if (consecuencia.transition) limpiarRuntimeEscena(escenaId, "dialogue");
           }
         });
       });
@@ -81,7 +81,7 @@ export async function montarDialogo(container, escenaId) {
       btn.addEventListener("click", () => {
         if (c.next) return irANodo(c.next);
         if (c.consequence) {
-          if (c.consequence.transition) limpiarProgresoEscena(escenaId);
+          if (c.consequence.transition) limpiarRuntimeEscena(escenaId, "dialogue");
           aplicarConsecuencias(c.consequence, "player", { onTexto: () => {} });
         }
       });
@@ -89,7 +89,9 @@ export async function montarDialogo(container, escenaId) {
     });
   }
 
-  const guardado = obtenerProgresoEscena(escenaId);
+  // El fallback lee el formato sin sobre de partidas anteriores a este
+  // contrato. La siguiente escritura lo migra automáticamente a v1.
+  const guardado = obtenerRuntimeEscena(escenaId, "dialogue") ?? obtenerProgresoEscena(escenaId);
   const nodeId = guardado?.nodeId && escena.nodes[guardado.nodeId] ? guardado.nodeId : escena.startNode;
   irANodo(nodeId, { reanudando: nodeId !== escena.startNode || guardado?.nodeId === escena.startNode });
 }

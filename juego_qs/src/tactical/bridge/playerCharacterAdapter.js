@@ -19,6 +19,11 @@ function maximoHabilidad(habilidades, nombres, fallback = 0) {
   return valores.length ? Math.max(...valores) : fallback;
 }
 
+function idMaximoHabilidad(habilidades, nombres) {
+  return nombres.filter(nombre => Number.isFinite(habilidades?.[nombre]))
+    .sort((a, b) => habilidades[b] - habilidades[a])[0] ?? null;
+}
+
 function cadenciaTactica(valor) {
   const clave = String(valor ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
   if (clave === "fuegosostenido") return "fuegoSostenido";
@@ -33,7 +38,8 @@ function armaDistanciaDesde(base) {
     danioBase: base.arma.danio ?? 0,
     penetracion: base.arma.penetracion ?? 0,
     tamano: base.arma.tamano ?? "pequena",
-    cadenciaMax: cadenciaTactica(base.arma.cadenciaMax)
+    cadenciaMax: cadenciaTactica(base.arma.cadenciaMax),
+    sistemaPunteria: base.arma.sistemaPunteria === true
   };
 }
 
@@ -65,6 +71,8 @@ function actorDesdeJugador(jugador, plaza) {
     esPJ: true,
     habilidadDisparo: maximoHabilidad(jugador.habilidades, ["Distancia Corta", "Distancia Media", "Distancia Larga"], habilidad),
     habilidadCC: maximoHabilidad(jugador.habilidades, ["Arma CC Corta", "Arma CC Media", "Arma CC Larga", "Sin Armas"], Math.max(agilidad, fuerza)),
+    habilidadDisparoId: idMaximoHabilidad(jugador.habilidades, ["Distancia Corta", "Distancia Media", "Distancia Larga"]),
+    habilidadCCId: idMaximoHabilidad(jugador.habilidades, ["Arma CC Corta", "Arma CC Media", "Arma CC Larga", "Sin Armas"]),
     habilidadEsquivar: maximoHabilidad(jugador.habilidades, ["Esquivar"], agilidad),
     blindaje: base.armadura?.blindaje ?? 0,
     armaPrimaria: arma,

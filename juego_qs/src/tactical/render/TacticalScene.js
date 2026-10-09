@@ -1,5 +1,6 @@
 import Phaser from "../../vendor/phaser/phaser.esm.min.js";
 import { loadTacticalEncounter } from "../core/TacticalEncounterLoader.js";
+import { deserializeTacticalSession } from "../core/TacticalSession.js";
 import { construirTacticalResult } from "../core/result.js";
 import { crearEscala } from "./scale.js";
 import { createSpatialCombatAdapter } from "../spatial/SpatialCoverAdapter.js";
@@ -47,6 +48,8 @@ export class TacticalScene extends Phaser.Scene {
   init(data) {
     this._definitionEntrante = data?.definition;
     this._cadenciaDataEntrante = data?.cadenciaData ?? {};
+    this._sessionSnapshotEntrante = data?.sessionSnapshot ?? null;
+    this._onSessionSnapshot = typeof data?.onSessionSnapshot === "function" ? data.onSessionSnapshot : null;
   }
 
   preload() {
@@ -73,7 +76,19 @@ export class TacticalScene extends Phaser.Scene {
   }
 
   create() {
-    const { definition, session } = loadTacticalEncounter(this._definitionEntrante);
+    const cargado = loadTacticalEncounter(this._definitionEntrante);
+    const { definition } = cargado;
+    let session = cargado.session;
+    if (this._sessionSnapshotEntrante?.encounterId === definition.id) {
+      try {
+        session = deserializeTacticalSession(this._sessionSnapshotEntrante);
+        // "unresolved" representa una pausa técnica, no un desenlace que
+        // deba impedir la reanudación tras volver a cargar la aplicación.
+        if (session.resultado === "unresolved") session.resultado = null;
+      } catch (_error) {
+        session = cargado.session;
+      }
+    }
     this.definition = definition;
     this.session = session;
     this._inicializarSistemaCoordenadas(definition, session);
@@ -90,7 +105,7 @@ export class TacticalScene extends Phaser.Scene {
     this._modoMover = false;
     this._debugUltimoAtaque = null;
     this._pausado = false;
-    this._limiteRondasExtra = 0; // ver reanudarTrasLimiteRondas()
+    this._limiteRondasExtra = Math.max(0, Math.floor(Math.max(0, session.round - 1) / LIMITE_RONDAS) * LIMITE_RONDAS); // ver reanudarTrasLimiteRondas()
 
     this.adapter = createSpatialCombatAdapter({
       actors: [...session.party, ...session.enemies].map(a => ({ id: a.id, ...session.positions[a.id] })),
@@ -151,7 +166,25 @@ export class TacticalScene extends Phaser.Scene {
     // dejar closures colgando entre encuentros sucesivos.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this._destruirEncuentro());
 
-    this._log("Elige un modo de control para empezar el combate.");
+    this._guardarRuntime();
+    if (session.controlMode && session.round > 0) {
+      this._selectorGroup?.destroy();
+      this._log(`Combate restaurado en la ronda ${session.round}.`);
+      const activacionActual = session.currentActorId ? session.activations.get(session.currentActorId) : null;
+      const turnoManualEnCurso = activacionActual
+        && session.esControladoPorJugador(session.currentActorId)
+        && !actuacionAgotada(activacionActual);
+      if (turnoManualEnCurso) {
+        this._actualizarPanelAcciones();
+        this._actualizarHud();
+        this._redibujarOverlay();
+        this._emitirEstadoUI();
+      } else {
+        this._avanzarTurno();
+      }
+    } else {
+      this._log("Elige un modo de control para empezar el combate.");
+    }
   }
 
   // Punto de extensión (Production Integration Phase 6C,
@@ -186,6 +219,7 @@ export class TacticalScene extends Phaser.Scene {
     this.adapter = null;
     this.session = null;
     this.definition = null;
+    this._onSessionSnapshot = null;
   }
 
   // ===== Interfaz DOM responsive (Production Integration Phase 6B,
@@ -469,6 +503,12 @@ export class TacticalScene extends Phaser.Scene {
 
   _procesarActuacionIA(actor) {
     const s = this.session;
+    const claveArma = actor.armaActiva ?? "primaria";
+    const estadoArma = actor.armaEstado?.[claveArma];
+    if (estadoArma?.jammed && !estadoArma.broken) {
+      this._accionDesencasquillar();
+      return;
+    }
     let salvaguarda = 0;
     while (!actuacionAgotada(s.activations.get(actor.id)) && salvaguarda < SALVAGUARDA_DECISIONES_IA) {
       salvaguarda += 1;
@@ -580,20 +620,34 @@ export class TacticalScene extends Phaser.Scene {
 
   _emitirEstadoUI() {
     if (!this.session) return;
+    this._guardarRuntime();
     this.events.emit("tactical-ui-state", construirSnapshotUI(this.session, this.adapter, this.session.currentActorId, { modoMoverActivo: this._modoMover, cadenciaData: this._cadenciaDataEntrante }));
+  }
+
+  _guardarRuntime() {
+    if (!this.session || !this._onSessionSnapshot) return;
+    try {
+      this._onSessionSnapshot(this.session.serialize());
+    } catch (_error) {
+      // El guardado no debe romper una actuación táctica en curso.
+    }
   }
 
   _accionMoverA(xMetros, yMetros) {
     this.controlador.moverA(xMetros, yMetros);
   }
 
-  _accionAtacar(targetId, { cc = false, modoFuego = "tiroATiro" } = {}) {
-    const resultado = this.controlador.atacar(targetId, { cc, modoFuego });
+  _accionAtacar(targetId, { cc = false, modoFuego = "tiroATiro", apuntando = false, tiroCertero = false, localizacionElegida } = {}) {
+    const resultado = this.controlador.atacar(targetId, { cc, modoFuego, apuntando, tiroCertero, localizacionElegida });
     if (resultado.ok && resultado.terminado) this._mostrarResultado();
   }
 
   _accionRecargar() {
     this.controlador.recargar();
+  }
+
+  _accionDesencasquillar() {
+    this.controlador.desencasquillar();
   }
 
   _accionCambiarArma() {
@@ -709,6 +763,7 @@ export class TacticalScene extends Phaser.Scene {
       { id: "disparar", label: "[Disparar]" },
       { id: "cc", label: "[CaC]" },
       { id: "recargar", label: "[Recargar]" },
+      { id: "desencasquillar", label: "[Desencasquillar]" },
       { id: "cambiarArma", label: "[Cambiar arma]" },
       { id: "defender", label: "[Defender]" },
       { id: "esquivar", label: "[Esquivar]" },
@@ -766,6 +821,7 @@ export class TacticalScene extends Phaser.Scene {
       case "disparar": if (s.targetActorId) this._accionAtacar(s.targetActorId, { cc: false }); else this._log("Selecciona un objetivo primero."); break;
       case "cc": if (s.targetActorId) this._accionAtacar(s.targetActorId, { cc: true }); else this._log("Selecciona un objetivo primero."); break;
       case "recargar": this._accionRecargar(); break;
+      case "desencasquillar": this._accionDesencasquillar(); break;
       case "cambiarArma": this._accionCambiarArma(); break;
       case "defender": this._accionDefensa(); break;
       case "esquivar": this._accionEvasion(); break;
