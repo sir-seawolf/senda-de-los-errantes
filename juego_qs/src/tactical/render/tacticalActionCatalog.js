@@ -120,6 +120,17 @@ export function construirCatalogoAcciones({ session, adapter, actorId = session.
     ? { legal: false, reasons: ["NO_MELEE_WEAPON"], objetivosValidos: [], objetivos: [] }
     : evaluarAtaque(session, adapter, actorId, actor, activation, objetivosVivos, true, 0);
   acciones.push({ id: "cc", label: "Cuerpo a cuerpo", familia: FAMILIA.OFENSIVAS, legal: cc.legal, reasons: cc.reasons, objetivosValidos: cc.objetivosValidos, objetivos: cc.objetivos });
+  const repartoMultiple = [Math.ceil((actor.habilidadCC ?? 0) / 2), Math.floor((actor.habilidadCC ?? 0) / 2)];
+  const validacionMultiple = validateIntent(qsActor, {
+    type: "MULTI_ATTACK", habilidadTotal: actor.habilidadCC ?? 0,
+    attacks: repartoMultiple.map(skillAllocation => ({ targetId: cc.objetivosValidos[0], skillAllocation }))
+  }, activation);
+  const multipleLegal = cc.legal && validacionMultiple.valid;
+  acciones.push({
+    id: "ataqueMultipleCC", label: "Ataque múltiple (2 golpes)", familia: FAMILIA.OFENSIVAS,
+    legal: multipleLegal, reasons: cc.legal ? validacionMultiple.reasons : cc.reasons,
+    objetivosValidos: cc.objetivosValidos, objetivos: cc.objetivos, reparto: repartoMultiple
+  });
 
   // Tácticas
   const mover = validateIntent(qsActor, { type: "MOVE" }, activation);

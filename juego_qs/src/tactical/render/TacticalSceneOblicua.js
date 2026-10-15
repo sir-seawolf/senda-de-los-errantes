@@ -390,8 +390,8 @@ export class TacticalSceneOblicua extends TacticalScene {
       const token = claveTextura ? this.add.image(p.x, p.y + 6, claveTextura).setDisplaySize(esEnemigo ? 62 : 72, esEnemigo ? 84 : 102).setOrigin(.5, .91).setDepth(depth) : null;
       if (token) circle.setFillStyle(a.color ?? (esEnemigo ? 0xff6b6b : 0x9fffb0), .16).setDepth(depth - 1);
       const nombreCorto = a.nombre.replace(/ejecutor corporativo\s*/i, "Ejecutor ").toUpperCase();
-      const label = this.add.text(p.x, p.y - 52, nombreCorto, { fontFamily: "Barlow Condensed", fontSize: "10px", color: esEnemigo ? "#ff8e96" : "#a9e9f6", backgroundColor: "#071015dd", padding: { x: 4, y: 2 } }).setOrigin(0.5).setDepth(depth + 1);
-      const vida = this.add.text(p.x, p.y + 16, "", { fontFamily: "Barlow Condensed", fontSize: "9px", color: "#d7e2e5", backgroundColor: "#071015cc", padding: { x: 3, y: 1 } }).setOrigin(0.5).setDepth(depth + 1);
+      const label = this.add.text(p.x, p.y - 52, nombreCorto, { fontFamily: "Barlow Condensed", fontSize: "12px", color: esEnemigo ? "#ff9ca3" : "#b9eef7", backgroundColor: "#071015f2", padding: { x: 5, y: 3 } }).setOrigin(0.5).setDepth(depth + 1);
+      const vida = this.add.text(p.x, p.y + 16, "", { fontFamily: "Barlow Condensed", fontSize: "11px", color: "#edf3f4", backgroundColor: "#071015e8", padding: { x: 4, y: 2 } }).setOrigin(0.5).setDepth(depth + 1);
       circle.on("pointerdown", () => this._onActorClicked(a.id));
       this.actorSprites.set(a.id, { circle, token, label, vida, base, sombra, esEnemigo, estadosTextura });
     }

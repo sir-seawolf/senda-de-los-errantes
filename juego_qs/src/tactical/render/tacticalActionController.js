@@ -18,7 +18,7 @@ import {
   validateIntent, resolveIntent, avanzarProgreso, costeAccionesPorTamano, cambiarArma,
   resolverEsquivaTotal, resolverMovimientoEvasivo, penalizadorPorNivel, nivelHeridaDe,
   COSTO_MUNICION, modificadorCadencia,
-  resolverConsecuenciaPifiaAtaque, estadoArmaInicial
+  resolverConsecuenciaPifiaAtaque, estadoArmaInicial, resolveMultiAttack
 } from "../bridge/qsRulesBridge.js";
 import { toQsActor, toQsAttackIntent, armaActivaDe, municionArmaActivaDe } from "../bridge/qsDataAdapter.js";
 import { puntoAlcanzable } from "../spatial/terrainZones.js";
@@ -214,6 +214,97 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
     return { ok: true, ...detalle, terminado };
   }
 
+  // Ataque múltiple CC canónico (CAP03:1044-1051). La interfaz ofrece
+  // inicialmente dos golpes equilibrados contra el objetivo seleccionado,
+  // pero esta API acepta objetivos y repartos explícitos para que otros
+  // módulos/renderers puedan construir decisiones más ricas sin tocar reglas.
+  function ataqueMultipleCC(targetIds, allocations = null) {
+    const actorId = s.currentActorId;
+    const atacanteConfig = s.configDe(actorId);
+    const objetivos = Array.isArray(targetIds) ? targetIds : [targetIds, targetIds];
+    if (atacanteConfig.armaCC?.noDisponible) {
+      const reasons = ["NO_MELEE_WEAPON"];
+      onRechazo({ attacker: actorId, targets: objetivos, reasons });
+      return { ok: false, reasons };
+    }
+
+    const habilidadTotal = atacanteConfig.habilidadCC ?? 0;
+    const reparto = allocations ?? [Math.ceil(habilidadTotal / 2), Math.floor(habilidadTotal / 2)];
+    const attacks = objetivos.map((targetId, i) => ({ targetId, skillAllocation: reparto[i] }));
+    const intent = { type: "MULTI_ATTACK", habilidadTotal, attacks };
+    let activation = s.activations.get(actorId);
+    const validacion = validateIntent(toQsActor(atacanteConfig), intent, activation);
+    if (!validacion.valid) {
+      onRechazo({ attacker: actorId, targets: objetivos, reasons: validacion.reasons });
+      return { ok: false, reasons: validacion.reasons };
+    }
+
+    const armaRuntime = estadoArmaDe(atacanteConfig, true);
+    if (armaRuntime.estado.broken) {
+      const reasons = ["WEAPON_BROKEN"];
+      onRechazo({ attacker: actorId, targets: objetivos, reasons });
+      return { ok: false, reasons };
+    }
+
+    const parts = objetivos.map((targetId, i) => {
+      const objetivo = s.configDe(targetId);
+      return {
+        targetId,
+        habilidadAsignada: reparto[i],
+        penetracion: 0,
+        blindajeObjetivo: objetivo.blindaje,
+        danioBase: atacanteConfig.armaCC.danioBase,
+        exitosDefensa: objetivo.exitosDefensaPendiente ?? 0
+      };
+    });
+    ({ activation } = applyResourceCost(activation, intent));
+    s.activations.set(actorId, activation);
+    const { results, events } = resolveMultiAttack(toQsActor(atacanteConfig), parts, { rng });
+
+    const detalles = results.map(result => {
+      const objetivo = s.configDe(result.targetId);
+      let impacto = result.impacto;
+      let danioFinal = result.danioFinal;
+      if (objetivo.esquivaTotalActiva) {
+        impacto = false;
+        danioFinal = 0;
+        objetivo.esquivaTotalActiva = false;
+      }
+      if (objetivo.exitosDefensaPendiente) objetivo.exitosDefensaPendiente = 0;
+      const downOcurrido = impacto ? s.aplicarDanioLocal(result.targetId, danioFinal) : false;
+
+      let consecuenciaPifia = null;
+      if (result.esPifia) {
+        const resuelta = resolverConsecuenciaPifiaAtaque({
+          tirada: result.tirada, cc: true, estadoArma: atacanteConfig.armaEstado[armaRuntime.clave],
+          materialArma: atacanteConfig.armaCC?.material
+        });
+        atacanteConfig.armaEstado[armaRuntime.clave] = resuelta.estadoArma;
+        consecuenciaPifia = resuelta.consecuencia;
+      }
+
+      let progreso = null;
+      if (s.esParty(actorId) && atacanteConfig.habilidadCCId) {
+        const evaluado = evaluarProgreso(result);
+        if (evaluado) {
+          const anterior = atacanteConfig.habilidadCC;
+          atacanteConfig.habilidadCC += evaluado.incremento;
+          progreso = { actorId, skillId: atacanteConfig.habilidadCCId, anterior, nuevo: atacanteConfig.habilidadCC, tirada: result.tirada, esCritico: result.esCritico, esPifia: result.esPifia, ...evaluado };
+          s.progresion ||= [];
+          s.progresion.push(progreso);
+        }
+      }
+      const detalle = { attacker: actorId, target: result.targetId, tirada: result.tiradaTexto, exito: result.exito, esCritico: result.esCritico, esPifia: result.esPifia, impacto, danioFinal, localizacion: result.localizacion, downOcurrido, consecuenciaPifia, progreso };
+      onAtaqueResuelto(detalle);
+      return detalle;
+    });
+
+    log(`MULTI_ATTACK CC (${actorId}): ${detalles.map(d => `${d.target} ${d.impacto ? `${d.danioFinal} daño` : "sin impacto"}`).join(" · ")}. Eventos: ${events.map(e => e.type).join(", ")}.`);
+    onEstadoCambiado();
+    const terminado = s.comprobarFinDeCombate();
+    return { ok: true, resultados: detalles, reparto, terminado };
+  }
+
   function recargar() {
     const actorId = s.currentActorId;
     const actor = s.configDe(actorId);
@@ -323,7 +414,7 @@ export function crearControladorAcciones({ session, adapter, rng = Math.random, 
     return { ok: true };
   }
 
-  return { moverA, atacar, recargar, desencasquillar, cambiarArma: cambiarArmaActiva, evadir, defender, terminarActuacion };
+  return { moverA, atacar, ataqueMultipleCC, recargar, desencasquillar, cambiarArma: cambiarArmaActiva, evadir, defender, terminarActuacion };
 }
 
 export { createActivation };

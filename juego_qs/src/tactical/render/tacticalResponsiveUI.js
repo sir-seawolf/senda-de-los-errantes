@@ -63,7 +63,7 @@ const CSS = `
 .tui-summary-portrait { width: 48px; height: 48px; flex: none; background-size: cover; background-position: center 20%; filter: saturate(.72) contrast(1.08); clip-path: polygon(12% 0, 100% 0, 100% 88%, 88% 100%, 0 100%, 0 12%); border: 1px solid var(--color-informacion); }
 .tui-summary-portrait.abajo { filter: grayscale(1) brightness(.55); }
 .tui-summary-nombre { font-weight: bold; letter-spacing: .3px; }
-.tui-summary-estado { font-size: 10px; color: var(--color-informacion); }
+.tui-summary-estado { font-size: 11px; color: var(--color-informacion); }
 .tui-summary-estado.herido { color: var(--color-seleccion); }
 .tui-summary-estado.tullido { color: var(--color-peligro); }
 
@@ -138,7 +138,7 @@ const CSS = `
 .tui-mode-options span { margin-top: 5px; color: var(--color-texto-tenue); font-size: .74rem; line-height: 1.35; }
 @media (max-width: 620px) { .tui-mode-options { grid-template-columns: 1fr; } .tui-mode-options button { min-height: 62px; } .tui-actionbar { grid-template-columns: repeat(3,1fr); } .tui-contextual-btn { grid-column: 1 / -1; min-height: 44px; } }
 .tui-action-btn[disabled] { opacity: 0.4; cursor: not-allowed; color: #999; }
-.tui-action-btn .tui-motivo { font-size: 10px; color: var(--color-peligro); }
+.tui-action-btn .tui-motivo { font-size: 11px; line-height: 1.25; color: var(--color-peligro-texto); }
 
 .tui-flow {
   position: absolute; left: 50%; width: min(760px, calc(100% - 20px)); bottom: 60px; transform: translateX(-50%); pointer-events: auto;
@@ -208,9 +208,9 @@ const CSS = `
 .tui-fam-btn[aria-expanded="true"] { background: #13262e; box-shadow: inset 0 0 18px rgba(96,190,214,.12); }
 .tui-fam-btn[aria-expanded="true"] img { filter: none; opacity: 1; }
 .tui-contextual-btn { margin-left: 0; font-size: 11px; }
-.tui-tray { bottom: 74px; width: min(610px, calc(100% - 28px)); min-height: 104px; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 4px; padding: 6px; border-color: var(--tui-edge); border-radius: 2px; background: var(--tui-panel); box-shadow: 0 -14px 34px rgba(0,0,0,.5); }
+.tui-tray { bottom: 74px; width: min(610px, calc(100% - 28px)); min-height: 88px; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 4px; padding: 6px; border-color: var(--tui-edge); border-radius: 2px; background: var(--tui-panel); box-shadow: 0 -14px 34px rgba(0,0,0,.5); }
 .tui-tray::after { content: ""; position: absolute; bottom: -7px; left: 50%; width: 12px; height: 12px; transform: translateX(-50%) rotate(45deg); border-right: 1px solid var(--tui-edge); border-bottom: 1px solid var(--tui-edge); background: var(--tui-panel); }
-.tui-action-btn { min-height: 90px; padding: 8px; border-color: #2a3d45; border-radius: 1px; background: #111a1f; color: #d1dde0; }
+.tui-action-btn { min-height: 74px; padding: 8px; border-color: #2a3d45; border-radius: 1px; background: #111a1f; color: #d1dde0; }
 .tui-action-btn img { width: 28px; height: 28px; margin: 0 auto 2px; object-fit: contain; filter: grayscale(.25) brightness(1.2); }
 .tui-action-btn:not([disabled]):hover { border-color: var(--tui-cyan); background: #14272f; color: #effcff; }
 .tui-mode-selector { background: rgba(1,5,7,.7); backdrop-filter: blur(1px); }
@@ -388,7 +388,7 @@ export function montarInterfazResponsive(rootEl, scene) {
 
   function onAccionElegida(accion) {
     if (!accion.legal) return;
-    if (accion.id === "disparar" || accion.id === "cc") prepararAccionConObjetivo(accion);
+    if (accion.id === "disparar" || accion.id === "cc" || accion.id === "ataqueMultipleCC") prepararAccionConObjetivo(accion);
     else ejecutarAccionSimple(accion.id);
   }
 
@@ -413,7 +413,7 @@ export function montarInterfazResponsive(rootEl, scene) {
     const preparada = estado.accionPreparada;
     const a = preparada ? Object.values(ultimoSnapshot.catalogo.familias).flat().find(item => item.id === preparada.id) ?? preparada : null;
     if (!a) return;
-    const necesitaObjetivo = a.id === "disparar" || a.id === "cc";
+    const necesitaObjetivo = a.id === "disparar" || a.id === "cc" || a.id === "ataqueMultipleCC";
     const objetivoListo = !necesitaObjetivo || !!ultimoSnapshot.targetActorId;
     const modos = a.id === "disparar" ? (a.modosFuego ?? []) : [];
     const punterias = a.id === "disparar" ? (a.modosPunteria ?? []) : [];
@@ -439,6 +439,7 @@ export function montarInterfazResponsive(rootEl, scene) {
     flow.querySelector(".tui-flow-confirmar").addEventListener("click", () => {
       if (a.id === "disparar") scene._accionAtacar(ultimoSnapshot.targetActorId, { cc: false, modoFuego: estado.modoFuego, apuntando: estado.modoPunteria !== "normal", tiroCertero: estado.modoPunteria === "tiroCertero", localizacionElegida: estado.localizacion });
       else if (a.id === "cc") scene._accionAtacar(ultimoSnapshot.targetActorId, { cc: true });
+      else if (a.id === "ataqueMultipleCC") scene._accionAtaqueMultipleCC(ultimoSnapshot.targetActorId);
       cerrarFlow();
     });
     flow.querySelector(".tui-flow-cancelar").addEventListener("click", cerrarFlow);

@@ -13,7 +13,7 @@ import {
 } from "../../gameState.js";
 import { ordenDeActuacion, modificadorCadencia, cargarCadencia, modificadorMovimientoEvasivo } from "../../combat/combat.js";
 import {
-  resolveIntent, createActivation, movementRemaining, actuacionAgotada,
+  resolveIntent, validateIntent, createActivation, movementRemaining, actuacionAgotada,
   applyResourceCost, MOVIMIENTO_BASE_METROS,
   costeAccionesPorTamano, avanzarProgreso, effectiveBaseDamage,
   isFlanking, FLANQUEO_BONUS, penalizadorMultiplesAdversarios, limitarModificadorSituacional,
@@ -939,6 +939,18 @@ export async function montarCombate(container, escenaId) {
     if (armaEstado.broken || (id !== "cc" && armaEstado.jammed)) {
       log(`${base.nombre} no puede usar ${id === "cc" ? "su arma cuerpo a cuerpo" : "su arma a distancia"}: ${armaEstado.broken ? "está inutilizada" : "está encasquillada"}.`);
       return opts.automatico ? siguienteTurno() : continuarOFinalizarActuacion(miembro);
+    }
+    if (opts.apuntando) {
+      const intentPunteria = {
+        type: "ATTACK", apuntando: true, tiroCertero: opts.tiroCertero === true,
+        tieneSistemaPunteria: base.arma?.sistemaPunteria === true,
+        distanciaMediaActor: miembro.habilidades["Distancia Media"] ?? 0
+      };
+      const validacion = validateIntent({ id: miembro.baseId, municion: miembro.municion }, intentPunteria, combateState.activation);
+      if (!validacion.valid) {
+        log(`${base.nombre} no puede apuntar: ${validacion.reasons.join(", ")}.`);
+        return continuarOFinalizarActuacion(miembro);
+      }
     }
     if (id === "cc") {
       skillId = "Arma CC Corta";

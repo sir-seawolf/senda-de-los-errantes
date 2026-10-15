@@ -2,85 +2,394 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>La Senda de los Errantes</title>
-<meta name="description" content="Cyberpunk multiversal desde 1991. Un universo de teselas conectadas por portales inestables. Quickstart, fichas de personaje y un vistazo a sus mundos.">
+<meta name="description" content="Juego de rol d100 de ciencia ficción y fantasía interdimensional, nacido en 1991 junto al río Júcar. Quickstart, creador de personajes y los mundos del Mosaico.">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="senda_estilo.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* colours taken from the Rosetón itself: night, bone, amber, cosmic blue, bronze stone */
+  --bg:#0b0e15;--surface:#151a24;--ink:#ece4d4;--muted:#b3a994;
+  --accent:#e9a23b;--accent-ink:#1b1205;
+  --blue:#1d4fa0;--blue-ink:#ece4d4;
+  --stone:#3a2f22;--stone-ink:#ece4d4;
+  --display:'Libre Franklin',system-ui,sans-serif;--text:'Source Serif 4',Georgia,serif;
+  --step-small:clamp(.875rem,.84rem + .1vw,.9375rem);
+  --step-body:clamp(1.0625rem,1rem + .25vw,1.1875rem);
+  --step-lead:clamp(1.375rem,1.1rem + .6vw,1.75rem);
+  --step-head:clamp(2rem,1.3rem + 3.2vw,4rem);
+  --step-display:clamp(72px,10.5vw,170px);
+  --gap:8px;--edge:8px;
+  --ease-out:cubic-bezier(.22,1,.36,1);--ease-io:cubic-bezier(.76,0,.24,1);--ease-soft:cubic-bezier(.33,1,.68,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:var(--step-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,figure,ul{margin:0}
+ul{padding:0;list-style:none}
+img{display:block;max-width:100%;height:auto;background:var(--surface)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::selection{background:var(--accent);color:var(--accent-ink)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.d{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-height:.92}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;padding:0 1.4rem;background:var(--accent-ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:var(--step-small);letter-spacing:0;text-decoration:none;transition:transform 140ms var(--ease-out),background-color 180ms ease,color 180ms ease}
+.button:hover{background:var(--ink);color:var(--bg)}
+.button:active{transform:scale(.97)}
+.tile{position:relative;overflow:hidden;background:var(--surface);padding:24px}
+.tile--img{padding:0}
+.tile--img img{width:100%;height:100%;object-fit:cover;transition:transform 900ms var(--ease-soft)}
+a.tile{text-decoration:none;transition:background-color 180ms ease}
+.board{display:grid;gap:var(--gap);padding:0 var(--edge)}
+
+/* ---------- top row and hero board ---------- */
+.top{display:grid;grid-template-columns:60px 1fr auto;gap:var(--gap);padding:var(--edge) var(--edge) 0;height:calc(60px + var(--edge))}
+.top .mark{padding:0;background:var(--stone)}
+.top .mark img{width:100%;height:100%;object-fit:cover}
+.top nav{display:flex;align-items:center;gap:28px;padding:0 24px 0 50%;font-family:var(--display);font-weight:700;font-size:var(--step-small)}
+.top nav a{text-decoration:none}
+.top nav a:hover{color:var(--accent)}
+.top .act{display:flex;align-items:center;padding:0 24px;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:700;font-size:var(--step-small)}
+.top .act:hover{background:var(--ink)}
+.hero{height:calc(100svh - 60px - var(--edge));padding-top:var(--gap);padding-bottom:var(--edge);grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.hero .name{background:var(--surface);display:flex;flex-direction:column;justify-content:flex-end}
+.hero .name{gap:12px}
+.hero .name .la{font-size:var(--step-head);text-transform:uppercase}
+.hero .name .errantes{font-size:var(--step-lead);letter-spacing:-.01em;line-height:1.1}
+.hero .blocks--hero{height:58%}
+.hero .blocks--hero span{font-size:clamp(48px,6.4vw,112px)}
+.hero .blocks--hero span:nth-child(1){height:86%}.hero .blocks--hero span:nth-child(2){height:62%}.hero .blocks--hero span:nth-child(3){height:100%}.hero .blocks--hero span:nth-child(4){height:70%}.hero .blocks--hero span:nth-child(5){height:80%}
+.hero .split{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);padding:0;background:none}
+.hero .split .tile p{font-size:var(--step-lead);line-height:1.25;max-width:22ch}
+.hero .say{background:var(--stone)}
+.hero .hot{background:var(--accent);color:var(--accent-ink)}
+.hero .rose img{object-position:50% 50%}
+.hero .city img{object-position:50% 70%}
+
+/* ---------- intro: lead line over four columns ---------- */
+.intro{padding:96px 20px;display:grid;grid-template-columns:repeat(12,1fr);gap:72px 24px}
+.intro .lead{grid-column:1/-1;font-size:var(--step-lead);line-height:1.25;max-width:64ch}
+.intro .col{grid-column:span 3;font-size:var(--step-body);line-height:1.5;color:var(--muted)}
+.intro .col b{color:var(--ink);font-weight:600}
+
+/* ---------- showcase: the Rosetón cut across the board ---------- */
+.mosaic{grid-template-columns:repeat(6,1fr)}
+.mosaic .t{aspect-ratio:1;position:relative;overflow:hidden}
+.mosaic .t i{position:absolute;inset:0;background-image:url(img/Portada_rol_Errantes.jpg);background-size:600% 400%;transition:transform 600ms var(--ease-out)}
+.mosaic .t:hover i{transform:scale(1.08)}
+.mosaic .c{padding:16px;display:flex;flex-direction:column;justify-content:space-between}
+.mosaic .c p{font-size:var(--step-body);line-height:1.3}
+.mosaic .c .d{font-size:var(--step-lead)}
+.mosaic .c--h{background:var(--ink);color:var(--bg);aspect-ratio:auto}
+.mosaic .c--blue{background:var(--blue);color:var(--blue-ink)}
+.mosaic .c--stone{background:var(--stone);color:var(--stone-ink)}
+.mosaic .c--amber{background:var(--accent);color:var(--accent-ink)}
+.mosaic a.c--amber:hover{background:var(--ink);color:var(--bg)}
+.mosaic .c .big{font-family:var(--display);font-weight:700;font-size:var(--step-head);letter-spacing:-.04em;line-height:.9}
+
+/* ---------- the Rosetón at three distances (pinned) ---------- */
+.zoom{position:relative;height:300svh;margin-top:40px}
+.zoom__stage{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:1fr auto auto auto 1fr;justify-items:center}
+.zoom h2{display:contents}
+.zoom .h-a,.zoom .h-b{grid-column:1/-1;font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:-.035em;line-height:.9;font-size:clamp(56px,7.5vw,124px)}
+.zoom .h-a{grid-row:2;margin-bottom:.14em}
+.zoom .h-b{grid-row:4;margin-top:.14em;color:var(--accent)}
+.zoom__frame{grid-row:3;grid-column:2;width:26vw;aspect-ratio:4/5;max-width:100%;overflow:hidden}
+.zoom__frame img{width:100%;height:100%;object-fit:cover;transition:transform 1000ms var(--ease-io)}
+.zoom[data-stage="2"] .zoom__frame img{transform:scale(1.8);transform-origin:96% 50%}
+.zoom[data-stage="3"] .zoom__frame img{transform:scale(3.2);transform-origin:50% 50%}
+.zoom__cap{grid-row:3;grid-column:3;align-self:center;justify-self:start;margin-left:2.4rem;max-width:26ch;opacity:0;transform:translateY(12px);transition:opacity 600ms var(--ease-out),transform 700ms var(--ease-out)}
+.zoom[data-stage="3"] .zoom__cap{opacity:1;transform:none}
+.zoom__mark{position:absolute;left:0;width:1px;height:1px} /* taste-skill-ignore: invisible scroll marker */
+.zoom__mark:nth-of-type(1){top:15%}.zoom__mark:nth-of-type(2){top:42%}.zoom__mark:nth-of-type(3){top:66%}
+
+/* ---------- worlds: each one slides up over the last (curtain) ---------- */
+.curtain{margin-top:160px}
+.curtain__head{display:flex;justify-content:space-between;align-items:baseline;padding:0 20px 32px}
+.curtain__head h2{font-size:var(--step-head);text-transform:uppercase}
+.curtain__head span{font-size:var(--step-small);color:var(--muted)}
+.cp{position:sticky;top:0;height:100svh;margin:0;overflow:hidden;background:var(--bg);padding:var(--edge)}
+.cp img{width:100%;height:100%;object-fit:cover}
+.cp figcaption{position:absolute;left:var(--edge);bottom:var(--edge);max-width:min(46ch,90%);padding:20px 24px;background:var(--bg)}
+.cp figcaption b{display:block;font-family:var(--display);font-size:var(--step-lead);text-transform:uppercase;letter-spacing:-.02em;line-height:1}
+.cp figcaption em{display:block;margin-top:.5rem;color:var(--accent)}
+.cp figcaption span{display:block;margin-top:.4rem;color:var(--muted);font-size:var(--step-small)}
+.cp--quotes{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+.cp--quotes .tile{display:flex;flex-direction:column;justify-content:center;gap:1.6rem;padding:40px 6vw}
+.cp--quotes .tile p{font-size:clamp(24px,2.6vw,36px);line-height:1.2;font-style:italic;max-width:22ch}
+.cp--quotes .tile b{font-family:var(--display);text-transform:uppercase;font-size:var(--step-lead)}
+.cp--quotes .q1{background:var(--stone)}.cp--quotes .q2{background:var(--blue)}
+
+/* ---------- live thing: the portal ---------- */
+.portal{margin-top:160px;grid-template-columns:repeat(12,1fr)}
+.portal .ask{grid-column:1/6;grid-row:1/3;background:var(--accent);color:var(--accent-ink);display:flex;flex-direction:column;justify-content:space-between;gap:2rem}
+.portal .ask h2{font-size:var(--step-head)}
+.portal .ask p{max-width:34ch}
+.portal .die{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}
+.portal .num{font-family:var(--display);font-weight:700;font-size:var(--step-display);line-height:.8;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.portal .out{grid-column:6/13;grid-row:1;padding:0;background:var(--surface);aspect-ratio:16/10}
+.portal .out img{width:100%;height:100%;object-fit:cover}
+.portal .out.quote{display:grid;place-items:center;padding:40px;background:var(--stone)}
+.portal .out.quote p{font-size:var(--step-lead);font-style:italic;max-width:28ch}
+.portal .res{grid-column:6/13;grid-row:2;background:var(--surface)}
+.portal .res h3{font-family:var(--display);font-size:var(--step-lead);margin-bottom:.3rem}
+.portal .table{font-size:var(--step-small);margin-top:1rem}
+.js .portal .table{display:none}
+.js-only{display:none}.js .js-only{display:inline-flex}
+.portal.rolling .num{animation:jolt 110ms linear infinite}
+@keyframes jolt{50%{transform:translateY(-5px)}}
+
+/* ---------- cta: the action tile ---------- */
+.close{margin-top:160px;grid-template-columns:repeat(12,1fr);padding:0;overflow:hidden}
+.close > *{height:360px}
+.close .flank-a{grid-column:1/3;margin-left:-40px;padding:0}
+.close .flank-a img{width:100%;height:100%;object-fit:cover}
+.close .flank-b{grid-column:11/13;margin-right:-40px;background:var(--blue)}
+.close .act{grid-column:3/11;background:var(--accent);color:var(--accent-ink);padding:40px;display:flex;flex-direction:column;justify-content:center;gap:1rem}
+.close .act h2{font-size:var(--step-head)}
+.close .act .row2{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.6rem;margin-top:.6rem}
+.close .act .row2 a:not(.button){font-family:var(--display);font-weight:700;font-size:var(--step-small);text-underline-offset:.2em}
+
+/* ---------- footer: the name, built from blocks ---------- */
+.foot{margin-top:160px;padding:0 var(--edge) var(--edge)}
+.blocks{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;height:34svh;align-items:end}
+.blocks span{display:flex;align-items:flex-end;justify-content:center;font-family:var(--display);font-weight:700;font-size:clamp(80px,17vw,300px);line-height:.78;letter-spacing:-.04em;overflow:hidden;color:var(--bg)}
+.blocks span:nth-child(1){height:100%;background:var(--accent)}
+.blocks span:nth-child(2){height:72%;background:var(--ink)}
+.blocks span:nth-child(3){height:88%;background:var(--blue);color:var(--ink)}
+.blocks span:nth-child(4){height:64%;background:var(--stone);color:var(--ink)}
+.blocks span:nth-child(5){height:94%;background:var(--ink)}
+.foot__links{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-top:56px;padding:0 12px;font-size:var(--step-small)}
+.foot__links ul{grid-column:span 2;display:grid;gap:4px}
+.foot__links a{text-decoration:none}
+.foot__links a:hover{color:var(--accent)}
+.foot__links .who{grid-column:9/13;color:var(--muted)}
+.foot__last{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding:0 12px 12px;font-size:var(--step-small);color:var(--muted)}
+.foot__last .button{background:var(--accent);color:var(--accent-ink);min-height:2.75rem}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .js [data-rise]{opacity:0;transform:translateY(18px);animation:rise 800ms var(--ease-out) forwards;animation-delay:calc(var(--i,0)*90ms + 120ms)}
+  .js [data-reveal]{opacity:0;transform:translateY(24px);transition:opacity 700ms var(--ease-out),transform 900ms var(--ease-out);transition-delay:calc(var(--i,0)*70ms)}
+  .js [data-reveal].is-in{opacity:1;transform:none}
+  .js .shutter{clip-path:inset(0 0 100% 0);animation:shut 1100ms var(--ease-io) 200ms forwards}
+  .js .shutter img{transform:scale(1.12);animation:settle 1600ms var(--ease-soft) 200ms forwards}
+  .js .blocks--hero span{transform:scaleY(0);transform-origin:bottom;animation:grow 900ms var(--ease-out) forwards;animation-delay:calc(var(--i,0)*90ms + 150ms)}
+  .hero .city img{animation:drift 30s var(--ease-soft) 1.8s infinite alternate}
+  .js .hero .rose img{animation:settle 1600ms var(--ease-soft) 200ms forwards,spin 40s var(--ease-soft) 1.8s infinite alternate}
+  .js .mosaic .t[data-reveal]{transform:scale(.9);transition-delay:calc(var(--i,0)*40ms)}
+  .js .mosaic .t[data-reveal].is-in{transform:none}
+  .js .cp[data-reveal] img{transform:scale(1.1);transition:transform 1600ms var(--ease-soft)}
+  .js .cp[data-reveal]{opacity:1;transform:none}
+  .js .cp[data-reveal].is-in img{transform:none}
+  .mod figure:hover img{transform:scale(1.04)}
+}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes shut{to{clip-path:inset(0)}}
+@keyframes settle{to{transform:none}}
+@keyframes grow{to{transform:none}}
+@keyframes spin{from{transform:scale(1) rotate(0)}to{transform:scale(1.14) rotate(8deg)}}
+@keyframes drift{from{transform:scale(1)}to{transform:scale(1.1) translateX(-2%)}}
+
+/* ---------- phone: its own board ---------- */
+@media (max-width:760px){
+  :root{--gap:6px;--edge:6px}
+  .top{grid-template-columns:52px 1fr auto;height:calc(52px + var(--edge))}
+  .top nav{padding:0 12px;gap:16px;justify-content:flex-end}
+  .top nav .opt{display:none}
+  .top .act{padding:0 14px}
+  .hero{height:auto;grid-template-columns:1fr;grid-template-rows:auto}
+  .hero .name{min-height:34svh}
+  .hero .blocks--hero{height:20svh}
+  .hero .blocks--hero span{font-size:14vw}
+  .hero .rose{aspect-ratio:4/3}
+  .hero .city{order:4;aspect-ratio:4/3}
+  .hero .split{order:3}
+  .hero .split .tile{aspect-ratio:1;padding:16px}
+  .hero .split .tile p{font-size:18px}
+  .intro{padding:72px 16px;grid-template-columns:1fr 1fr;gap:40px 20px}
+  .intro .lead{font-size:20px}
+  .intro .col{grid-column:1/-1}
+  .mosaic{grid-template-columns:repeat(3,1fr)}
+  .mosaic .t i{background-size:300% 600%}
+  .mosaic .c p{font-size:15px}
+  .mosaic .c .big{font-size:40px}
+  .mosaic .c--h{grid-column:span 2;aspect-ratio:auto}
+  .mosaic .hide-s{display:none}
+  .curtain{margin-top:100px}
+  .curtain__head{padding:0 16px 20px}
+  .cp{height:88svh}
+  .cp figcaption{padding:14px 16px}
+  .cp--quotes{grid-template-columns:1fr}
+  .cp--quotes .tile{padding:20px}
+  .cp--quotes .tile p{font-size:24px}
+  .zoom{height:260svh}
+  .zoom__stage{grid-template-columns:1fr;grid-template-rows:1fr auto auto auto auto 1fr}
+  .zoom .h-a,.zoom .h-b{font-size:12vw}
+  .zoom__frame{grid-column:1;width:70vw}
+  .zoom__cap{grid-column:1;grid-row:5;justify-self:center;margin:1rem 16px 0;text-align:center}
+  .portal{margin-top:100px;grid-template-columns:1fr}
+  .portal .ask,.portal .out,.portal .res{grid-column:1;grid-row:auto}
+  .portal .out img{min-height:0;aspect-ratio:4/3}
+  .close{margin-top:100px;grid-template-columns:1fr 1fr;padding:0 var(--edge)}
+  .close > *{height:auto}
+  .close .act{grid-column:1/-1;order:-1;padding:28px 20px;min-height:300px}
+  .close .act h2{font-size:28px}
+  .close .flank-a,.close .flank-b{grid-column:auto;margin:0;height:120px}
+  .foot{margin-top:100px}
+  .blocks{height:22svh}
+  .blocks span{font-size:17vw}
+  .foot__links{grid-template-columns:1fr 1fr;padding:0 10px}
+  .foot__links ul{grid-column:auto}
+  .foot__links .who{grid-column:1/-1}
+}
+</style>
 </head>
-<body class="landing tema-index">
-<nav class="topnav" aria-label="Principal">
-<a class="brand" href="index.html">La Senda</a>
-<div>
-<a href="index.html" aria-current="page">Inicio</a>
-<a href="juego.html">Juego</a>
-<a href="mundos.html">Mundos</a>
-<a href="https://elpeciodeseawolf.blogspot.com" rel="noopener">Blog</a>
-</div></nav>
-<main class="hero">
-  <figure class="hero-portal">
-    <img src="img/Portada_rol_Errantes.jpg" alt="Rosetón cósmico: un portal circular de piedra rúnica con paneles de constelaciones, nebulosas y galaxias en tonos azules y ámbar">
-    <figcaption><span>Archivo de la Senda</span><b>Tesela de origen · Tierra</b></figcaption>
-  </figure>
-  <div class="hero-info">
-    <p class="hero-kicker">Juego de rol · ciencia ficción y fantasía interdimensional</p>
-    <h1>La Senda de <em>Los Errantes</em></h1>
-    <p class="sub">Cyberpunk multiversal · Desde 1991</p>
-    <p class="desc">Un universo de teselas conectadas por portales inestables. Corporaciones que sobreviven a civilizaciones enteras. Errantes que cruzan entre mundos con lo puesto. Un juego que nació en 1991 en una finca junto al río Júcar — y una historia que sigue creciendo.</p>
-    <section class="senda-brief" aria-labelledby="senda-brief-title">
-      <p class="senda-brief-label" id="senda-brief-title">La Senda en 30 segundos</p>
-      <div class="senda-brief-track">
-        <p><b>Un sistema</b><span>d100 rápido, peligroso y abierto a soluciones ingeniosas.</span></p>
-        <p><b>Muchos mundos</b><span>Cada realidad es una tesela del mismo Mosaico.</span></p>
-        <p><b>Una campaña</b><span>Tu personaje, su equipo y sus consecuencias viajan contigo.</span></p>
-      </div>
-    </section>
-    <div class="cta">
-      <a href="quickstart.html" class="primary">Empezar con el Quickstart</a>
-      <a href="ficha_v4.html" class="secondary">Crear un Personaje</a>
+<body>
+
+<header class="top">
+  <a class="tile mark" href="index.html" aria-label="La Senda, inicio"><img src="img/Portada_rol_Errantes.jpg" width="1024" height="1024" alt=""></a>
+  <nav class="tile" aria-label="Principal">
+    <a href="juego.html">Juego</a><a href="mundos.html">Mundos</a><a class="opt" href="https://elpeciodeseawolf.blogspot.com" rel="noopener">Blog</a>
+  </nav>
+  <a class="act" href="quickstart.html">Quickstart</a>
+</header>
+
+<main>
+  <section class="board hero" aria-label="Portada">
+    <div class="tile name">
+      <h1 class="sr-only">La Senda de los Errantes</h1>
+      <p class="la d" aria-hidden="true" data-rise>La</p>
+      <div class="blocks blocks--hero" aria-hidden="true"><span style="--i:1">S</span><span style="--i:2">E</span><span style="--i:3">N</span><span style="--i:4">D</span><span style="--i:5">A</span></div>
+      <p class="errantes d" aria-hidden="true" data-rise style="--i:6">de los Errantes</p>
     </div>
-    <a href="mundos.html" class="expedition-route">
-      <span class="route-index">01</span>
-      <span class="route-copy">
-        <span class="route-label">Mundos de la Senda</span>
-        <strong>Explora los mundos del Mosaico</strong>
-        <small>MadCity, Mundo Chatarra, Oasis y más: un vistazo a cada tesela.</small>
-      </span>
-      <span class="route-arrow" aria-hidden="true"></span>
-    </a>
-    <p class="puertas-label">O entra directamente por:</p>
-    <div class="puertas">
-      <a href="juego.html" class="puerta">
-        <span class="ico"><i class="fa-solid fa-dice-d20"></i></span><span class="tit">Juego de Rol</span>
-        <span class="txt">Quickstart, fichas y aventura jugable</span>
-      </a>
-      <a href="mundos.html" class="puerta gal">
-        <span class="ico"><i class="fa-solid fa-earth-europe"></i></span><span class="tit">Mundos</span>
-        <span class="txt">MadCity, Mundo Chatarra, Oasis y más</span>
-      </a>
-      <a href="https://elpeciodeseawolf.blogspot.com" class="puerta alt" rel="noopener">
-        <span class="ico"><i class="fa-solid fa-feather-pointed"></i></span><span class="tit">Blog</span>
-        <span class="txt">El Pecio de Seawolf - la crónica novelada</span>
-      </a>
+    <figure class="tile tile--img rose shutter"><img src="img/Portada_rol_Errantes.jpg" width="1024" height="1024" alt="El Rosetón del Mosaico: un portal circular de piedra con paneles de constelaciones, nebulosas y galaxias en azul y ámbar"></figure>
+    <figure class="tile tile--img city"><img src="img/mundos/madcity.webp" width="1400" height="934" alt="La Plaza del Primer Vuelo de MadCity: una multitud bajo torres altísimas, con perros de luz azul flotando sobre los estandartes"></figure>
+    <div class="split">
+      <div class="tile say" data-rise style="--i:2"><p>Juego de rol d100. Los mundos van incluidos; el billete de vuelta, no.</p></div>
+      <div class="tile hot" data-rise style="--i:3"><p>Empezó en 1991, en una finca junto al Júcar. Nadie avisó de que iba a durar tanto.</p></div>
     </div>
-  </div>
+  </section>
+
+  <section class="intro" aria-label="Qué es La Senda">
+    <p class="lead" data-reveal>Un universo de teselas unidas por portales que funcionan casi siempre. Las corporaciones sobreviven a las civilizaciones; los Errantes, con suerte, al siguiente salto. El sistema no perdona, pero sabe reconocer una buena idea cuando la ve.</p>
+    <p class="col" data-reveal style="--i:1"><b>El sistema.</b> Todo se resuelve con un d100: rápido, peligroso y abierto a soluciones que nadie había previsto, el narrador incluido. Las heridas pesan, y hay una regla que todo el mundo aprende pronto: el 99 siempre trae problemas.</p>
+    <p class="col" data-reveal style="--i:2"><b>Los mundos.</b> Cada realidad es una tesela del mismo Mosaico: la ciudad vertical de MadCity, los colosos dormidos de Mundo Chatarra, la selva de Oasis, la jungla de Monstruoplantas, que aprende. Más allá queda lo que nadie ha cartografiado, o nadie ha vuelto para contarlo.</p>
+    <p class="col" data-reveal style="--i:3"><b>Tu personaje.</b> Ocho razas jugables, de humanos y droideum a nakel, chernos o mujeres y hombres gato. Tu personaje, su equipo, sus implantes y sus decisiones viajan contigo de una tesela a otra. Las decisiones, sobre todo.</p>
+    <p class="col" data-reveal style="--i:4"><b>La crónica.</b> El Pecio de Seawolf cuenta la Senda como novela por entregas, y sigue escribiéndose en el blog. Se puede leer sin jugar y jugar sin leerla, aunque quien hace las dos cosas suele llevar ventaja.</p>
+  </section>
+
+  <section class="zoom" data-stage="1" aria-labelledby="zoom-h">
+    <span class="zoom__mark"></span><span class="zoom__mark"></span><span class="zoom__mark"></span>
+    <div class="zoom__stage">
+      <h2 id="zoom-h"><span class="h-a">Mil mundos,</span><span class="h-b">un Mosaico.</span></h2>
+      <div class="zoom__frame"><img src="img/Portada_rol_Errantes.jpg" width="1024" height="1024" loading="lazy" alt="El Rosetón del Mosaico, visto entero y luego cada vez más de cerca"></div>
+      <p class="zoom__cap">En el centro, la Urdimbre: lo que cose las teselas y lo que cruzan los Errantes.</p>
+    </div>
+  </section>
+
+  <section class="board mosaic" aria-labelledby="mos-h">
+    <!-- 24 squares: the Rosetón cut into teselas; five are swapped for colour -->
+    <div class="t c c--h" style="grid-column:1/3"><h2 id="mos-h" class="d">Cada tesela, un mundo</h2><p>El Rosetón del Mosaico, cortado en las piezas que lo forman.</p></div>
+    <div data-reveal style="--i:1" class="t hide-s"><i style="background-position:40% 0%"></i></div>
+    <div data-reveal style="--i:2" class="t"><i style="background-position:60% 0%"></i></div>
+    <div class="t c c--blue" data-reveal><span class="big">8</span><p>razas jugables</p></div>
+    <div data-reveal style="--i:3" class="t"><i style="background-position:100% 0%"></i></div>
+
+    <div data-reveal style="--i:4" class="t"><i style="background-position:0% 33.33%"></i></div>
+    <div data-reveal style="--i:5" class="t"><i style="background-position:20% 33.33%"></i></div>
+    <div data-reveal style="--i:6" class="t"><i style="background-position:40% 33.33%"></i></div>
+    <div data-reveal style="--i:7" class="t"><i style="background-position:60% 33.33%"></i></div>
+    <div data-reveal style="--i:8" class="t"><i style="background-position:80% 33.33%"></i></div>
+    <div class="t c c--stone" data-reveal style="--i:1"><span class="big">d100</span><p>rápido, peligroso y sin red</p></div>
+
+    <div data-reveal style="--i:9" class="t"><i style="background-position:0% 66.67%"></i></div>
+    <div class="t c c--amber" data-reveal style="--i:2"><span class="big">1991</span><p>la primera partida</p></div>
+    <div data-reveal style="--i:10" class="t"><i style="background-position:40% 66.67%"></i></div>
+    <div data-reveal style="--i:11" class="t"><i style="background-position:60% 66.67%"></i></div>
+    <div data-reveal style="--i:12" class="t"><i style="background-position:80% 66.67%"></i></div>
+    <div data-reveal style="--i:13" class="t hide-s"><i style="background-position:100% 66.67%"></i></div>
+
+    <div data-reveal style="--i:14" class="t hide-s"><i style="background-position:0% 100%"></i></div>
+    <div data-reveal style="--i:15" class="t"><i style="background-position:20% 100%"></i></div>
+    <div data-reveal style="--i:16" class="t"><i style="background-position:40% 100%"></i></div>
+    <a class="t c c--amber" data-reveal style="--i:3" href="mundos.html"><p class="d" style="font-size:clamp(22px,2vw,32px)">Ver los mundos</p><span class="big" aria-hidden="true">→</span></a>
+    <div data-reveal style="--i:17" class="t"><i style="background-position:80% 100%"></i></div>
+    <div data-reveal style="--i:18" class="t"><i style="background-position:100% 100%"></i></div>
+  </section>
+
+  <section class="curtain" aria-labelledby="w-h">
+    <div class="curtain__head"><h2 id="w-h" class="d">Desde la puerta</h2><span>Seis teselas del Mosaico</span></div>
+    <figure class="cp" data-reveal><img src="img/mundos/madcity.webp" width="1400" height="934" loading="lazy" alt="La Plaza del Primer Vuelo de MadCity: una multitud bajo torres altísimas, con perros de luz azul sobre los estandartes"><figcaption><b>MadCity</b><em>«Que nada quebrado deje de soñar.»</em><span>Un planeta-ciudad vertical de sedes corporativas, bajos fondos y carreras entre torres.</span></figcaption></figure>
+    <figure class="cp" data-reveal><img src="img/mundos/chatarra.webp" width="1400" height="788" loading="lazy" alt="Un puente de chatarra sobre un valle de montañas de metal, con un mecha pintado y una nave gigante en el cielo"><figcaption><b>Mundo Chatarra</b><em>«Un planeta que nunca terminó de ser.»</em><span>Colosos dormidos entre montañas de metal y chatarreros que viven del trueque.</span></figcaption></figure>
+    <figure class="cp" data-reveal><img src="img/mundos/oasis.webp" width="1400" height="781" loading="lazy" alt="Un sendero entre ruinas cubiertas por la selva, con luz dorada entre columnas"><figcaption><b>Oasis</b><span>Una tesela recién despertada a la Urdimbre: mercado gris, autoridad desbordada y ruinas bajo la selva.</span></figcaption></figure>
+    <figure class="cp" data-reveal><img src="img/mundos/monstruoplantas.webp" width="1400" height="933" loading="lazy" alt="Un puesto fronterizo con antenas sobre un acantilado rodeado de jungla"><figcaption><b>Monstruoplantas</b><span>La bioingeniería de los Antiguos, saqueada sin protocolo, ha creado una jungla que aprende a matar.</span></figcaption></figure>
+    <div class="cp cp--quotes">
+      <div class="tile q1"><p>«No era una ciudad. Era un estómago.»</p><b>Cuenca Gótica</b></div>
+      <div class="tile q2"><p>«No son ruinas. Son pruebas.»</p><b>Mazmorras de los Antiguos</b></div>
+    </div>
+  </section>
+
+  <section class="board portal" aria-labelledby="p-h">
+    <div class="tile ask">
+      <div><h2 id="p-h" class="d" data-reveal>El portal es inestable</h2><p data-reveal style="--i:1;margin-top:1rem">Nadie elige del todo a dónde le lleva. Tira el d100 y descubre dónde apareces.</p></div>
+      <div class="die"><span class="num" id="num" aria-live="polite">?</span><button class="button js-only" id="tirar" type="button">Tirar el d100</button></div>
+    </div>
+    <figure class="tile out" id="out" data-reveal><img src="img/Portada_rol_Errantes.jpg" width="1024" height="1024" loading="lazy" alt="El Rosetón del Mosaico"></figure>
+    <div class="tile res" aria-live="polite"><h3 id="rn">La Tierra, tesela de origen</h3><p id="rt">Todos los Errantes empiezan en algún sitio. Pulsa el botón y el portal decide el resto.</p>
+      <ul class="table"><li>01–20 MadCity · 21–40 Mundo Chatarra · 41–60 Oasis · 61–80 Monstruoplantas · 81–90 Cuenca Gótica · 91–98 Mazmorras · 99 el portal falla · 100 la Tierra</li></ul>
+    </div>
+  </section>
+
+  <section class="board close" aria-labelledby="c-h">
+    <figure class="tile flank-a"><img src="img/mundos/oasis.webp" width="1400" height="781" loading="lazy" alt=""></figure>
+    <div class="tile act" data-reveal>
+      <h2 id="c-h" class="d">Juega tu primera partida</h2>
+      <p>Reglas rápidas, fichas listas y una aventura jugable en el Kit de Inicio. Los dados los pones tú.</p>
+      <div class="row2"><a class="button" href="quickstart.html">Empezar el Quickstart</a><a href="ficha_v4.html">Crear un personaje →</a></div>
+    </div>
+    <div class="tile flank-b" aria-hidden="true"></div>
+  </section>
 </main>
-<footer class="footer">
-  <a href="https://elpeciodeseawolf.blogspot.com">El Pecio de Seawolf</a> · ·
-  Actualizado: <span id="builddate">—</span>
+
+<footer class="foot">
+  <div class="blocks" aria-label="Senda"><span>S</span><span>E</span><span>N</span><span>D</span><span>A</span></div>
+  <div class="foot__links">
+    <ul><li><a href="quickstart.html">Quickstart</a></li><li><a href="ficha_v4.html">Crear personaje</a></li><li><a href="juego.html">Juego</a></li></ul>
+    <ul><li><a href="mundos.html">Mundos</a></li><li><a href="https://elpeciodeseawolf.blogspot.com" rel="noopener">El Pecio de Seawolf</a></li></ul>
+    <p class="who">La Senda de los Errantes es un juego de rol de A. Seawolf, en desarrollo desde 1991.</p>
+  </div>
+  <div class="foot__last"><span>© 2026 A. Seawolf</span><a class="button" href="quickstart.html">Quickstart</a></div>
 </footer>
+
 <script>
-fetch('build_date.txt').then(r=>r.text()).then(t=>{
-  var raw=t.trim();
-  var m=raw.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}:\d{2})/);
-  if(m){
-    var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-    raw=parseInt(m[1],10)+' de '+meses[parseInt(m[2],10)-1]+' de '+m[3]+', '+m[4];
-  }
-  document.getElementById('builddate').textContent=raw;
-}).catch(()=>{});
+(()=>{const z=document.querySelector('.zoom');if(!z)return;const ms=[...z.querySelectorAll('.zoom__mark')];
+const set=()=>{let st=1;ms.forEach((m,k)=>{if(m.getBoundingClientRect().top<innerHeight*.5)st=k+1});z.dataset.stage=st};
+addEventListener('scroll',set,{passive:true});set();})();
+(()=>{const t=document.querySelectorAll('[data-reveal]');if(!('IntersectionObserver' in window)){t.forEach(e=>e.classList.add('is-in'));return}
+const io=new IntersectionObserver(es=>{for(const e of es){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target)}}},{rootMargin:'0px 0px -10% 0px',threshold:.1});
+t.forEach(e=>io.observe(e));addEventListener('load',()=>setTimeout(()=>t.forEach(e=>{const r=e.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)e.classList.add('is-in')}),2500));})();
+(()=>{const W=[
+ [20,'MadCity','img/mundos/madcity.webp','Un planeta-ciudad vertical: sedes corporativas, bajos fondos, vientos nanotecnológicos y carreras entre torres.'],
+ [40,'Mundo Chatarra','img/mundos/chatarra.webp','Colosos dormidos entre montañas de metal y chatarreros que viven del trueque. Cuidado con las Bestias del Norte.'],
+ [60,'Oasis','img/mundos/oasis.webp','Una tesela recién despertada a la Urdimbre: un mercado gris, una autoridad desbordada y ruinas bajo la selva.'],
+ [80,'Monstruoplantas','img/mundos/monstruoplantas.webp','La bioingeniería de los Antiguos, saqueada sin protocolo, ha creado una jungla que aprende a matar.'],
+ [90,'Cuenca Gótica',null,'«No era una ciudad. Era un estómago. Y nosotros éramos el alimento.»'],
+ [98,'Mazmorras de los Antiguos',null,'«No son ruinas. Son pruebas. Y nosotros somos los sujetos.»'],
+ [99,'El portal falla',null,'El 99 siempre trae problemas.'],
+ [100,'La Tierra, tesela de origen','img/Portada_rol_Errantes.jpg','Vuelves al principio. Tampoco aquí es todo lo que parece.']];
+const b=document.getElementById('tirar'),n=document.getElementById('num'),out=document.getElementById('out'),rn=document.getElementById('rn'),rt=document.getElementById('rt'),sec=document.querySelector('.portal');
+if(!b)return;const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+b.addEventListener('click',()=>{const r=1+Math.floor(Math.random()*100);let k=0;sec.classList.add('rolling');b.disabled=true;
+ const spin=setInterval(()=>{n.textContent=1+Math.floor(Math.random()*100);if(++k>12||reduce){clearInterval(spin);done(r)}},55)});
+function done(r){sec.classList.remove('rolling');b.disabled=false;n.textContent=r===100?'00':r;
+ const w=W.find(x=>r<=x[0]);rn.textContent=w[1];
+ if(w[2]){out.className='tile out';out.innerHTML='<img src="'+w[2]+'" alt="'+w[1]+'">';rt.textContent=w[3]}
+ else{out.className='tile out quote';out.innerHTML='<p>'+w[3]+'</p>';rt.textContent=r===99?'Te quedas donde estabas, con el equipo humeando. Vuelve a tirar.':'Esta tesela aún no tiene imagen pública. Lo demás, lo descubres cruzando.'}
+ b.textContent='Tirar otra vez'}})();
 </script>
 </body>
 </html>

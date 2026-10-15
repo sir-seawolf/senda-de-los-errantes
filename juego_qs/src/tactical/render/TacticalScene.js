@@ -646,6 +646,11 @@ export class TacticalScene extends Phaser.Scene {
     this.controlador.recargar();
   }
 
+  _accionAtaqueMultipleCC(targetId) {
+    const resultado = this.controlador.ataqueMultipleCC(targetId);
+    if (resultado.ok && resultado.terminado) this._mostrarResultado();
+  }
+
   _accionDesencasquillar() {
     this.controlador.desencasquillar();
   }
@@ -762,6 +767,7 @@ export class TacticalScene extends Phaser.Scene {
       { id: "mover", label: "[Mover]" },
       { id: "disparar", label: "[Disparar]" },
       { id: "cc", label: "[CaC]" },
+      { id: "ataqueMultipleCC", label: "[CaC x2]" },
       { id: "recargar", label: "[Recargar]" },
       { id: "desencasquillar", label: "[Desencasquillar]" },
       { id: "cambiarArma", label: "[Cambiar arma]" },
@@ -820,6 +826,7 @@ export class TacticalScene extends Phaser.Scene {
       case "mover": this._modoMover = !this._modoMover; this._log(this._modoMover ? "Clic en el suelo para mover." : "Modo mover desactivado."); break;
       case "disparar": if (s.targetActorId) this._accionAtacar(s.targetActorId, { cc: false }); else this._log("Selecciona un objetivo primero."); break;
       case "cc": if (s.targetActorId) this._accionAtacar(s.targetActorId, { cc: true }); else this._log("Selecciona un objetivo primero."); break;
+      case "ataqueMultipleCC": if (s.targetActorId) this._accionAtaqueMultipleCC(s.targetActorId); else this._log("Selecciona un objetivo primero."); break;
       case "recargar": this._accionRecargar(); break;
       case "desencasquillar": this._accionDesencasquillar(); break;
       case "cambiarArma": this._accionCambiarArma(); break;
