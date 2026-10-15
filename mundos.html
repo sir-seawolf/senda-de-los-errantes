@@ -35,13 +35,18 @@
 .cp figcaption p{margin-top:.5rem}
 .cp figcaption a{display:inline-block;margin-top:.8rem;font-family:var(--display);font-weight:700;font-size:var(--step-small);color:var(--accent)}
 .cp--quotes{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
-.cp--quotes .tile{display:flex;flex-direction:column;justify-content:center;gap:1.4rem;padding:40px 5vw}
-.cp--quotes .kind{font-size:var(--step-small);opacity:.8}
-.cp--quotes blockquote{margin:0;font-size:clamp(24px,2.6vw,36px);line-height:1.2;font-style:italic;max-width:22ch}
-.cp--quotes cite{font-style:normal;font-size:var(--step-small);opacity:.8}
-.cp--quotes h2{font-family:var(--display);font-size:var(--step-lead);text-transform:uppercase;letter-spacing:-.02em}
-.cp--quotes p.txt{max-width:44ch}
+.cp--quotes .tile{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:1.4rem;padding:40px 5vw}
+.cp--quotes .kind{font-size:var(--step-body);opacity:.8}
+.cp--quotes blockquote{margin:0;font-size:clamp(24px,2.5vw,36px);line-height:1.18;font-style:italic;max-width:30ch}
+.cp--quotes cite{font-style:normal;font-size:var(--step-body);opacity:.8}
+.cp--quotes h2{font-family:var(--display);font-size:clamp(24px,2.2vw,36px);text-transform:uppercase;letter-spacing:-.02em}
+.cp--quotes p.txt{max-width:36ch;font-size:var(--step-lead);line-height:1.3}
 
+.cp--quotes .q2img{position:relative;padding:0;margin:0;overflow:hidden}
+.cp--quotes .q2img img{width:100%;height:100%;object-fit:cover}
+.cp--quotes .q2img figcaption{text-align:left;align-items:flex-start;position:absolute;left:var(--edge);right:var(--edge);bottom:var(--edge);max-width:44ch;padding:22px 26px;background:var(--bg);display:flex;flex-direction:column;gap:.6rem}
+.cp--quotes .q2img blockquote{font-size:clamp(20px,1.8vw,28px);max-width:none}
+.cp--quotes .q2img p.txt{font-size:var(--step-body)}
 /* cierre */
 .close{margin-top:160px;grid-template-columns:repeat(12,1fr);padding:0;overflow:hidden}
 .close > *{height:340px}
@@ -71,7 +76,8 @@
   .cp figcaption b{font-size:32px}
   .cp--quotes{grid-template-columns:1fr}
   .cp--quotes .tile{padding:20px}
-  .cp--quotes blockquote{font-size:24px}
+  .cp--quotes blockquote{font-size:22px}
+  .cp--quotes p.txt{font-size:var(--step-body)}
   .close{margin-top:100px;grid-template-columns:1fr 1fr;padding:0 var(--edge)}
   .close > *{height:auto}
   .close .act{grid-column:1/-1;order:-1;padding:28px 20px;min-height:280px}
@@ -121,13 +127,16 @@
         <h2>Cuenca Gótica</h2>
         <p class="txt">El Dominio del Abrazado. El Castillo, el Códice de la Urdimbre, La Que Teje y el horror gótico del Páramo Negro.</p>
       </article>
-      <article class="tile t-blue" id="mazmorras">
-        <span class="kind">Tesela</span>
-        <blockquote>«No son ruinas. Son pruebas. Y nosotros somos los sujetos.»</blockquote>
-        <cite>Errante anónimo, EP-9</cite>
-        <h2>Mazmorras de los Antiguos</h2>
-        <p class="txt">Las Teselas Anidadas. Seis mazmorras conocidas, incluido El Infierno completo con sus siete jefes, más bestiario y trampas heredadas de los Precursores.</p>
-      </article>
+      <figure class="tile q2img" id="mazmorras">
+        <img src="img/mundos/mazmorras.webp" width="1400" height="933" loading="lazy" alt="El Infierno, una de las Mazmorras de los Antiguos: un grupo de Errantes ante un demonio en una arena retransmitida en directo">
+        <figcaption>
+          <span class="kind">Tesela</span>
+          <blockquote>«No son ruinas. Son pruebas. Y nosotros somos los sujetos.»</blockquote>
+          <cite>Errante anónimo, EP-9</cite>
+          <h2>Mazmorras de los Antiguos</h2>
+          <p class="txt">Las Teselas Anidadas. Seis mazmorras conocidas, incluido El Infierno completo con sus siete jefes, más bestiario y trampas heredadas de los Precursores.</p>
+        </figcaption>
+      </figure>
     </div>
   </section>
 

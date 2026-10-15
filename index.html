@@ -123,9 +123,15 @@ a.tile{text-decoration:none;transition:background-color 180ms ease}
 .cp figcaption span{display:block;margin-top:.4rem;color:var(--muted);font-size:var(--step-small)}
 .cp--quotes{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
 .cp--quotes .tile{display:flex;flex-direction:column;justify-content:center;gap:1.6rem;padding:40px 6vw}
-.cp--quotes .tile p{font-size:clamp(24px,2.6vw,36px);line-height:1.2;font-style:italic;max-width:22ch}
-.cp--quotes .tile b{font-family:var(--display);text-transform:uppercase;font-size:var(--step-lead)}
-.cp--quotes .q1{background:var(--stone)}.cp--quotes .q2{background:var(--blue)}
+.cp--quotes .tile{align-items:center;text-align:center}
+.cp--quotes .tile p{font-size:clamp(28px,3.4vw,56px);line-height:1.12;font-style:italic;max-width:20ch}
+.cp--quotes .tile b{font-family:var(--display);text-transform:uppercase;font-size:clamp(20px,1.8vw,30px)}
+.cp--quotes .q1{background:var(--stone)}
+.cp--quotes .q2img{position:relative;padding:0;margin:0;overflow:hidden}
+.cp--quotes .q2img img{width:100%;height:100%;object-fit:cover}
+.cp--quotes .q2img figcaption{text-align:left;align-items:flex-start;position:absolute;left:var(--edge);bottom:var(--edge);max-width:min(30ch,90%);padding:20px 24px;background:var(--bg)}
+.cp--quotes .q2img figcaption p{font-size:clamp(22px,2vw,32px);line-height:1.15;font-style:italic}
+.cp--quotes .q2img figcaption b{display:block;margin-top:.6rem;font-family:var(--display);text-transform:uppercase;font-size:var(--step-body)}.cp--quotes .q2{background:var(--blue)}
 
 /* ---------- live thing: the portal ---------- */
 .portal{margin-top:160px;grid-template-columns:repeat(12,1fr)}
@@ -333,7 +339,7 @@ a.tile{text-decoration:none;transition:background-color 180ms ease}
     <figure class="cp" data-reveal><img src="img/mundos/monstruoplantas.webp" width="1400" height="933" loading="lazy" alt="Un puesto fronterizo con antenas sobre un acantilado rodeado de jungla"><figcaption><b>Monstruoplantas</b><span>La bioingeniería de los Antiguos, saqueada sin protocolo, ha creado una jungla que aprende a matar.</span></figcaption></figure>
     <div class="cp cp--quotes">
       <div class="tile q1"><p>«No era una ciudad. Era un estómago.»</p><b>Cuenca Gótica</b></div>
-      <div class="tile q2"><p>«No son ruinas. Son pruebas.»</p><b>Mazmorras de los Antiguos</b></div>
+      <figure class="tile q2img"><img src="img/mundos/mazmorras.webp" width="1400" height="933" loading="lazy" alt="El Infierno, una de las Mazmorras de los Antiguos: un grupo de Errantes ante un demonio en una arena retransmitida en directo"><figcaption><p>«No son ruinas. Son pruebas.»</p><b>Mazmorras de los Antiguos</b></figcaption></figure>
     </div>
   </section>
 
