@@ -63,7 +63,8 @@ a.tile{text-decoration:none;transition:background-color 180ms ease}
 .hero .blocks--hero span{font-size:clamp(48px,6.4vw,112px)}
 .hero .blocks--hero span:nth-child(1){height:86%}.hero .blocks--hero span:nth-child(2){height:62%}.hero .blocks--hero span:nth-child(3){height:100%}.hero .blocks--hero span:nth-child(4){height:70%}.hero .blocks--hero span:nth-child(5){height:80%}
 .hero .split{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);padding:0;background:none}
-.hero .split .tile p{font-size:var(--step-lead);line-height:1.25;max-width:22ch}
+.hero .split .tile{display:flex;align-items:center;padding:clamp(20px,3vw,44px)}
+.hero .split .tile p{font-size:clamp(22px,1.9vw,30px);line-height:1.25;max-width:24ch}
 .hero .say{background:var(--stone)}
 .hero .hot{background:var(--accent);color:var(--accent-ink)}
 .hero .rose img{object-position:50% 50%}
@@ -125,10 +126,10 @@ a.tile{text-decoration:none;transition:background-color 180ms ease}
 
 /* ---------- live thing: the portal ---------- */
 .portal{margin-top:160px;grid-template-columns:repeat(12,1fr)}
-.portal .ask{grid-column:1/6;grid-row:1/3;background:var(--accent);color:var(--accent-ink);display:flex;flex-direction:column;justify-content:space-between;gap:2rem}
+.portal .ask{grid-column:1/6;grid-row:1/3;background:var(--accent);color:var(--accent-ink);display:flex;flex-direction:column;justify-content:center;gap:clamp(2rem,5vh,3.5rem);padding:clamp(28px,4vw,56px)}
 .portal .ask h2{font-size:var(--step-head)}
-.portal .ask p{max-width:34ch}
-.portal .die{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}
+.portal .ask p{max-width:26ch;font-size:var(--step-lead);line-height:1.3}
+.portal .die{display:flex;align-items:center;gap:clamp(1.5rem,3vw,3rem);flex-wrap:wrap}
 .portal .num{font-family:var(--display);font-weight:700;font-size:var(--step-display);line-height:.8;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
 .portal .out{grid-column:6/13;grid-row:1;padding:0;background:var(--surface);aspect-ratio:16/10}
 .portal .out img{width:100%;height:100%;object-fit:cover}
