@@ -2,61 +2,133 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego de Rol — La Senda de los Errantes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juego de rol — La Senda de los Errantes</title>
 <meta name="description" content="El Kit de Inicio de La Senda de los Errantes: chuleta de reglas, cinco personajes ya preparados, un módulo de seis escenas, fichas de personaje y una versión jugable en el navegador.">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="senda_estilo.css">
-<style>.puertas{grid-template-columns:repeat(2,minmax(0,1fr))}</style>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mosaico.css">
+<style>
+/* portada del juego: tablero 2x2 */
+.hero{height:calc(100svh - 60px - var(--edge));min-height:560px;padding-top:var(--gap);padding-bottom:var(--edge);grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.hero .name{display:flex;flex-direction:column;justify-content:space-between;gap:1.5rem}
+.hero .name h1{font-size:var(--step-display)}
+.hero .name blockquote{margin:0;font-size:var(--step-lead);line-height:1.3;font-style:italic;max-width:30ch}
+.hero .street img{object-position:30% 50%}
+.hero .split{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+.hero .go{display:flex;flex-direction:column;justify-content:space-between}
+.hero .go b{font-family:var(--display);font-size:clamp(26px,2.6vw,44px);line-height:.95;letter-spacing:-.03em;display:block}
+.hero .go span{font-size:var(--step-body);max-width:28ch}
+.hero .go .arrow{font-family:var(--display);font-size:var(--step-head);line-height:1}
+
+/* qué trae el kit */
+.kit{margin-top:120px;grid-template-columns:repeat(12,1fr)}
+.kit .lead{grid-column:1/6;background:none;padding:24px 20px}
+.kit .lead h2{font-size:var(--step-head)}
+.kit .lead p{margin-top:1rem;max-width:40ch}
+.kit .fact{grid-column:span 7;display:grid;grid-template-columns:auto 1fr;align-items:end;gap:24px;min-height:180px}
+.kit .fact .n{font-family:var(--display);font-weight:700;font-size:clamp(72px,9vw,150px);line-height:.8;letter-spacing:-.05em}
+.kit .fact p{max-width:34ch}
+.kit .fact:nth-of-type(2){grid-column:6/13;grid-row:1}
+.kit .fact:nth-of-type(3){grid-column:1/8}
+.kit .fact:nth-of-type(4){grid-column:8/13}
+
+/* y después, el Mosaico */
+.more{margin-top:160px;grid-template-columns:repeat(4,1fr);grid-template-rows:260px 260px}
+.more__h{grid-column:1/3;grid-row:1/3;display:flex;flex-direction:column;justify-content:space-between;gap:1rem;padding:32px}
+.more__h h2{font-size:var(--step-head)}
+.more__h .button{align-self:flex-start;background:var(--bg);color:var(--ink)}
+/* fichas */
+.sheets{margin-top:160px;grid-template-columns:repeat(4,1fr)}
+.sheets__head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;padding:0 12px 24px;background:none}
+.sheets__head h2{font-size:var(--step-head)}
+.sheets a{display:flex;flex-direction:column;justify-content:space-between;gap:2.5rem;min-height:300px}
+.sheets a b{font-family:var(--display);font-size:var(--step-lead);line-height:1.05;letter-spacing:-.02em;display:block}
+.sheets a span{display:block;margin-top:.6rem}
+.sheets a .arrow{font-family:var(--display);font-size:var(--step-head);line-height:1}
+
+@media (max-width:760px){
+  .hero{height:auto;min-height:0;grid-template-columns:1fr;grid-template-rows:auto}
+  .hero .name{min-height:52svh}
+  .hero .name h1{font-size:15vw}
+  .hero .street{aspect-ratio:16/10}
+  .hero .split{grid-template-columns:1fr}
+  .hero .go{min-height:200px}
+  .kit{margin-top:80px;grid-template-columns:1fr}
+  .kit .lead,.kit .fact,.kit .fact:nth-of-type(n){grid-column:1;grid-row:auto}
+  .kit .fact{min-height:0}
+  .more{margin-top:100px;grid-template-columns:1fr 1fr;grid-template-rows:auto 160px 160px}
+  .more__h{grid-column:1/-1;grid-row:auto}
+  .sheets{margin-top:100px;grid-template-columns:1fr 1fr}
+  .sheets__head{padding:0 6px 16px}
+  .sheets a{min-height:200px;padding:16px}
+}
+</style>
 </head>
-<body class="landing tema-index">
-<nav class="topnav" aria-label="Principal">
-<a class="brand" href="index.html">La Senda</a>
-<div>
-<a href="index.html">Inicio</a>
-<a href="juego.html" aria-current="page">Juego</a>
-<a href="mundos.html">Mundos</a>
-<a href="https://elpeciodeseawolf.blogspot.com" rel="noopener">Blog</a>
-</div></nav>
-<main class="hero">
-  <figure class="hero-portal">
-    <img src="img/callejon.webp" alt="Un callejón nocturno de neón y lluvia, escenario de la primera escena del Quick Starter">
-    <figcaption><span>Kit de Inicio</span><b>Predator N-5.2 — «Las guerras secretas»</b></figcaption>
-  </figure>
-  <div class="hero-info">
-    <p class="hero-kicker">Juego de rol · Para empezar hoy</p>
-    <h1>Juega <em>La Senda</em></h1>
-    <p class="sub">d100 rápido, peligroso y abierto a soluciones ingeniosas</p>
-    <p class="desc">«Es martes. Llueve flojo y el mundo es exactamente lo que parece. Entonces oyes los disparos.» El Kit de Inicio trae una chuleta de reglas para el narrador, cinco personajes ya preparados y un módulo de seis escenas. También puedes jugarlo en el navegador y crear tu propio personaje.</p>
-    <div class="cta">
-      <a href="juego_qs/index.html" class="primary">Jugar en el navegador</a>
-      <a href="quickstart.html" class="secondary">Leer el Quickstart</a>
+<body>
+
+<header class="top">
+  <a class="tile mark" href="index.html" aria-label="La Senda, inicio"><img src="img/Portada_rol_Errantes.jpg" width="1024" height="1024" alt=""></a>
+  <nav class="tile" aria-label="Principal">
+    <a href="juego.html" aria-current="page">Juego</a><a href="mundos.html">Mundos</a><a class="opt" href="https://elpeciodeseawolf.blogspot.com" rel="noopener">Blog</a>
+  </nav>
+  <a class="act" href="quickstart.html">Quickstart</a>
+</header>
+
+<main>
+  <section class="board hero" aria-label="Juega La Senda">
+    <div class="tile name">
+      <h1 class="d up" data-rise>Juega<br>la Senda</h1>
+      <blockquote data-rise style="--i:1">«Es martes. Llueve flojo y el mundo es exactamente lo que parece. Entonces oyes los disparos.»</blockquote>
     </div>
-    <p class="puertas-label">Fichas de personaje:</p>
-    <div class="puertas">
-      <a href="ficha_v4.html" class="puerta">
-        <span class="ico"><i class="fa-solid fa-user-astronaut"></i></span><span class="tit">Crear un personaje</span>
-        <span class="txt">Creación completa (ficha v4)</span>
-      </a>
-      <a href="ficha.html" class="puerta alt">
-        <span class="ico"><i class="fa-solid fa-calculator"></i></span><span class="tit">Ficha autocalculada</span>
-        <span class="txt">Con cálculos automáticos, para jugar en pantalla</span>
-      </a>
-      <a href="ficha_simplificada.html" class="puerta gal">
-        <span class="ico"><i class="fa-solid fa-pen"></i></span><span class="tit">Ficha simplificada</span>
-        <span class="txt">Sin cálculos, para imprimir o rellenar a mano</span>
-      </a>
-      <a href="ficha_vertical.html" class="puerta">
-        <span class="ico"><i class="fa-solid fa-print"></i></span><span class="tit">Ficha vertical</span>
-        <span class="txt">Formato vertical, pensado para imprimir</span>
-      </a>
+    <figure class="tile tile--img street shutter"><img src="img/callejon.webp" width="1000" height="545" alt="Un callejón nocturno bajo la lluvia, con un hombre herido entre cartones y contenedores: la primera escena del Kit de Inicio"></figure>
+    <a class="tile go t-amber" href="juego_qs/index.html" data-rise style="--i:2"><span><b>Jugar en el navegador</b></span><span>Predator N-5.2, la primera aventura, sin instalar nada.</span><span class="arrow" aria-hidden="true">→</span></a>
+    <div class="split">
+      <a class="tile go t-stone" href="quickstart.html" data-rise style="--i:3"><span><b>Leer el Quickstart</b></span><span>Reglas, personajes y aventura para jugar en mesa.</span><span class="arrow" aria-hidden="true">→</span></a>
+      <a class="tile go t-blue" href="ficha_v4.html" data-rise style="--i:4"><span><b>Crear un personaje</b></span><span>La ficha completa, paso a paso.</span><span class="arrow" aria-hidden="true">→</span></a>
     </div>
-  </div>
+  </section>
+
+  <section class="board kit" aria-labelledby="kit-h">
+    <div class="tile lead" data-reveal><h2 id="kit-h" class="d">Qué trae el Kit de Inicio</h2><p>Todo lo necesario para una primera partida. Los dados y la pizza, por cuenta de la mesa.</p></div>
+    <div class="tile fact t-amber" data-reveal style="--i:1"><span class="n">1</span><p>chuleta de reglas para quien dirige: lo justo para no abrir el manual en mitad de un tiroteo.</p></div>
+    <div class="tile fact t-stone" data-reveal style="--i:2"><span class="n">5</span><p>personajes ya preparados, para empezar a jugar en vez de a rellenar casillas.</p></div>
+    <div class="tile fact t-blue" data-reveal style="--i:3"><span class="n">6</span><p>escenas de <i>Predator N-5.2, «Las guerras secretas»</i>, de un callejón mojado a lo que haya detrás.</p></div>
+  </section>
+
+  <section class="board more" aria-labelledby="more-h">
+    <div class="tile more__h t-ink" data-reveal><h2 id="more-h" class="d">Y después, el Mosaico</h2><p>Predator es la puerta. Al otro lado esperan mundos enteros.</p><a class="button" href="mundos.html">Ver los mundos</a></div>
+    <a class="tile tile--img" href="mundos.html#madcity" data-reveal style="--i:1"><img src="img/mundos/madcity.webp" width="1400" height="934" loading="lazy" alt="MadCity, la ciudad vertical"></a>
+    <a class="tile tile--img" href="mundos.html#chatarra" data-reveal style="--i:2"><img src="img/mundos/chatarra.webp" width="1400" height="788" loading="lazy" alt="Mundo Chatarra, montañas de metal"></a>
+    <a class="tile tile--img" href="mundos.html#oasis" data-reveal style="--i:3"><img src="img/mundos/oasis.webp" width="1400" height="781" loading="lazy" alt="Oasis, ruinas en la selva"></a>
+    <a class="tile tile--img" href="mundos.html#monstruoplantas" data-reveal style="--i:4"><img src="img/mundos/monstruoplantas.webp" width="1400" height="933" loading="lazy" alt="Monstruoplantas, un puesto sobre un acantilado"></a>
+  </section>
+
+  <section class="board sheets" aria-labelledby="sh-h">
+    <div class="tile sheets__head"><h2 id="sh-h" class="d">Fichas de personaje</h2><span class="muted">Cuatro formatos, el mismo personaje</span></div>
+    <a class="tile t-amber" href="ficha_v4.html" data-reveal><span><b>Crear un personaje</b><span>Creación completa, con la ficha v4.</span></span><span class="arrow" aria-hidden="true">→</span></a>
+    <a class="tile" href="ficha.html" data-reveal style="--i:1"><span><b>Ficha autocalculada</b><span>Hace las cuentas por ti. Para jugar en pantalla.</span></span><span class="arrow" aria-hidden="true">→</span></a>
+    <a class="tile t-stone" href="ficha_simplificada.html" data-reveal style="--i:2"><span><b>Ficha simplificada</b><span>Sin cálculos, para imprimir o rellenar a mano.</span></span><span class="arrow" aria-hidden="true">→</span></a>
+    <a class="tile t-blue" href="ficha_vertical.html" data-reveal style="--i:3"><span><b>Ficha vertical</b><span>En vertical, pensada para imprimir.</span></span><span class="arrow" aria-hidden="true">→</span></a>
+  </section>
 </main>
-<footer class="footer">
-  <a href="https://elpeciodeseawolf.blogspot.com">El Pecio de Seawolf</a> · La Senda de los Errantes
+
+<footer class="foot">
+  <div class="blocks" aria-label="Senda"><span>S</span><span>E</span><span>N</span><span>D</span><span>A</span></div>
+  <div class="foot__links">
+    <ul><li><a href="quickstart.html">Quickstart</a></li><li><a href="ficha_v4.html">Crear personaje</a></li><li><a href="juego_qs/index.html">Jugar en el navegador</a></li></ul>
+    <ul><li><a href="index.html">Inicio</a></li><li><a href="mundos.html">Mundos</a></li><li><a href="https://elpeciodeseawolf.blogspot.com" rel="noopener">El Pecio de Seawolf</a></li></ul>
+    <p class="who">La Senda de los Errantes es un juego de rol de A. Seawolf, en desarrollo desde 1991.</p>
+  </div>
+  <div class="foot__last"><span>© 2026 A. Seawolf</span><a class="button" href="quickstart.html">Quickstart</a></div>
 </footer>
+
+<script>
+(()=>{const t=document.querySelectorAll('[data-reveal]');if(!('IntersectionObserver' in window)){t.forEach(e=>e.classList.add('is-in'));return}
+const io=new IntersectionObserver(es=>{for(const e of es){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target)}}},{rootMargin:'0px 0px -10% 0px',threshold:.1});
+t.forEach(e=>io.observe(e));addEventListener('load',()=>setTimeout(()=>t.forEach(e=>{const r=e.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)e.classList.add('is-in')}),2500));})();
+</script>
 </body>
 </html>

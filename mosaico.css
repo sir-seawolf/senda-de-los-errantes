@@ -1,0 +1,100 @@
+/* La Senda · sistema "Mosaico" compartido por las páginas públicas.
+   Tablero de teselas: huecos de 8px, sin bordes, sin sombras, sin degradados.
+   Colores sacados del Rosetón: noche, hueso, ámbar, azul cósmico, piedra. */
+:root{
+  color-scheme:dark;
+  --bg:#0b0e15;--surface:#151a24;--ink:#ece4d4;--muted:#b3a994;
+  --accent:#e9a23b;--accent-ink:#1b1205;
+  --blue:#1d4fa0;--stone:#3a2f22;
+  --display:'Libre Franklin',system-ui,sans-serif;--text:'Source Serif 4',Georgia,serif;
+  --step-small:clamp(.875rem,.84rem + .1vw,.9375rem);
+  --step-body:clamp(1.0625rem,1rem + .25vw,1.1875rem);
+  --step-lead:clamp(1.375rem,1.1rem + .6vw,1.75rem);
+  --step-head:clamp(2rem,1.3rem + 3.2vw,4rem);
+  --step-display:clamp(56px,8vw,132px);
+  --gap:8px;--edge:8px;
+  --ease-out:cubic-bezier(.22,1,.36,1);--ease-io:cubic-bezier(.76,0,.24,1);--ease-soft:cubic-bezier(.33,1,.68,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:var(--step-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,figure,ul{margin:0}
+ul{padding:0;list-style:none}
+img{display:block;max-width:100%;height:auto;background:var(--surface)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+::selection{background:var(--accent);color:var(--accent-ink)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.d{font-family:var(--display);font-weight:700;letter-spacing:-.035em;line-height:.92}
+.up{text-transform:uppercase}
+.muted{color:var(--muted)}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;padding:0 1.4rem;background:var(--accent-ink);color:var(--accent);font-family:var(--display);font-weight:700;font-size:var(--step-small);text-decoration:none;transition:transform 140ms var(--ease-out),background-color 180ms ease,color 180ms ease}
+.button:hover{background:var(--ink);color:var(--bg)}
+.button:active{transform:scale(.97)}
+
+/* teselas */
+.board{display:grid;gap:var(--gap);padding:0 var(--edge)}
+.tile{position:relative;overflow:hidden;background:var(--surface);padding:24px;min-width:0}
+.tile--img{padding:0}
+.tile--img img{width:100%;height:100%;object-fit:cover}
+a.tile{text-decoration:none;transition:background-color 180ms ease,color 180ms ease}
+.t-amber{background:var(--accent);color:var(--accent-ink)}
+.t-blue{background:var(--blue)}
+.t-stone{background:var(--stone)}
+.t-ink{background:var(--ink);color:var(--bg)}
+a.t-amber:hover,a.t-stone:hover,a.t-blue:hover,a.tile:hover{background:var(--ink);color:var(--bg)}
+
+/* barra superior */
+.top{display:grid;grid-template-columns:60px 1fr auto;gap:var(--gap);padding:var(--edge) var(--edge) 0;height:calc(60px + var(--edge))}
+.top .mark{padding:0;background:var(--stone)}
+.top .mark img{width:100%;height:100%;object-fit:cover}
+.top nav{display:flex;align-items:center;gap:28px;padding:0 24px 0 50%;font-family:var(--display);font-weight:700;font-size:var(--step-small)}
+.top nav a{text-decoration:none}
+.top nav a:hover,.top nav a[aria-current]{color:var(--accent)}
+.top .act{display:flex;align-items:center;padding:0 24px;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:700;font-size:var(--step-small);text-decoration:none}
+.top .act:hover{background:var(--ink)}
+
+/* pie: el nombre construido con bloques */
+.foot{margin-top:160px;padding:0 var(--edge) var(--edge)}
+.blocks{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;height:34svh;align-items:end}
+.blocks span{display:flex;align-items:flex-end;justify-content:center;font-family:var(--display);font-weight:700;font-size:clamp(80px,17vw,300px);line-height:.78;letter-spacing:-.04em;overflow:hidden;color:var(--bg)}
+.blocks span:nth-child(1){height:100%;background:var(--accent)}
+.blocks span:nth-child(2){height:72%;background:var(--ink)}
+.blocks span:nth-child(3){height:88%;background:var(--blue);color:var(--ink)}
+.blocks span:nth-child(4){height:64%;background:var(--stone);color:var(--ink)}
+.blocks span:nth-child(5){height:94%;background:var(--ink)}
+.foot__links{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-top:56px;padding:0 12px;font-size:var(--step-small)}
+.foot__links ul{grid-column:span 2;display:grid;gap:4px}
+.foot__links a{text-decoration:none}
+.foot__links a:hover{color:var(--accent)}
+.foot__links .who{grid-column:9/13;color:var(--muted)}
+.foot__last{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding:0 12px 12px;font-size:var(--step-small);color:var(--muted)}
+.foot__last .button{background:var(--accent);color:var(--accent-ink);min-height:2.75rem}
+
+/* movimiento: el contenido es visible sin JavaScript */
+@media (prefers-reduced-motion:no-preference){
+  .js [data-rise]{opacity:0;transform:translateY(18px);animation:rise 800ms var(--ease-out) forwards;animation-delay:calc(var(--i,0)*90ms + 120ms)}
+  .js [data-reveal]{opacity:0;transform:translateY(24px);transition:opacity 700ms var(--ease-out),transform 900ms var(--ease-out);transition-delay:calc(var(--i,0)*70ms)}
+  .js [data-reveal].is-in{opacity:1;transform:none}
+  .js .shutter{clip-path:inset(0 0 100% 0);animation:shut 1100ms var(--ease-io) 200ms forwards}
+  .js .shutter img{transform:scale(1.12);animation:settle 1600ms var(--ease-soft) 200ms forwards}
+  .tile--img:hover img{transform:scale(1.04)}
+  .tile--img img{transition:transform 900ms var(--ease-soft)}
+}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes shut{to{clip-path:inset(0)}}
+@keyframes settle{to{transform:none}}
+
+@media (max-width:760px){
+  :root{--gap:6px;--edge:6px}
+  .top{grid-template-columns:52px 1fr auto;height:calc(52px + var(--edge))}
+  .top nav{padding:0 12px;gap:16px;justify-content:flex-end}
+  .top nav .opt{display:none}
+  .top .act{padding:0 14px}
+  .foot{margin-top:100px}
+  .blocks{height:22svh}
+  .blocks span{font-size:17vw}
+  .foot__links{grid-template-columns:1fr 1fr;padding:0 10px}
+  .foot__links ul{grid-column:auto}
+  .foot__links .who{grid-column:1/-1}
+}
