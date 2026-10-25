@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Partida de rol · La Senda</title>
+<link rel="stylesheet" href="../senda_estilo.css"><link rel="stylesheet" href="../ficha_marco.css"><link rel="stylesheet" href="partida.css"></head>
+<body><main>
+<header><h1>Partida de rol</h1><p>Revisión de fichas · Narrador</p></header>
+<p>Carga la última ficha aprobada y la propuesta del jugador. Revisa cada cambio antes de guardar la nueva ficha oficial.</p>
+<section class="uploads" aria-label="Cargar fichas"><label>Ficha aprobada<input id="base" type="file" accept=".json,application/json"><span id="base-info">Última versión oficial · JSON v4</span></label><label>Ficha modificada<input id="proposal" type="file" accept=".json,application/json"><span id="proposal-info">Propuesta del jugador · JSON v4</span></label></section>
+<p id="message" role="status" aria-live="polite">Preparando comprobación de compatibilidad con la ficha…</p>
+<section aria-labelledby="review-title"><h2 id="review-title">Cambios por revisar</h2><p id="summary">Carga las dos fichas para empezar.</p><div id="changes"></div></section>
+<footer><button id="download" disabled>Descargar ficha aprobada</button><p>Los archivos se procesan en este navegador. Guarda la descarga: esta página no conserva las fichas al cerrarse.</p></footer>
+</main><iframe id="generator" title="Comprobación de compatibilidad v4" src="../ficha_v4.html" hidden sandbox="allow-scripts allow-same-origin"></iframe><script type="module" src="app.js"></script></body></html>
