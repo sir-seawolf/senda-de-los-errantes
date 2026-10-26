@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Campaña · Narrador · La Senda de los Errantes</title>
+  <link rel="stylesheet" href="../../senda_estilo.css">
+  <link rel="stylesheet" href="../../ficha_marco.css">
+  <link rel="stylesheet" href="../partida.css">
+  <link rel="stylesheet" href="campaign.css">
+</head>
+<body>
+<main>
+  <header>
+    <a href="../">← Comparar archivos</a>
+    <p class="eyebrow">PARTIDA DE ROL · NARRADOR</p>
+    <h1>Tu mesa, tu campaña</h1>
+    <p>Admite personajes y revisa sus cambios al cerrar cada sesión.</p>
+  </header>
+  <p id="message" role="status" aria-live="polite">Servicio de campañas no configurado</p>
+  <div id="access" hidden>
+    <section class="panel">
+      <h2>Crear campaña</h2>
+      <form id="create-form" autocomplete="off">
+        <label for="campaign-name">Nombre de la campaña</label>
+        <input id="campaign-name" name="campaign-name" maxlength="80" required>
+        <label for="create-key">Clave administrativa</label>
+        <input id="create-key" type="password" autocomplete="off" required>
+        <p class="hint">La clave se usa para esta petición y se borra del formulario.</p>
+        <button type="submit" class="primary">Crear campaña</button>
+      </form>
+    </section>
+    <section class="panel">
+      <h2>Entrar como narrador</h2>
+      <form id="login-form" autocomplete="off">
+        <label for="campaign-code">Código de campaña</label>
+        <input id="campaign-code" autocomplete="off" spellcheck="false" required>
+        <label for="login-key">Clave administrativa</label>
+        <input id="login-key" type="password" autocomplete="off" required>
+        <button type="submit">Entrar como narrador</button>
+      </form>
+    </section>
+  </div>
+  <section id="invitation" class="panel" hidden>
+    <h2>Guarda el enlace de invitación</h2>
+    <p>Se muestra una sola vez. Guárdalo antes de salir: no se podrá recuperar. Los jugadores entran desde este enlace con su alias y PIN personal.</p>
+    <label for="invite-link">Enlace privado de la campaña</label>
+    <input id="invite-link" readonly autocomplete="off">
+    <div class="actions">
+      <button id="copy-invite" type="button">Copiar enlace</button>
+      <button id="hide-invite" type="button">Ya lo he guardado</button>
+    </div>
+  </section>
+  <div id="dashboard" hidden>
+    <section class="panel">
+      <h2 id="campaign-title">Campaña</h2>
+      <p id="campaign-state" class="values"></p>
+      <div class="actions wrap">
+        <button id="reload" type="button">Recargar campaña</button>
+        <button id="session-action" type="button"></button>
+        <button id="visibility" type="button"></button>
+        <button id="logout" type="button">Salir</button>
+      </div>
+      <p class="hint">La sesión del narrador caduca a las 8 horas, también al recargar. El código y la clave no se guardan en el navegador.</p>
+    </section>
+    <section aria-labelledby="players-title">
+      <h2 id="players-title">Jugadores</h2>
+      <p>Abre «Revisar ficha» para consultar si hay una entrada o propuesta pendiente.</p>
+      <div id="players"></div>
+    </section>
+    <section id="review" class="panel" hidden aria-labelledby="review-title">
+      <h2 id="review-title">Revisar ficha</h2>
+      <p id="review-summary"></p>
+      <div id="changes"></div>
+      <div id="review-actions" class="actions wrap"></div>
+    </section>
+    <section id="profile" class="panel" hidden>
+      <h2 id="profile-title">Perfil</h2>
+      <p id="profile-story"></p>
+      <img id="profile-image" alt="Imagen del personaje" hidden>
+      <div id="profile-actions"></div>
+    </section>
+    <section class="panel danger">
+      <h2>Borrar campaña</h2>
+      <p>Se borran sus jugadores, fichas y perfiles. Escribe el nombre exacto para confirmar.</p>
+      <form id="delete-form" autocomplete="off">
+        <label for="delete-name">Nombre de la campaña que vas a borrar</label>
+        <input id="delete-name" required>
+        <button type="submit">Borrar definitivamente</button>
+      </form>
+    </section>
+  </div>
+  <iframe id="generator" title="Comprobación de compatibilidad con la ficha v4" hidden sandbox="allow-scripts allow-same-origin"></iframe>
+  <footer><a href="../">Comparar archivos sin campaña</a></footer>
+</main>
+<script type="module" src="entry.js"></script>
+</body>
+</html>
